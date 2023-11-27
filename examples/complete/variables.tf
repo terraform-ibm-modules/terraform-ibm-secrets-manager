@@ -1,19 +1,24 @@
 variable "ibmcloud_api_key" {
   type        = string
-  description = "The IBM Cloud API Key"
+  description = "The IBM Cloud API token this account authenticates to"
   sensitive   = true
-}
-
-variable "region" {
-  type        = string
-  description = "Region to provision all resources created by this example"
-  default     = "us-south"
 }
 
 variable "prefix" {
   type        = string
-  description = "Prefix to append to all resources created by this example"
-  default     = "complete"
+  description = "Prefix for sm instance"
+  default     = "secrets-manager-test"
+}
+variable "sm_service_plan" {
+  type        = string
+  description = "Secrets-Manager Trial plan"
+  default     = "trial"
+}
+
+variable "region" {
+  type        = string
+  description = "Region where resources will be created"
+  default     = "us-east"
 }
 
 variable "resource_group" {
