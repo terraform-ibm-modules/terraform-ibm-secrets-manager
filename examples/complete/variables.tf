@@ -1,6 +1,6 @@
 variable "ibmcloud_api_key" {
   type        = string
-  description = "The IBM Cloud API token this account authenticates to"
+  description = "The IBM Cloud API key this account authenticates to"
   sensitive   = true
 }
 
@@ -11,7 +11,7 @@ variable "prefix" {
 }
 variable "sm_service_plan" {
   type        = string
-  description = "Secrets-Manager Trial plan"
+  description = "The Secrets Manager service plan to provision"
   default     = "trial"
 }
 

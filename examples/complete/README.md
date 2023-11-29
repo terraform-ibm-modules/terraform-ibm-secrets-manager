@@ -26,12 +26,12 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_ibmcloud_api_key"></a> [ibmcloud\_api\_key](#input\_ibmcloud\_api\_key) | The IBM Cloud API token this account authenticates to | `string` | n/a | yes |
+| <a name="input_ibmcloud_api_key"></a> [ibmcloud\_api\_key](#input\_ibmcloud\_api\_key) | The IBM Cloud API key this account authenticates to | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for sm instance | `string` | `"secrets-manager-test"` | no |
 | <a name="input_region"></a> [region](#input\_region) | Region where resources will be created | `string` | `"us-east"` | no |
 | <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | An existing resource group name to use for this example, if unset a new resource group will be created | `string` | `null` | no |
 | <a name="input_resource_tags"></a> [resource\_tags](#input\_resource\_tags) | Optional list of tags to be added to created resources | `list(string)` | `[]` | no |
-| <a name="input_sm_service_plan"></a> [sm\_service\_plan](#input\_sm\_service\_plan) | Secrets-Manager Trial plan | `string` | `"trial"` | no |
+| <a name="input_sm_service_plan"></a> [sm\_service\_plan](#input\_sm\_service\_plan) | The Secrets Manager service plan to provision | `string` | `"trial"` | no |
 
 ### Outputs
 

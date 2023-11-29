@@ -1,10 +1,6 @@
 # Secrets Manager module
 
-<!--
-Update status and "latest release" badges:
-  1. For the status options, see https://github.ibm.com/GoldenEye/documentation/blob/master/status.md
-  2. Update the "latest release" badge to point to the correct module's repo. Replace "module-template" in two places.
--->
+
 [![Graduated (Supported)](https://img.shields.io/badge/Status-Graduated%20(Supported)-brightgreen)](https://terraform-ibm-modules.github.io/documentation/#/badge-status)
 [![latest release](https://img.shields.io/github/v/release/terraform-ibm-modules/terraform-ibm-secrets-manager?logo=GitHub&sort=semver)](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/releases/latest)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
@@ -27,7 +23,7 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
 <!-- END OVERVIEW HOOK -->
 
 
-# terraform-ibm-secrets-manager
+## terraform-ibm-secrets-manager
 
 ### Usage
 
@@ -37,8 +33,8 @@ provider "ibm" {
   region               = "us-south"
 }
 module "secrets_manager" {
-   source                               = "terraform-ibm-modules/secrets-manager/ibm"
-  version                              = "X.X.X"  # Replace "X.X.X" with a release version to lock into a specific release
+  source               = "terraform-ibm-modules/secrets-manager/ibm"
+  version              = "X.X.X"  # Replace "X.X.X" with a release version to lock into a specific release
   resource_group_id    = "xxXXxxXXxXxXXXXxxXxxxXXXXxXXXXX"
   region               = "us-south"
   secrets_manager_name = "my-secrets-manager"
@@ -46,6 +42,7 @@ module "secrets_manager" {
   service_endpoints    = "public-and-private"
 }
 ```
+
 
 ## Required IAM access policies
 You need the following permissions to run this module.
