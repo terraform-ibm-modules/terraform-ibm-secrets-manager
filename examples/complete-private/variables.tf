@@ -1,6 +1,6 @@
 variable "ibmcloud_api_key" {
   type        = string
-  description = "The IBM Cloud API key this account authenticates to"
+  description = "The IBM Cloud API token this account authenticates to"
   sensitive   = true
 }
 
@@ -11,7 +11,7 @@ variable "prefix" {
 }
 variable "sm_service_plan" {
   type        = string
-  description = "The Secrets Manager service plan to provision"
+  description = "Secrets-Manager Trial plan"
   default     = "trial"
 }
 
@@ -31,4 +31,22 @@ variable "resource_tags" {
   type        = list(string)
   description = "Optional list of tags to be added to created resources"
   default     = []
+}
+
+variable "kms_encryption_enabled" {
+  type        = bool
+  description = "Optional flag to enable KMS encryption"
+  default     = false
+}
+
+variable "existing_kms_instance_guid" {
+  type        = string
+  description = "GUID of the KMS instance containing the key to use for encryption"
+  default     = null
+}
+
+variable "kms_key_crn" {
+  type        = string
+  description = "CRN of the KMS key to use for encryption"
+  default     = null
 }

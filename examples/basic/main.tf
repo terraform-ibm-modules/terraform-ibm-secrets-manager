@@ -1,7 +1,3 @@
-########################################################################################################################
-# Resource group
-########################################################################################################################
-
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
   version = "1.1.4"
@@ -10,15 +6,11 @@ module "resource_group" {
   existing_resource_group_name = var.resource_group
 }
 
-########################################################################################################################
-# COS instance
-########################################################################################################################
-
-resource "ibm_resource_instance" "cos_instance" {
-  name              = "${var.prefix}-cos"
-  resource_group_id = module.resource_group.resource_group_id
-  service           = "cloud-object-storage"
-  plan              = "standard"
-  location          = "global"
-  tags              = var.resource_tags
+module "secrets_manager" {
+  source               = "../.."
+  resource_group_id    = module.resource_group.resource_group_id
+  region               = var.region
+  secrets_manager_name = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
+  sm_service_plan      = "trial"
+  sm_tags              = var.resource_tags
 }
