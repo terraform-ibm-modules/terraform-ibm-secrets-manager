@@ -14,7 +14,7 @@ This examples handles the provisioning of a new Secrets Manager instance.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_key_protect"></a> [key\_protect](#module\_key\_protect) | terraform-ibm-modules/key-protect-all-inclusive/ibm | 4.4.1 |
+| <a name="module_key_protect"></a> [key\_protect](#module\_key\_protect) | terraform-ibm-modules/key-protect-all-inclusive/ibm | 4.4.2 |
 | <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group) | terraform-ibm-modules/resource-group/ibm | 1.1.4 |
 | <a name="module_secrets_manager"></a> [secrets\_manager](#module\_secrets\_manager) | ../.. | n/a |
 
