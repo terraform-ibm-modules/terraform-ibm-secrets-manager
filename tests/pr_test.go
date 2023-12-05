@@ -34,10 +34,11 @@ func TestMain(m *testing.M) {
 
 func setupOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-		Testing:       t,
-		TerraformDir:  defaultExampleTerraformDir,
-		Prefix:        prefix,
-		ResourceGroup: resourceGroup,
+		Testing:            t,
+		TerraformDir:       defaultExampleTerraformDir,
+		Prefix:             prefix,
+		ResourceGroup:      resourceGroup,
+		BestRegionYAMLPath: "../common-dev-assets/common-go-assets/cloudinfo-region-secmgr-prefs.yaml",
 	})
 
 	return options
