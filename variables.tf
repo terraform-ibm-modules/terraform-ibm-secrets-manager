@@ -86,3 +86,25 @@ variable "cbr_rules" {
   default     = []
   # Validation happens in the rule module
 }
+
+##############################################################################
+# Event Notification
+##############################################################################
+
+variable "skip_en_iam_authorization_policy" {
+  type        = bool
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to handle source integration with the event-notifications service. If set to false, pass in a value for the KMS instance in the `existing_en_instance_crn` variable. In addition, no policy is created if `enable_event_notification` is set to false."
+  default     = false
+}
+
+variable "enable_event_notification" {
+  type        = bool
+  default     = false
+  description = "Set this to true to Enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service."
+}
+
+variable "existing_en_instance_crn" {
+  type        = string
+  default     = null
+  description = "The CRN of the Event Notifications service to enable lifecycle notifications for your Secrets Manager instance."
+}
