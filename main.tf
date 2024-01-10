@@ -16,7 +16,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_event_notification = var.enable_event_notification && var.existing_en_instance_crn == null ? tobool("When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn") : true
   # tflint-ignore: terraform_unused_declarations
-  validate_en_auth_policy = var.enable_event_notification && var.skip_en_iam_authorization_policy == false && var.existing_en_instance_crn == null ? tobool("When var.skip_iam_authorization_policy is set to false, and var.kms_encryption_enabled to true, a value must be passed for var.existing_kms_instance_guid in order to create the auth policy.") : true
+  validate_en_auth_policy = var.enable_event_notification && var.skip_en_iam_authorization_policy == false && var.existing_en_instance_crn == null ? tobool("When var.skip_en_iam_authorization_policy is set to false, and var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn in order to create the auth policy.") : true
 }
 
 # Create Secrets Manager Instance
