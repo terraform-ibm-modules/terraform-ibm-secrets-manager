@@ -49,7 +49,7 @@ variable "kms_encryption_enabled" {
   default     = false
 }
 
-variable "skip_iam_authorization_policy" {
+variable "skip_kms_iam_authorization_policy" {
   type        = bool
   description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the `existing_kms_instance_guid` variable. In addition, no policy is created if `kms_encryption_enabled` is set to false."
   default     = false
@@ -57,7 +57,7 @@ variable "skip_iam_authorization_policy" {
 
 variable "existing_kms_instance_guid" {
   type        = string
-  description = "The GUID of the Hyper Protect Crypto Services or Key Protect instance in which the key specified in `kms_key_crn` is coming from. Required only if `kms_encryption_enabled` is set to true, and `skip_iam_authorization_policy` is set to false."
+  description = "The GUID of the Hyper Protect Crypto Services or Key Protect instance in which the key specified in `kms_key_crn` is coming from. Required only if `kms_encryption_enabled` is set to true, and `skip_kms_iam_authorization_policy` is set to false."
   default     = null
 }
 
@@ -93,18 +93,28 @@ variable "cbr_rules" {
 
 variable "skip_en_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to handle source integration with the event-notifications service. If set to false, pass in a value for the KMS instance in the `existing_en_instance_crn` variable. In addition, no policy is created if `enable_event_notification` is set to false."
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances (scoped to the resource group) an 'Event Source Manager' role to the given Event Notifications instance passed in the `existing_en_instance_crn` input variable. In addition, no policy is created if `enable_event_notification` is set to false."
   default     = false
 }
 
 variable "enable_event_notification" {
   type        = bool
   default     = false
-  description = "Set this to true to Enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service."
+  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_en_instance_crn` variable."
 }
 
 variable "existing_en_instance_crn" {
   type        = string
   default     = null
   description = "The CRN of the Event Notifications service to enable lifecycle notifications for your Secrets Manager instance."
+}
+
+variable "endpoint_type" {
+  type        = string
+  description = "The endpoint type of the Secrets Manager instance required for establishing a connection between an Event Notifications service. Possible values are `public`, `private`."
+  default     = "public"
+  validation {
+    condition     = contains(["public", "private"], var.endpoint_type)
+    error_message = "The specified endpoint_type is not a valid selection!"
+  }
 }
