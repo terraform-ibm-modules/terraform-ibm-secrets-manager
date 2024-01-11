@@ -117,7 +117,7 @@ resource "ibm_iam_authorization_policy" "en_policy" {
   target_service_name         = "event-notifications"
   target_resource_instance_id = regex(".*:(.*)::", var.existing_en_instance_crn)[0]
   roles                       = ["Event Source Manager"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to access the event-notification instance GUID ${regex(".*:(.*)::", var.existing_en_instance_crn)[0]}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} 'Event Source Manager' role access on the Event Notification instance GUID ${regex(".*:(.*)::", var.existing_en_instance_crn)[0]}"
 }
 
 resource "ibm_sm_en_registration" "sm_en_registration" {
