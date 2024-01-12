@@ -15,6 +15,8 @@ locals {
   validate_auth_policy = var.kms_encryption_enabled && var.skip_kms_iam_authorization_policy == false && var.existing_kms_instance_guid == null ? tobool("When var.skip_kms_iam_authorization_policy is set to false, and var.kms_encryption_enabled to true, a value must be passed for var.existing_kms_instance_guid in order to create the auth policy.") : true
   # tflint-ignore: terraform_unused_declarations
   validate_event_notification = var.enable_event_notification && var.existing_en_instance_crn == null ? tobool("When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_endpoint = (var.endpoint_type == "public" && var.service_endpoints == "private") || (var.endpoint_type == "private" && var.service_endpoints == "public") ? tobool("It is not allowed to have conflicting var.endpoint_type and var.service_endpoints values.") : true
 }
 
 # Create Secrets Manager Instance
