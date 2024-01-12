@@ -16,7 +16,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_event_notification = var.enable_event_notification && var.existing_en_instance_crn == null ? tobool("When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn") : true
   # tflint-ignore: terraform_unused_declarations
-  validate_endpoint = (var.endpoint_type == "public" && var.service_endpoints == "private") || (var.endpoint_type == "private" && var.service_endpoints == "public") ? tobool("It is not allowed to have conflicting var.endpoint_type and var.service_endpoints values.") : true
+  validate_endpoint = var.enable_event_notification && (var.endpoint_type == "public" && var.service_endpoints == "private") || (var.endpoint_type == "private" && var.service_endpoints == "public") ? tobool("It is not allowed to have conflicting var.endpoint_type and var.service_endpoints values.") : true
 }
 
 # Create Secrets Manager Instance
