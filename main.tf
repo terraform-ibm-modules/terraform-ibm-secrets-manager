@@ -12,13 +12,16 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_kms_vars = var.kms_encryption_enabled && var.kms_key_crn == null ? tobool("When setting var.kms_encryption_enabled to true, a value must be passed for var.kms_key_crn") : true
   # tflint-ignore: terraform_unused_declarations
-  validate_auth_policy = var.kms_encryption_enabled && var.skip_iam_authorization_policy == false && var.existing_kms_instance_guid == null ? tobool("When var.skip_iam_authorization_policy is set to false, and var.kms_encryption_enabled to true, a value must be passed for var.existing_kms_instance_guid in order to create the auth policy.") : true
-
+  validate_auth_policy = var.kms_encryption_enabled && var.skip_kms_iam_authorization_policy == false && var.existing_kms_instance_guid == null ? tobool("When var.skip_kms_iam_authorization_policy is set to false, and var.kms_encryption_enabled to true, a value must be passed for var.existing_kms_instance_guid in order to create the auth policy.") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_event_notification = var.enable_event_notification && var.existing_en_instance_crn == null ? tobool("When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_endpoint = var.enable_event_notification && (var.endpoint_type == "public" && var.service_endpoints == "private") || (var.endpoint_type == "private" && var.service_endpoints == "public") ? tobool("It is not allowed to have conflicting var.endpoint_type and var.service_endpoints values.") : true
 }
 
 # Create Secrets Manager Instance
 resource "ibm_resource_instance" "secrets_manager_instance" {
-  depends_on        = [ibm_iam_authorization_policy.policy]
+  depends_on        = [ibm_iam_authorization_policy.kms_policy]
   name              = var.secrets_manager_name
   service           = "secrets-manager"
   service_endpoints = var.service_endpoints
@@ -46,8 +49,8 @@ locals {
   ) : null
 }
 
-resource "ibm_iam_authorization_policy" "policy" {
-  count                       = var.kms_encryption_enabled && !var.skip_iam_authorization_policy ? 1 : 0
+resource "ibm_iam_authorization_policy" "kms_policy" {
+  count                       = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy ? 1 : 0
   source_service_name         = "secrets-manager"
   source_resource_group_id    = var.resource_group_id
   target_service_name         = local.kms_service_name
@@ -58,7 +61,7 @@ resource "ibm_iam_authorization_policy" "policy" {
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
 resource "time_sleep" "wait_for_authorization_policy" {
-  depends_on = [ibm_iam_authorization_policy.policy]
+  depends_on = [ibm_iam_authorization_policy.kms_policy, ibm_iam_authorization_policy.en_policy]
 
   create_duration = "30s"
 }
@@ -102,4 +105,30 @@ module "cbr_rule" {
       api_type_id = "crn:v1:bluemix:public:context-based-restrictions::::api-type:"
     }]
   }]
+}
+
+##############################################################################
+# Event Notification
+##############################################################################
+
+# Create IAM Authorization Policies to allow SM to access event notification
+resource "ibm_iam_authorization_policy" "en_policy" {
+  count                       = var.enable_event_notification == false || var.skip_en_iam_authorization_policy ? 0 : 1
+  source_service_name         = "secrets-manager"
+  source_resource_group_id    = var.resource_group_id
+  target_service_name         = "event-notifications"
+  target_resource_instance_id = regex(".*:(.*)::", var.existing_en_instance_crn)[0]
+  roles                       = ["Event Source Manager"]
+  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} 'Event Source Manager' role access on the Event Notification instance GUID ${regex(".*:(.*)::", var.existing_en_instance_crn)[0]}"
+}
+
+resource "ibm_sm_en_registration" "sm_en_registration" {
+  count                                  = var.enable_event_notification ? 1 : 0
+  depends_on                             = [time_sleep.wait_for_authorization_policy]
+  instance_id                            = local.secrets_manager_guid
+  region                                 = var.region
+  event_notifications_instance_crn       = var.existing_en_instance_crn
+  event_notifications_source_description = "Secret Manager"
+  event_notifications_source_name        = var.secrets_manager_name
+  endpoint_type                          = var.endpoint_type
 }
