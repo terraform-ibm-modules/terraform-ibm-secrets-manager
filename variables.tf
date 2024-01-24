@@ -111,7 +111,7 @@ variable "existing_en_instance_crn" {
 
 variable "endpoint_type" {
   type        = string
-  description = "The endpoint type of the Secrets Manager instance that the Terraform resource uses to establish a connection with the Event Notification Service. Possible values are `public`, `private`."
+  description = "The type of endpoint to connect your Secrets Manager instance to Event Notifications. Possible values: public, private. The Terraform provider uses this value to configure notifications."
   default     = "public"
   validation {
     condition     = contains(["public", "private"], var.endpoint_type)
