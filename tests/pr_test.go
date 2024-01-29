@@ -11,7 +11,6 @@ import (
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 )
 
-const resourceGroup = "geretain-test-secrets-manager"
 const defaultExampleTerraformDir = "examples/complete"
 const privateExampleTerraformDir = "examples/complete-private"
 
@@ -37,7 +36,6 @@ func setupOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 		Testing:            t,
 		TerraformDir:       defaultExampleTerraformDir,
 		Prefix:             prefix,
-		ResourceGroup:      resourceGroup,
 		BestRegionYAMLPath: "../common-dev-assets/common-go-assets/cloudinfo-region-secmgr-prefs.yaml",
 	})
 
