@@ -11,10 +11,9 @@ func TestRunBasicExample(t *testing.T) {
 	t.Parallel()
 
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-		Testing:       t,
-		TerraformDir:  "examples/basic",
-		Prefix:        "secrets-mgr-def",
-		ResourceGroup: resourceGroup,
+		Testing:      t,
+		TerraformDir: "examples/basic",
+		Prefix:       "secrets-mgr-def",
 	})
 
 	output, err := options.RunTestConsistency()
