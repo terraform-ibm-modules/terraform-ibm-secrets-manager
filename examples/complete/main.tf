@@ -8,13 +8,20 @@ module "resource_group" {
 
 module "key_protect" {
   source                    = "terraform-ibm-modules/key-protect-all-inclusive/ibm"
-  version                   = "4.4.2"
+  version                   = "4.6.0"
   key_protect_instance_name = "${var.prefix}-key-protect"
   resource_group_id         = module.resource_group.resource_group_id
   region                    = var.region
-  key_map = {
-    "${var.prefix}-sm" = ["${var.prefix}-sm-key"]
-  }
+  keys = [
+    {
+      key_ring_name = "${var.prefix}-sm"
+      keys = [
+        {
+          key_name = "${var.prefix}-sm-key"
+        }
+      ]
+    }
+  ]
 }
 
 module "event_notification" {
@@ -37,7 +44,7 @@ module "secrets_manager" {
   sm_tags                    = var.resource_tags
   service_endpoints          = "public-and-private"
   kms_encryption_enabled     = true
-  existing_kms_instance_guid = module.key_protect.key_protect_guid
+  existing_kms_instance_guid = module.key_protect.kms_guid
   kms_key_crn                = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
   enable_event_notification  = true
   existing_en_instance_crn   = module.event_notification.crn
