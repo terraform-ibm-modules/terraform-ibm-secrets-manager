@@ -12,7 +12,7 @@ import (
 )
 
 const defaultExampleTerraformDir = "examples/complete"
-const privateExampleTerraformDir = "examples/complete-private"
+const fscloudExampleTerraformDir = "examples/fscloud"
 
 // Define a struct with fields that match the structure of the YAML data
 const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
@@ -72,7 +72,7 @@ func TestRunUpgradeExample(t *testing.T) {
 func setupPrivateOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:      t,
-		TerraformDir: privateExampleTerraformDir,
+		TerraformDir: fscloudExampleTerraformDir,
 		Prefix:       prefix,
 		Region:       "us-south", // Locking into us-south since that is where the HPCS permanent instance is
 		/*
@@ -92,7 +92,7 @@ func setupPrivateOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 	return options
 }
 
-func TestRunPrivateExample(t *testing.T) {
+func TestRunFSCloudExample(t *testing.T) {
 	t.Parallel()
 
 	options := setupPrivateOptions(t, "secrets-mgr-priv")
