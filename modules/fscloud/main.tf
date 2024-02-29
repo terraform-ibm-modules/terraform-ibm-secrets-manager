@@ -28,6 +28,7 @@ module "secrets_manager" {
   sm_service_plan                  = "standard"
   sm_tags                          = var.sm_tags
   service_endpoints                = "private"
+  endpoint_type                    = "private"
   kms_encryption_enabled           = true
   existing_kms_instance_guid       = var.existing_kms_instance_guid
   enable_event_notification        = true

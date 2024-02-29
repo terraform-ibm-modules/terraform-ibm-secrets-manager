@@ -40,6 +40,17 @@ resource "ibm_is_vpc" "vpc" {
   tags           = var.resource_tags
 }
 
+module "event_notification" {
+  source            = "terraform-ibm-modules/event-notifications/ibm"
+  version           = "1.0.4"
+  resource_group_id = module.resource_group.resource_group_id
+  name              = "${var.prefix}-en"
+  tags              = var.resource_tags
+  plan              = "lite"
+  service_endpoints = "public"
+  region            = var.en_region
+}
+
 module "secrets_manager" {
   source                     = "../../modules/fscloud"
   resource_group_id          = module.resource_group.resource_group_id
@@ -48,6 +59,7 @@ module "secrets_manager" {
   sm_tags                    = var.resource_tags
   existing_kms_instance_guid = module.key_protect.kms_guid
   kms_key_crn                = module.key_protect.keys["secrets-manager.${var.prefix}-secrets-manager"].crn
+  existing_en_instance_crn   = module.event_notification.crn
   vpc_crn                    = ibm_is_vpc.vpc.crn
   cbr_zone_name              = "${var.prefix}-CBR-zone"
 }
