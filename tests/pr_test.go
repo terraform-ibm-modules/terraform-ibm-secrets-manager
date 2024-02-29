@@ -83,7 +83,7 @@ func setupPrivateOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 		*/
 		//ResourceGroup: resourceGroup,
 		TerraformVars: map[string]interface{}{
-			"kms_encryption_enabled":     true,
+			// "kms_encryption_enabled":     true,
 			"existing_kms_instance_guid": permanentResources["hpcs_south"],
 			"kms_key_crn":                permanentResources["hpcs_south_root_key_crn"],
 		},

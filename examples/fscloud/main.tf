@@ -11,6 +11,7 @@ module "resource_group" {
 ##############################################################################
 
 module "key_protect" {
+  count                     = var.existing_kms_instance_guid == null ? 1 : 0
   source                    = "terraform-ibm-modules/key-protect-all-inclusive/ibm"
   version                   = "4.6.0"
   key_protect_instance_name = "${var.prefix}-key-protect"
@@ -57,8 +58,8 @@ module "secrets_manager" {
   region                     = var.region
   secrets_manager_name       = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
   sm_tags                    = var.resource_tags
-  existing_kms_instance_guid = module.key_protect.kms_guid
-  kms_key_crn                = module.key_protect.keys["secrets-manager.${var.prefix}-secrets-manager"].crn
+  existing_kms_instance_guid = var.existing_kms_instance_guid == null ? module.key_protect[0].kms_guid : var.existing_kms_instance_guid
+  kms_key_crn                = var.existing_kms_instance_guid == null ? module.key_protect[0].keys["secrets-manager.${var.prefix}-secrets-manager"].crn : var.kms_key_crn
   existing_en_instance_crn   = module.event_notification.crn
   vpc_crn                    = ibm_is_vpc.vpc.crn
   cbr_zone_name              = "${var.prefix}-CBR-zone"
