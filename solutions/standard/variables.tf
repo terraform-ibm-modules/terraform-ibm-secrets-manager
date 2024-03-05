@@ -16,12 +16,12 @@ variable "existing_resource_group" {
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or an existing resource group in which to provision KMS resources to."
+  description = "The name of a new or an existing resource group in which to provision Secrets Manager resources to."
 }
 
 variable "region" {
   type        = string
-  description = "The region in which to provision KMS resources. If using existing KMS, set this to the region in which it is provisioned in."
+  description = "The region in which to provision Secrets Manager resources. If using existing Secrets Manager, set this to the region in which it is provisioned in."
   default     = "us-south"
 }
 
@@ -66,15 +66,9 @@ variable "secret_manager_tags" {
 # Key Protect
 ########################################################################################################################
 
-variable "enable_kms_encryption" {
-  type        = bool
-  description = "Set this to true to control the encryption keys used to encrypt the data that you store in Secrets Manager. If set to false, the data that you store is encrypted at rest by using envelope encryption. For more details, see https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-mng-data&interface=ui#about-encryption."
-  default     = false
-}
-
 variable "existing_kms_instance_guid" {
   type        = string
-  description = "The CRN of an existing KMS instance to use."
+  description = "The CRN of an existing KMS instance to use. Only needed if creating kms auth policy and if not providing an existing kmd key crn"
   nullable    = true
   default     = null
 }
@@ -85,10 +79,44 @@ variable "skip_kms_iam_authorization_policy" {
   default     = true
 }
 
-variable "existing_kms_key_crn" {
+variable "existing_sm_kms_key_crn" {
   type        = string
   description = "The CRN of an existing KMS key to use for Secrets Manager. If not supplied, a new key ring and key will be created."
   default     = null
+}
+
+variable "kms_region" {
+  type        = string
+  default     = "us-south"
+  description = "The region in which KMS instance exists."
+}
+
+variable "existing_kms_guid" {
+  type        = string
+  default     = null
+  description = "The GUID of of the KMS instance used for the Secrets Manager root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
+}
+
+variable "kms_endpoint_type" {
+  type        = string
+  description = "The type of endpoint to be used for commincating with the KMS instance. Allowed values are: 'public' or 'private' (default)"
+  default     = "private"
+  validation {
+    condition     = can(regex("public|private", var.kms_endpoint_type))
+    error_message = "The kms_endpoint_type value must be 'public' or 'private'."
+  }
+}
+
+variable "sm_key_ring_name" {
+  type        = string
+  default     = "scc-cos-key-ring"
+  description = "The name to give the Key Ring which will be created for the SCC COS bucket Key. Not used if supplying an existing Key."
+}
+
+variable "sm_key_name" {
+  type        = string
+  default     = "scc-cos-key"
+  description = "The name to give the Key which will be created for the SCC COS bucket. Not used if supplying an existing Key."
 }
 
 ########################################################################################################################
