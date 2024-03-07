@@ -15,7 +15,7 @@ module "resource_group" {
 locals {
   kms_key_crn = var.existing_sm_kms_key_crn != null ? var.existing_sm_kms_key_crn : module.kms[0].keys[format("%s.%s", var.sm_key_ring_name, var.sm_key_name)].crn
 }
-# KMS root key for SCC COS bucket
+# KMS root key for Secrets Manager COS bucket
 module "kms" {
   providers = {
     ibm = ibm.kms
@@ -65,7 +65,7 @@ module "secrets_manager" {
   kms_key_crn                       = local.kms_key_crn
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy
   # event notifications dependency
-  enable_event_notification        = var.enable_event_notification
+  enable_event_notification        = var.existing_en_instance_crn != null ? true : false
   existing_en_instance_crn         = var.existing_en_instance_crn
   skip_en_iam_authorization_policy = var.skip_en_iam_authorization_policy
 }

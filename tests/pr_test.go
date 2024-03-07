@@ -2,6 +2,7 @@
 package test
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -9,10 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/common"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testschematic"
 )
 
 const defaultExampleTerraformDir = "examples/complete"
 const privateExampleTerraformDir = "examples/complete-private"
+const solutionsTerraformDir = "solutions/standard"
+
+const resourceGroup = "geretain-secrets-manager"
 
 // Define a struct with fields that match the structure of the YAML data
 const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
@@ -100,4 +105,30 @@ func TestRunPrivateExample(t *testing.T) {
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")
+}
+
+func TestRunPrivateExampleSchematics(t *testing.T) {
+	t.Parallel()
+
+	// Set up a schematics test
+	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+		Testing:                t,
+		TarIncludePatterns:     []string{"*.tf", fmt.Sprintf("%s/*.tf", solutionsTerraformDir)},
+		TemplateFolder:         solutionsTerraformDir,
+		Prefix:                 "sm-sol-sch",
+		Tags:                   []string{"test-schematic"},
+		DeleteWorkspaceOnFail:  false,
+		WaitJobCompleteMinutes: 60,
+	})
+
+	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+		{Name: "region", Value: options.Region, DataType: "string"},
+		{Name: "resource_group_name", Value: resourceGroup, DataType: "string"},
+		{Name: "service_plan", Value: "trial", DataType: "string"},
+		{Name: "service_endpoints", Value: "private", DataType: "string"},
+	}
+
+	err := options.RunSchematicTest()
+	assert.NoError(t, err, "Schematic Test had unexpected error")
 }

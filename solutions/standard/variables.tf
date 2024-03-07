@@ -21,7 +21,7 @@ variable "resource_group_name" {
 
 variable "region" {
   type        = string
-  description = "The region in which to provision Secrets Manager resources. If using existing Secrets Manager, set this to the region in which it is provisioned in."
+  description = "The region in which to provision Secrets Manager resources."
   default     = "us-south"
 }
 
@@ -75,7 +75,7 @@ variable "existing_kms_instance_guid" {
 
 variable "skip_kms_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the existing_kms_instance_guid variable. In addition, no policy is created if kms_encryption_enabled is set to false."
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the existing_kms_instance_guid variable."
   default     = true
 }
 
@@ -99,7 +99,7 @@ variable "existing_kms_guid" {
 
 variable "kms_endpoint_type" {
   type        = string
-  description = "The type of endpoint to be used for commincating with the KMS instance. Allowed values are: 'public' or 'private' (default)"
+  description = "The type of endpoint to be used for communicating with the KMS instance. Allowed values are: 'public' or 'private' (default)"
   default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
@@ -109,25 +109,19 @@ variable "kms_endpoint_type" {
 
 variable "sm_key_ring_name" {
   type        = string
-  default     = "scc-cos-key-ring"
-  description = "The name to give the Key Ring which will be created for the SCC COS bucket Key. Not used if supplying an existing Key."
+  default     = "sm-cos-key-ring"
+  description = "The name to give the Key Ring which will be created for the Secrets Manager COS bucket Key. Not used if supplying an existing Key."
 }
 
 variable "sm_key_name" {
   type        = string
-  default     = "scc-cos-key"
-  description = "The name to give the Key which will be created for the SCC COS bucket. Not used if supplying an existing Key."
+  default     = "sm-cos-key"
+  description = "The name to give the Key which will be created for the Secrets Manager COS bucket. Not used if supplying an existing Key."
 }
 
 ########################################################################################################################
 # Event Notifications
 ########################################################################################################################
-
-variable "enable_event_notification" {
-  type        = bool
-  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_en_instance_crn` variable."
-  default     = false
-}
 
 variable "existing_en_instance_crn" {
   type        = string
@@ -137,6 +131,6 @@ variable "existing_en_instance_crn" {
 
 variable "skip_en_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances (scoped to the resource group) an 'Event Source Manager' role to the given Event Notifications instance passed in the `existing_en_instance_crn` input variable. In addition, no policy is created if `enable_event_notification` is set to false."
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances (scoped to the resource group) an 'Event Source Manager' role to the given Event Notifications instance passed in the `existing_en_instance_crn` input variable."
   default     = false
 }
