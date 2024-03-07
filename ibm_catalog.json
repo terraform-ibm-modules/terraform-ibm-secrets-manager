@@ -1,0 +1,94 @@
+{
+  "products": [
+    {
+      "name": "deploy-arch-ibm-secrets-manager",
+      "label": "Secrets Manager DA",
+      "product_kind": "solution",
+      "tags": [
+        "ibm_created",
+        "target_terraform",
+        "terraform",
+        "solution"
+      ],
+      "keywords": [
+        "Secrets",
+        "Secrets Manager",
+        "IaC",
+        "infrastructure as code",
+        "terraform",
+        "solution"
+      ],
+      "short_description": "Creates a Secrets Manager instance.",
+      "long_description": "This module is used to provision and configure an IBM Cloud Secrets Manager instance.",
+      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/README.md",
+      "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/images/secrets_manager.svg",
+      "provider_name": "IBM",
+      "features": [
+        {
+          "title": "Creates a Secrets Manager instance.",
+          "description": "Creates an IBM Secrets Manager instance."
+        },
+        {
+          "title": "Sets up authorization policy.",
+          "description": "Sets up IBM IAM authorization policy between IBM Secrets Manager instance and IBM Key Management Service (KMS) instance."
+        },
+        {
+          "title": "Sets up CBR Rules.",
+          "description": "Sets up Context Based Restrictions (CBR) rules."
+        },
+        {
+          "title": "Configures lifecycle notifications for the Secrets Manager instance.",
+          "description": "Configures lifecycle notifications for the IBM Secrets Manager instance by connecting an IBM Event Notifications service."
+        }
+      ],
+      "flavors": [
+        {
+          "label": "Instances",
+          "name": "instances",
+          "install_type": "fullstack",
+          "working_directory": "solutions/instances",
+          "compliance": {
+            "authority": "scc-v3",
+            "profiles": [
+              {
+                "profile_name": "IBM Cloud Framework for Financial Services",
+                "profile_version": "1.5.0"
+              }
+            ]
+          },
+          "architecture": {
+            "descriptions": "This architecture supports creating and configuring a Secrets Manager instance.",
+            "features": [
+              {
+                "title": "Creates a Secrets Manager instance.",
+                "description": "Creates and configures an IBM Secrets Manager instance."
+              },
+              {
+                "title": "Sets up authorization policy.",
+                "description": "Sets up IBM IAM authorization policy between IBM Secrets Manager instance and IBM Key Management Service (KMS) instance."
+              },
+              {
+                "title": "Sets up CBR Rules.",
+                "description": "Sets up Context Based Restrictions (CBR) rules."
+              },
+              {
+                "title": "Configures lifecycle notifications for the Secrets Manager instance.",
+                "description": "Configures lifecycle notifications for the IBM Secrets Manager instance by connecting an IBM Event Notifications service."
+              }
+            ],
+            "diagrams": [
+              {
+                "diagram": {
+                  "caption": "Secrets Manager",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architecture/secrets_manager.svg",
+                  "type": "image/svg+xml"
+                },
+                "description": "This architecture supports creating and configuring IBM Secrets Manager instance."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
