@@ -5,8 +5,7 @@ offerings:
     kind: module
     catalog_id: 7df1e4ca-d54c-4fd0-82ce-3d13247308cd
     offering_id: 8af230fe-396d-4ad0-883e-97e2bbd2b0e5
-    examples:
-      - name: complete
-        mark_ready: false
-      - name: basic
-        mark_ready: false
+    variations:
+      - name: instances
+        mark_ready: true
+        install_type: fullstack
