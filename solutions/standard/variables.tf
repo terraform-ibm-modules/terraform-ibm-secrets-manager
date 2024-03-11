@@ -66,13 +66,6 @@ variable "secret_manager_tags" {
 # Key Protect
 ########################################################################################################################
 
-variable "existing_kms_instance_guid" {
-  type        = string
-  description = "The CRN of an existing KMS instance to use. Only needed if creating kms auth policy and if not providing an existing kmd key crn"
-  nullable    = true
-  default     = null
-}
-
 variable "skip_kms_iam_authorization_policy" {
   type        = bool
   description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the existing_kms_instance_guid variable."
