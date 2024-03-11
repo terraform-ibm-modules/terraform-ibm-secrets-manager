@@ -67,4 +67,5 @@ module "secrets_manager" {
   enable_event_notification        = var.existing_en_instance_crn != null ? true : false
   existing_en_instance_crn         = var.existing_en_instance_crn
   skip_en_iam_authorization_policy = var.skip_en_iam_authorization_policy
+  endpoint_type                    = var.service_endpoints == "private" ? var.service_endpoints : "public"
 }
