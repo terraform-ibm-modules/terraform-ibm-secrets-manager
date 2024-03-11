@@ -2,5 +2,6 @@
   "ibmcloud_api_key": $VALIDATION_APIKEY,
   "resource_group_name": $PREFIX,
   "service_plan": "trial",
-  "existing_kms_guid": $HPCS_US_SOUTH_GUID
+  "existing_kms_guid": $HPCS_US_SOUTH_GUID,
+  "kms_region": "us-south"
 }
