@@ -76,7 +76,7 @@ variable "existing_kms_instance_guid" {
 variable "skip_kms_iam_authorization_policy" {
   type        = bool
   description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the existing_kms_instance_guid variable."
-  default     = true
+  default     = false
 }
 
 variable "existing_sm_kms_key_crn" {
