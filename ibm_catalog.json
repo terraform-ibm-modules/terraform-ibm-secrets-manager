@@ -21,7 +21,7 @@
       ],
       "short_description": "Creates and configures a Secrets Manager instance.",
       "long_description": "This solution is used to provision and configure an IBM Cloud Secrets Manager instance.",
-      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/README.md",
+      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/solutions/standard/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/images/secrets_manager.svg",
       "provider_name": "IBM",
       "features": [

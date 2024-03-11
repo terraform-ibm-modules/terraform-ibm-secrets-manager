@@ -22,6 +22,8 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 
+## Reference architectures
+- [Secrets Manager - Standard variation](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/solutions/standard)
 
 ## terraform-ibm-secrets-manager
 
@@ -70,7 +72,7 @@ You need the following permissions to run this module.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cbr_rule"></a> [cbr\_rule](#module\_cbr\_rule) | terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module | 1.19.0 |
+| <a name="module_cbr_rule"></a> [cbr\_rule](#module\_cbr\_rule) | terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module | 1.19.1 |
 
 ### Resources
 

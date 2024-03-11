@@ -13,7 +13,7 @@ import (
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testschematic"
 )
 
-const defaultExampleTerraformDir = "examples/complete"
+const completeExampleTerraformDir = "examples/complete"
 const privateExampleTerraformDir = "examples/complete-private"
 const solutionsTerraformDir = "solutions/standard"
 
@@ -39,7 +39,7 @@ func TestMain(m *testing.M) {
 func setupOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:      t,
-		TerraformDir: defaultExampleTerraformDir,
+		TerraformDir: completeExampleTerraformDir,
 		Prefix:       prefix,
 		/*
 		 Comment out the 'ResourceGroup' input to force this tests to create a unique resource group. This is because
@@ -52,7 +52,7 @@ func setupOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 	return options
 }
 
-func TestRunDefaultExample(t *testing.T) {
+func TestRunCompleteExample(t *testing.T) {
 	t.Parallel()
 
 	options := setupOptions(t, "secrets-mgr")
@@ -107,7 +107,7 @@ func TestRunPrivateExample(t *testing.T) {
 	assert.NotNil(t, output, "Expected some output")
 }
 
-func TestRunPrivateExampleSchematics(t *testing.T) {
+func TestRunDASolutionSchematics(t *testing.T) {
 	t.Parallel()
 
 	// Set up a schematics test
@@ -115,7 +115,7 @@ func TestRunPrivateExampleSchematics(t *testing.T) {
 		Testing:                t,
 		TarIncludePatterns:     []string{"*.tf", fmt.Sprintf("%s/*.tf", solutionsTerraformDir)},
 		TemplateFolder:         solutionsTerraformDir,
-		Prefix:                 "sm-sol-sch",
+		Prefix:                 "sm-da",
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
