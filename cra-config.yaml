@@ -6,3 +6,4 @@ CRA_TARGETS:
     PROFILE_ID: "0e6e7b5a-817d-4344-ab6f-e5d7a9c49520" # SCC profile ID (currently set to the FSCloud 1.4.0 profile).
     CRA_ENVIRONMENT_VARIABLES:  # An optional map of environment variables for CRA, where the key is the variable name and value is the value. Useful for providing TF_VARs.
       TF_VAR_resource_group_name: "test"
+      TF_VAR_existing_kms_guid: "XXXXXXXXXXXXXXXX"
