@@ -17,7 +17,7 @@ const completeExampleTerraformDir = "examples/complete"
 const privateExampleTerraformDir = "examples/complete-private"
 const solutionsTerraformDir = "solutions/standard"
 
-const resourceGroup = "geretain-secrets-manager"
+const resourceGroup = "geretain-test-scc-module"
 
 // Define a struct with fields that match the structure of the YAML data
 const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
