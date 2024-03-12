@@ -25,4 +25,4 @@ repository:
   description: "This module creates a Secrets Manager instance"
 
   # Use a comma-separated list of topics to set on the repo (ensure not to use any caps in the topic string).
-  topics: core-team, terraform, ibm-cloud, terraform-module, secrets-manager, supported, graduated
+  topics: core-team, terraform, ibm-cloud, terraform-module, secrets-manager, supported, graduated, deployable-architecture
