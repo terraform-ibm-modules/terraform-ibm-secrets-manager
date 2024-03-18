@@ -77,7 +77,7 @@ func TestRunUpgradeExample(t *testing.T) {
 func setupPrivateOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:      t,
-		TerraformDir: fscloudExampleTerraformDir,
+		TerraformDir: privateExampleTerraformDir,
 		Prefix:       prefix,
 		Region:       "us-south", // Locking into us-south since that is where the HPCS permanent instance is
 		/*
