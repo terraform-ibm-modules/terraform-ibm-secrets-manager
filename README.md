@@ -25,6 +25,8 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 
+## Reference architectures
+- [Secrets Manager - Standard variation](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/solutions/standard)
 
 ## terraform-ibm-secrets-manager
 
@@ -73,7 +75,7 @@ You need the following permissions to run this module.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cbr_rule"></a> [cbr\_rule](#module\_cbr\_rule) | terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module | 1.19.0 |
+| <a name="module_cbr_rule"></a> [cbr\_rule](#module\_cbr\_rule) | terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module | 1.19.1 |
 
 ### Resources
 
@@ -109,7 +111,10 @@ You need the following permissions to run this module.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_secrets_manager_guid"></a> [secrets\_manager\_guid](#output\_secrets\_manager\_guid) | GUID of Secrets-Manager instance |
+| <a name="output_secrets_manager_crn"></a> [secrets\_manager\_crn](#output\_secrets\_manager\_crn) | CRN of the Secrets Manager instance |
+| <a name="output_secrets_manager_guid"></a> [secrets\_manager\_guid](#output\_secrets\_manager\_guid) | GUID of Secrets Manager instance |
+| <a name="output_secrets_manager_id"></a> [secrets\_manager\_id](#output\_secrets\_manager\_id) | ID of the Secrets Manager instance |
+| <a name="output_secrets_manager_name"></a> [secrets\_manager\_name](#output\_secrets\_manager\_name) | Name of the Secrets Manager instance |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 <!-- Leave this section as is so that your module has a link to local development environment set up steps for contributors to follow -->
