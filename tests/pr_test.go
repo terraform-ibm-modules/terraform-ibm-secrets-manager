@@ -137,7 +137,7 @@ func TestFSCloudInSchematics(t *testing.T) {
 		// {Name: "service_endpoints", Value: "private", DataType: "string"},
 		// {Name: "resource_tags", Value: options.Tags, DataType: "list(string)"},
 		// {Name: "access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
-		{Name: "sm_tags", Value: options.Tags, DataType: "list(string)"},
+		// {Name: "sm_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "existing_kms_instance_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
 		{Name: "kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
 		// {Name: "keys", Value: []map[string]interface{}{{"key_ring_name": "my-key-ring", "keys": []map[string]interface{}{{"key_name": "some-key-name-1"}, {"key_name": "some-key-name-2"}}}}, DataType: "list(object)"},
