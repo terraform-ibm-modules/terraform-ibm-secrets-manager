@@ -74,39 +74,6 @@ func TestRunUpgradeExample(t *testing.T) {
 	}
 }
 
-/* func setupPrivateOptions(t *testing.T, prefix string) *testhelper.TestOptions {
-options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-	Testing:      t,
-	TerraformDir: fscloudExampleTerraformDir,
-	Prefix:       prefix,
-	Region:       "us-south", // Locking into us-south since that is where the HPCS permanent instance is */
-/*
- Comment out the 'ResourceGroup' input to force this tests to create a unique resource group to ensure tests do
- not clash. This is due to the fact that an auth policy may already exist in this resource group since we are
- re-using a permanent HPCS instance. By using a new resource group, the auth policy will not already exist
- since this module scopes auth policies by resource group.
-*/
-//ResourceGroup: resourceGroup,
-/*		TerraformVars: map[string]interface{}{
-			// "kms_encryption_enabled":     true,
-			"existing_kms_instance_guid": permanentResources["hpcs_south"],
-			"kms_key_crn":                permanentResources["hpcs_south_root_key_crn"],
-		},
-	})
-
-	return options
-} */
-
-/* func TestRunFSCloudExample(t *testing.T) {
-	t.Parallel()
-
-	options := setupPrivateOptions(t, "secrets-mgr-priv")
-
-	output, err := options.RunTestConsistency()
-	assert.Nil(t, err, "This should not have errored")
-	assert.NotNil(t, output, "Expected some output")
-} */
-
 func TestFSCloudInSchematics(t *testing.T) {
 	t.Parallel()
 
@@ -134,13 +101,8 @@ func TestFSCloudInSchematics(t *testing.T) {
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
-		// {Name: "service_endpoints", Value: "private", DataType: "string"},
-		// {Name: "resource_tags", Value: options.Tags, DataType: "list(string)"},
-		// {Name: "access_tags", Value: permanentResources["accessTags"], DataType: "list(string)"},
-		// {Name: "sm_tags", Value: options.Tags, DataType: "list(string)"},
 		{Name: "existing_kms_instance_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
 		{Name: "kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
-		// {Name: "keys", Value: []map[string]interface{}{{"key_ring_name": "my-key-ring", "keys": []map[string]interface{}{{"key_name": "some-key-name-1"}, {"key_name": "some-key-name-2"}}}}, DataType: "list(object)"},
 	}
 
 	err := options.RunSchematicTest()
