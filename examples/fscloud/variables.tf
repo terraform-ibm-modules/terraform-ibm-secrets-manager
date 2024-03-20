@@ -16,6 +16,12 @@ variable "region" {
   default     = "us-east"
 }
 
+variable "existing_resource_group" {
+  type        = bool
+  description = "Whether to use an existing resource group."
+  default     = false
+}
+
 variable "resource_group_name" {
   type        = string
   description = "An existing resource group name to use for this example, if unset a new resource group will be created"
