@@ -1,9 +1,3 @@
-TODO
-TODO
-TODO re-write for secrets  manager
-TODO
-TODO
-
 # Profile for IBM Cloud Framework for Financial Services
 
 This code is a version of the [parent root module](../../) that includes a default configuration that complies with the relevant controls from the [IBM Cloud Framework for Financial Services](https://cloud.ibm.com/docs/framework-financial-services?topic=framework-financial-services-about). See the [Example for IBM Cloud Framework for Financial Services](/examples/fscloud/) for logic that uses this module.
@@ -39,8 +33,8 @@ The IBM Cloud Framework for Financial Services mandates the application of an in
 |------|-------------|------|---------|:--------:|
 | <a name="input_cbr_zone_name"></a> [cbr\_zone\_name](#input\_cbr\_zone\_name) | The name given to the CBR zone | `string` | n/a | yes |
 | <a name="input_existing_en_instance_crn"></a> [existing\_en\_instance\_crn](#input\_existing\_en\_instance\_crn) | The CRN of the Event Notifications service to enable lifecycle notifications for your Secrets Manager instance. | `string` | `null` | no |
-| <a name="input_existing_kms_instance_guid"></a> [existing\_kms\_instance\_guid](#input\_existing\_kms\_instance\_guid) | The GUID of the Hyper Protect Crypto Services or Key Protect instance in which the key specified in `kms_key_crn` is coming from. Required only if `kms_encryption_enabled` is set to true, and `skip_kms_iam_authorization_policy` is set to false. | `string` | n/a | yes |
-| <a name="input_kms_key_crn"></a> [kms\_key\_crn](#input\_kms\_key\_crn) | The root key CRN of a Key Management Service like Key Protect or Hyper Protect Crypto Services (HPCS) that you want to use for encryption. Only used if `kms_encryption_enabled` is set to true. | `string` | n/a | yes |
+| <a name="input_existing_kms_instance_guid"></a> [existing\_kms\_instance\_guid](#input\_existing\_kms\_instance\_guid) | The GUID of the Hyper Protect Crypto Services instance in which the key specified in `kms_key_crn` is coming from. | `string` | n/a | yes |
+| <a name="input_kms_key_crn"></a> [kms\_key\_crn](#input\_kms\_key\_crn) | The root key CRN of Hyper Protect Crypto Services (HPCS) that you want to use for encryption. | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | The region to provision the Secrets Manager instance to. | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | The ID of the resource group to provision the Secrets Manager instance to. | `string` | n/a | yes |
 | <a name="input_secrets_manager_name"></a> [secrets\_manager\_name](#input\_secrets\_manager\_name) | The name to give the Secrets Manager instance. | `string` | n/a | yes |
