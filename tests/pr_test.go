@@ -95,14 +95,12 @@ func TestFSCloudInSchematics(t *testing.T) {
 		Region:                 region,
 	})
 
-	// Workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5154
-	options.AddWorkspaceEnvVar("IBMCLOUD_KP_API_ENDPOINT", "https://private."+region+".kms.cloud.ibm.com", false, false)
-
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
 		{Name: "existing_kms_instance_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
 		{Name: "kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
+		{Name: "sm_service_plan", Value: "trial", DataType: "string"},
 	}
 
 	err := options.RunSchematicTest()

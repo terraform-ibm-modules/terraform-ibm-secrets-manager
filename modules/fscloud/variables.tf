@@ -17,6 +17,12 @@ variable "secrets_manager_name" {
   description = "The name to give the Secrets Manager instance."
 }
 
+variable "service_plan" {
+  type        = string
+  description = "The Secrets Manager plan to provision."
+  default     = "standard"
+}
+
 variable "sm_tags" {
   type        = list(string)
   description = "The list of resource tags that you want to associate with your Secrets Manager instance."
@@ -46,22 +52,40 @@ variable "kms_key_crn" {
 # Event Notification
 ##############################################################################
 
+variable "skip_en_iam_authorization_policy" {
+  type        = bool
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances (scoped to the resource group) an 'Event Source Manager' role to the given Event Notifications instance passed in the `existing_en_instance_crn` input variable. In addition, no policy is created if `enable_event_notification` is set to false."
+  default     = false
+}
+
+variable "enable_event_notification" {
+  type        = bool
+  default     = false
+  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_en_instance_crn` variable."
+}
+
 variable "existing_en_instance_crn" {
   type        = string
   default     = null
   description = "The CRN of the Event Notifications service to enable lifecycle notifications for your Secrets Manager instance."
 }
 
-##############################################################################
-# Input Variables for Financial Services
-##############################################################################
+##############################################################
+# Context-based restriction (CBR)
+##############################################################
 
-variable "vpc_crn" {
-  description = "CRN of existing VPN"
-  type        = string
-}
-
-variable "cbr_zone_name" {
-  description = "The name given to the CBR zone"
-  type        = string
+variable "cbr_rules" {
+  type = list(object({
+    description = string
+    account_id  = string
+    rule_contexts = list(object({
+      attributes = optional(list(object({
+        name  = string
+        value = string
+    }))) }))
+    enforcement_mode = string
+  }))
+  description = "(list) List of CBR rules to create"
+  default     = []
+  # Validation happens in the rule module
 }
