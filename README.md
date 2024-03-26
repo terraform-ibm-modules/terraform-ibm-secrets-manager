@@ -15,10 +15,12 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
 <!-- BEGIN OVERVIEW HOOK -->
 ## Overview
 * [terraform-ibm-secrets-manager](#terraform-ibm-secrets-manager)
+* [Submodules](./modules)
+    * [fscloud](./modules/fscloud)
 * [Examples](./examples)
     * [Basic example](./examples/basic)
     * [Complete example with BYOK encryption](./examples/complete)
-    * [Complete example with private only instance and KYOK encryption](./examples/complete-private)
+    * [Financial Services Cloud profile example with KYOK encryption](./examples/fscloud)
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 
@@ -31,9 +33,10 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
 
 ```hcl
 provider "ibm" {
-  ibmcloud_api_key     = "XXXXXXXXXXXXXX"
+  ibmcloud_api_key     = "XXXXXXXXXXXXXX"  # pragma: allowlist secret
   region               = "us-south"
 }
+
 module "secrets_manager" {
   source               = "terraform-ibm-modules/secrets-manager/ibm"
   version              = "X.X.X"  # Replace "X.X.X" with a release version to lock into a specific release

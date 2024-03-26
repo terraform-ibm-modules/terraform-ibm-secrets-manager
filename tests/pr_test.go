@@ -14,7 +14,7 @@ import (
 )
 
 const completeExampleTerraformDir = "examples/complete"
-const privateExampleTerraformDir = "examples/complete-private"
+const fscloudExampleTerraformDir = "examples/fscloud"
 const solutionsTerraformDir = "solutions/standard"
 
 const resourceGroup = "geretain-test-scc-module"
@@ -74,41 +74,44 @@ func TestRunUpgradeExample(t *testing.T) {
 	}
 }
 
-func setupPrivateOptions(t *testing.T, prefix string) *testhelper.TestOptions {
-	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-		Testing:      t,
-		TerraformDir: privateExampleTerraformDir,
-		Prefix:       prefix,
-		Region:       "us-south", // Locking into us-south since that is where the HPCS permanent instance is
-		/*
-		 Comment out the 'ResourceGroup' input to force this tests to create a unique resource group to ensure tests do
-		 not clash. This is due to the fact that an auth policy may already exist in this resource group since we are
-		 re-using a permanent HPCS instance. By using a new resource group, the auth policy will not already exist
-		 since this module scopes auth policies by resource group.
-		*/
-		//ResourceGroup: resourceGroup,
-		TerraformVars: map[string]interface{}{
-			"kms_encryption_enabled":     true,
-			"existing_kms_instance_guid": permanentResources["hpcs_south"],
-			"kms_key_crn":                permanentResources["hpcs_south_root_key_crn"],
-		},
-	})
-
-	return options
-}
-
-func TestRunPrivateExample(t *testing.T) {
+func TestFSCloudInSchematics(t *testing.T) {
 	t.Parallel()
 
-	options := setupPrivateOptions(t, "secrets-mgr-priv")
+	const region = "us-south"
 
-	output, err := options.RunTestConsistency()
+	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+		Testing: t,
+		Prefix:  "sm-fscloud",
+		TarIncludePatterns: []string{
+			"*.tf",
+			fscloudExampleTerraformDir + "/*.tf",
+			"modules/fscloud/*.tf",
+		},
+		// ResourceGroup:          resourceGroup,
+		TemplateFolder:         fscloudExampleTerraformDir,
+		Tags:                   []string{"test-schematic"},
+		DeleteWorkspaceOnFail:  false,
+		WaitJobCompleteMinutes: 60,
+		Region:                 region,
+	})
+
+	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+		{Name: "region", Value: options.Region, DataType: "string"},
+		{Name: "resource_group", Value: options.Prefix, DataType: "string"},
+		{Name: "existing_kms_instance_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
+		{Name: "kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
+		{Name: "sm_service_plan", Value: "trial", DataType: "string"},
+	}
+
+	err := options.RunSchematicTest()
 	assert.Nil(t, err, "This should not have errored")
-	assert.NotNil(t, output, "Expected some output")
 }
 
 func TestRunDASolutionSchematics(t *testing.T) {
 	t.Parallel()
+
+	const region = "us-south"
 
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
@@ -120,6 +123,7 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
+		Region:                 region,
 	})
 
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
