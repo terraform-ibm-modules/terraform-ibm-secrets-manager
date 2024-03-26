@@ -1,8 +1,8 @@
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.4"
-  resource_group_name          = var.existing_resource_group == false ? var.resource_group_name : null
-  existing_resource_group_name = var.existing_resource_group == true ? var.resource_group_name : null
+  resource_group_name          = var.existing_resource_group == false ? var.resource_group : null
+  existing_resource_group_name = var.existing_resource_group == true ? var.resource_group : null
 }
 
 ##############################################################################
@@ -44,7 +44,7 @@ module "event_notification" {
   tags              = var.resource_tags
   plan              = "lite"
   service_endpoints = "public"
-  region            = var.en_region
+  region            = var.region
 }
 
 module "secrets_manager" {

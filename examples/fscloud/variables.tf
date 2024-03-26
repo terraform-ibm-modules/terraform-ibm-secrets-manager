@@ -22,7 +22,7 @@ variable "existing_resource_group" {
   default     = false
 }
 
-variable "resource_group_name" {
+variable "resource_group" {
   type        = string
   description = "A resource group name to use for this example, if `existing_resource_group` is false a new resource group will be created"
   default     = "sm-fscloud"
@@ -32,16 +32,6 @@ variable "resource_tags" {
   type        = list(string)
   description = "Optional list of tags to be added to created resources"
   default     = []
-}
-
-##############################################################################
-# Event Notification (EN)
-##############################################################################
-
-variable "en_region" {
-  type        = string
-  description = "Region where event notification will be created"
-  default     = "au-syd"
 }
 
 ##############################################################################
