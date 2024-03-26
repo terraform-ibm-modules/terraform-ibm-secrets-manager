@@ -97,7 +97,8 @@ func TestFSCloudInSchematics(t *testing.T) {
 
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
-		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
+		{Name: "region", Value: options.Region, DataType: "string"},
+		{Name: "resource_group", Value: options.Prefix, DataType: "string"},
 		{Name: "existing_kms_instance_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
 		{Name: "kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
 		{Name: "sm_service_plan", Value: "trial", DataType: "string"},
@@ -110,6 +111,8 @@ func TestFSCloudInSchematics(t *testing.T) {
 func TestRunDASolutionSchematics(t *testing.T) {
 	t.Parallel()
 
+	const region = "us-south"
+
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing:                t,
@@ -120,12 +123,13 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
+		Region:                 region,
 	})
 
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "region", Value: options.Region, DataType: "string"},
-		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
+		{Name: "resource_group", Value: options.Prefix, DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
 		{Name: "service_endpoints", Value: "private", DataType: "string"},
 		{Name: "existing_kms_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
