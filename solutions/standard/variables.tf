@@ -100,15 +100,15 @@ variable "kms_endpoint_type" {
   }
 }
 
-variable "sm_data_encryption_name" {
+variable "sm_data_encryption_key_ring" {
   type        = string
   default     = "sm-data-encryption-key-ring"
   description = "The name to give the Key Ring which will be created for the Secrets Manager COS bucket Key. Not used if supplying an existing Key."
 }
 
-variable "sm_key_name" {
+variable "sm_data_encryption_key" {
   type        = string
-  default     = "sm-cos-key"
+  default     = "sm-data-encryption-key"
   description = "The name to give the Key which will be created for the Secrets Manager COS bucket. Not used if supplying an existing Key."
 }
 
