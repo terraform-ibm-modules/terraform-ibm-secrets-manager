@@ -8,15 +8,15 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
-variable "existing_resource_group" {
+variable "use_existing_resource_group" {
   type        = bool
-  description = "Whether to use an existing resource group."
+  description = "A flag to create a resource group(true) or to use a preexisting resource group (false) specified in the variable resource_group_name"
   default     = false
 }
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or an existing resource group in which to provision Secrets Manager resources to."
+  description = "The name of a new or an existing resource group in which to provision the Secrets Manager resources to."
 }
 
 variable "region" {
@@ -37,7 +37,7 @@ variable "secrets_manager_instance_name" {
 
 variable "service_plan" {
   type        = string
-  description = "The service/pricing plan to use when provisioning a new Secrets Manager instance. Allowed values: 'standard' and 'trial'. Only used if `provision_sm_instance` is set to true."
+  description = "The service/pricing plan to use when provisioning a new Secrets Manager instance. Allowed values: 'standard' and 'trial'."
   default     = "standard"
   validation {
     condition     = contains(["standard", "trial"], var.service_plan)
@@ -66,15 +66,15 @@ variable "secret_manager_tags" {
 # Key Protect
 ########################################################################################################################
 
-variable "skip_kms_iam_authorization_policy" {
+variable "create_kms_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the existing_kms_instance_guid variable."
-  default     = false
+  description = "A flag to create an IAM authorization that grants Secrets Manager access to a Key Protect resource(true) or not(false). Set to false if a preexisting authorization can be used."
+  default     = true
 }
 
 variable "existing_sm_kms_key_crn" {
   type        = string
-  description = "The CRN of an existing KMS key to use for Secrets Manager. If not supplied, a new key ring and key will be created."
+  description = "The CRN of an existing KMS key to use for Secrets Manager. If not supplied, a new key ring and new key will be created."
   default     = null
 }
 
@@ -84,10 +84,10 @@ variable "kms_region" {
   description = "The region in which KMS instance exists."
 }
 
-variable "existing_kms_guid" {
+variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The GUID of of the KMS instance used for the Secrets Manager root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
+  description = "The CRN of the KMS instance used for the Secrets Manager root Key. Only required if not supplying an existing KMS root key and if 'create_kms_iam_authorization_policy' is true."
 }
 
 variable "kms_endpoint_type" {
@@ -100,9 +100,9 @@ variable "kms_endpoint_type" {
   }
 }
 
-variable "sm_key_ring_name" {
+variable "sm_data_encryption_name" {
   type        = string
-  default     = "sm-cos-key-ring"
+  default     = "sm-data-encryption-key-ring"
   description = "The name to give the Key Ring which will be created for the Secrets Manager COS bucket Key. Not used if supplying an existing Key."
 }
 
@@ -122,8 +122,8 @@ variable "existing_en_instance_crn" {
   default     = null
 }
 
-variable "skip_en_iam_authorization_policy" {
+variable "create_en_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances (scoped to the resource group) an 'Event Source Manager' role to the given Event Notifications instance passed in the `existing_en_instance_crn` input variable."
-  default     = false
+  description = "A flag to create an IAM authorization that grants Secrets Manager access to a Event Notification resource(true) or not(false). Set to false if a preexisting authorization can be used."
+  default     = true
 }
