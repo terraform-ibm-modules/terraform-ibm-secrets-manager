@@ -42,7 +42,6 @@ module "secrets_manager" {
   secrets_manager_name       = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
   sm_service_plan            = var.sm_service_plan
   sm_tags                    = var.resource_tags
-  service_endpoints          = "public-and-private"
   kms_encryption_enabled     = true
   existing_kms_instance_guid = module.key_protect.kms_guid
   kms_key_crn                = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
