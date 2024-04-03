@@ -78,6 +78,67 @@
                 },
                 "description": "This architecture supports creating and configuring IBM Secrets Manager instance."
               }
+            ],
+            "configuration": [
+              {
+                  "key": "cos_instance_name",
+                  "type": "string",
+                  "default_value": "base-security-services-cos",
+                  "description": "The name to use when creating the Cloud Object Storage instance.",
+                  "required": false
+              },
+              {
+                "key": "region",
+                "type": "string",
+                "required": true,
+                "default_value": "",
+                "options": [
+                  {
+                    "displayname": "Dallas (us-south)",
+                    "value": "us-south"
+                  },
+                  {
+                    "displayname": "Osaka (jp-osa)",
+                    "value": "jp-osa"
+                  },
+                  {
+                    "displayname": "Sydney (au-syd)",
+                    "value": "au-syd"
+                  },
+                  {
+                    "displayname": "Tokyo (jp-tok)",
+                    "value": "jp-tok"
+                  },
+                  {
+                    "displayname": "Frankfurt (eu-de)",
+                    "value": "eu-de"
+                  },
+                  {
+                    "displayname": "London (eu-gb)",
+                    "value": "eu-gb"
+                  },
+                  {
+                    "displayname": "Madrid (eu-es)",
+                    "value": "eu-es"
+                  }
+                ]
+              },
+              {
+                "key": "service_plan",
+                "type": "string",
+                "default_value": "",
+                "required": true,
+                "options": [
+                  {
+                    "displayname": "Trial",
+                    "value": "trial"
+                  },
+                  {
+                    "displayname": "Standard",
+                    "value": "standard"
+                  }
+                ]
+              }
             ]
           }
         }

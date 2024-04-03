@@ -66,7 +66,7 @@ variable "secret_manager_tags" {
 # Key Protect
 ########################################################################################################################
 
-variable "create_kms_iam_authorization_policy" {
+variable "skip_kms_iam_authorization_policy" {
   type        = bool
   description = "A flag to create an IAM authorization that grants Secrets Manager access to a Key Protect resource(true) or not(false). Set to false if a preexisting authorization can be used."
   default     = true
@@ -76,12 +76,6 @@ variable "existing_sm_kms_key_crn" {
   type        = string
   description = "The CRN of an existing KMS key to use for Secrets Manager. If not supplied, a new key ring and new key will be created."
   default     = null
-}
-
-variable "kms_region" {
-  type        = string
-  default     = "us-south"
-  description = "The region in which KMS instance exists."
 }
 
 variable "existing_kms_instance_crn" {
@@ -122,7 +116,7 @@ variable "existing_en_instance_crn" {
   default     = null
 }
 
-variable "create_en_iam_authorization_policy" {
+variable "skip_en_iam_authorization_policy" {
   type        = bool
   description = "A flag to create an IAM authorization that grants Secrets Manager access to a Event Notification resource(true) or not(false). Set to false if a preexisting authorization can be used."
   default     = true
