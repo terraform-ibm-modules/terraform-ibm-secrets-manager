@@ -27,3 +27,8 @@ output "secrets_manager_crn" {
   value       = module.secrets_manager.secrets_manager_crn
   description = "CRN of the Secrets Manager instance"
 }
+
+output "secrets_manager_region" {
+  value       = module.secrets_manager.secrets_manager_region
+  description = "Region of the Secrets Manager instance"
+}
