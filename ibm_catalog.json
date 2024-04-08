@@ -30,6 +30,10 @@
           "description": "Creates an IBM Secrets Manager instance."
         },
         {
+          "title": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance.",
+          "description": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance."
+        },
+        {
           "title": "Sets up authorization policy.",
           "description": "Sets up IBM IAM authorization policy between IBM Secrets Manager instance and IBM Key Management Service (KMS) instance. It also supports Event Notification authorization policy."
         },
@@ -59,6 +63,10 @@
               {
                 "title": "Creates a Secrets Manager instance.",
                 "description": "Creates and configures an IBM Secrets Manager instance."
+              },
+              {
+                "title": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance.",
+                "description": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance."
               },
               {
                 "title": "Sets up authorization policy.",
