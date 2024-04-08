@@ -17,6 +17,8 @@ locals {
   validate_event_notification = var.enable_event_notification && var.existing_en_instance_crn == null ? tobool("When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn") : true
   # tflint-ignore: terraform_unused_declarations
   validate_endpoint = var.enable_event_notification && (var.endpoint_type == "public" && var.service_endpoints == "private") || (var.endpoint_type == "private" && var.service_endpoints == "public") ? tobool("It is not allowed to have conflicting var.endpoint_type and var.service_endpoints values.") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_iam_secrets_engine = var.iam_engine_enabled && var.iam_engine_name == null ? tobool("When setting var.iam_engine_enabled to true, a value must be passed for var.iam_engine_name") : true
 }
 
 # Create Secrets Manager Instance
@@ -38,6 +40,16 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
   timeouts {
     create = "30m" # Extending provisioning time to 30 minutes
   }
+}
+
+# Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.
+module "iam_secrets_engine" {
+  count                = var.iam_engine_enabled ? 1 : 0
+  source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
+  version              = "1.0.4"
+  region               = var.region
+  iam_engine_name      = var.iam_engine_name
+  secrets_manager_guid = local.secrets_manager_guid
 }
 
 locals {

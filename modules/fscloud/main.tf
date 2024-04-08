@@ -5,6 +5,8 @@ module "secrets_manager" {
   secrets_manager_name             = var.secrets_manager_name #tfsec:ignore:general-secrets-no-plaintext-exposure
   sm_service_plan                  = var.service_plan
   sm_tags                          = var.sm_tags
+  iam_engine_enabled               = var.iam_engine_enabled
+  iam_engine_name                  = var.iam_engine_name
   service_endpoints                = "private"
   endpoint_type                    = "private"
   kms_encryption_enabled           = true

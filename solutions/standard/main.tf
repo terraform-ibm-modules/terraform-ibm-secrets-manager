@@ -58,6 +58,8 @@ module "secrets_manager" {
   sm_service_plan      = var.service_plan
   service_endpoints    = var.service_endpoints
   sm_tags              = var.secret_manager_tags
+  iam_engine_enabled   = var.iam_engine_enabled
+  iam_engine_name      = var.iam_engine_name
   # kms dependency
   kms_encryption_enabled            = true
   existing_kms_instance_guid        = var.existing_kms_guid
