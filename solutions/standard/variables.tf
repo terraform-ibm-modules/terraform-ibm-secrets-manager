@@ -71,7 +71,7 @@ variable "iam_engine_enabled" {
 variable "iam_engine_name" {
   type        = string
   description = "The name of the IAM Engine used to configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance."
-  default     = null
+  default     = "base-sm-iam-engine"
 }
 
 ########################################################################################################################
