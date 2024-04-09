@@ -70,11 +70,6 @@ module "secrets_manager" {
   endpoint_type                    = var.service_endpoints == "private" ? var.service_endpoints : "public"
 }
 
-locals {
-  # tflint-ignore: terraform_unused_declarations
-  validate_iam_secrets_engine = var.iam_engine_enabled && var.iam_engine_name == null ? tobool("When setting var.iam_engine_enabled to true, a value must be passed for var.iam_engine_name") : true
-}
-
 # Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.
 module "iam_secrets_engine" {
   count                = var.iam_engine_enabled ? 1 : 0
