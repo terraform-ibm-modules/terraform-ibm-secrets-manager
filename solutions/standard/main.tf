@@ -58,8 +58,6 @@ module "secrets_manager" {
   sm_service_plan      = var.service_plan
   service_endpoints    = var.service_endpoints
   sm_tags              = var.secret_manager_tags
-  iam_engine_enabled   = var.iam_engine_enabled
-  iam_engine_name      = var.iam_engine_name
   # kms dependency
   kms_encryption_enabled            = true
   existing_kms_instance_guid        = var.existing_kms_guid
@@ -70,4 +68,19 @@ module "secrets_manager" {
   existing_en_instance_crn         = var.existing_en_instance_crn
   skip_en_iam_authorization_policy = var.skip_en_iam_authorization_policy
   endpoint_type                    = var.service_endpoints == "private" ? var.service_endpoints : "public"
+}
+
+locals {
+  # tflint-ignore: terraform_unused_declarations
+  validate_iam_secrets_engine = var.iam_engine_enabled && var.iam_engine_name == null ? tobool("When setting var.iam_engine_enabled to true, a value must be passed for var.iam_engine_name") : true
+}
+
+# Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.
+module "iam_secrets_engine" {
+  count                = var.iam_engine_enabled ? 1 : 0
+  source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
+  version              = "1.0.4"
+  region               = var.region
+  iam_engine_name      = var.iam_engine_name
+  secrets_manager_guid = module.secrets_manager.secrets_manager_guid
 }

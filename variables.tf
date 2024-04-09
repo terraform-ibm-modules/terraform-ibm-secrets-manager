@@ -17,18 +17,6 @@ variable "secrets_manager_name" {
   description = "The name to give the Secrets Manager instance."
 }
 
-variable "iam_engine_enabled" {
-  type        = bool
-  description = "Set this to true to to configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance. If set to false, no iam engine will be configured for your secrets manager instance. For more details, see https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-configure-iam-engine."
-  default     = false
-}
-
-variable "iam_engine_name" {
-  type        = string
-  description = "The name of the IAM Engine used to configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance."
-  default     = null
-}
-
 variable "sm_service_plan" {
   type        = string
   description = "The Secrets Manager plan to provision."
