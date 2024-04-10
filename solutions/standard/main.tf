@@ -78,5 +78,5 @@ module "iam_secrets_engine" {
   region               = var.region
   iam_engine_name      = var.iam_engine_name
   secrets_manager_guid = module.secrets_manager.secrets_manager_guid
-  endpoint_type        = var.endpoint_type
+  endpoint_type        = var.service_endpoints == "private" ? var.service_endpoints : "public"
 }
