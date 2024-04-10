@@ -74,6 +74,16 @@ variable "iam_engine_name" {
   default     = "base-sm-iam-engine"
 }
 
+variable "endpoint_type" {
+  type        = string
+  description = "The service endpoint type to communicate with the provided secrets manager instance. Possible values are `public` or `private`"
+  default     = "public"
+  validation {
+    condition     = contains(["public", "private"], var.endpoint_type)
+    error_message = "The specified endpoint_type is not a valid selection!"
+  }
+}
+
 ########################################################################################################################
 # Key Protect
 ########################################################################################################################
