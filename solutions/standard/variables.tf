@@ -89,21 +89,25 @@ variable "existing_sm_kms_key_crn" {
   default     = null
 }
 
+########################################################################################################################
+# KMS properties required when creating an encryption key, rather than passing an existing key CRN.
+########################################################################################################################
+
 variable "kms_region" {
   type        = string
   default     = "us-south"
-  description = "The region in which KMS instance exists."
+  description = "The region in which KMS instance exists. Only required if not supplying an existing KMS root key CRN."
 }
 
 variable "existing_kms_guid" {
   type        = string
   default     = null
-  description = "The GUID of of the KMS instance used for the Secrets Manager root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
+  description = "The GUID of of the KMS instance used for the Secrets Manager root Key. Only required if not supplying an existing KMS root key CRN and if 'skip_cos_kms_auth_policy' is true."
 }
 
 variable "kms_endpoint_type" {
   type        = string
-  description = "The type of endpoint to be used for communicating with the KMS instance. Allowed values are: 'public' or 'private' (default)"
+  description = "The type of endpoint to be used for communicating with the KMS instance. Allowed values are: 'public' or 'private' (default). Only required if not supplying an existing KMS root key CRN."
   default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
@@ -111,16 +115,16 @@ variable "kms_endpoint_type" {
   }
 }
 
-variable "sm_key_ring_name" {
+variable "kms_key_ring_name" {
   type        = string
   default     = "sm-cos-key-ring"
-  description = "The name to give the Key Ring which will be created for the Secrets Manager COS bucket Key. Not used if supplying an existing Key."
+  description = "The name to give to the new KMS key ring that will be used to store the KMS key to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN."
 }
 
-variable "sm_key_name" {
+variable "kms_key_name" {
   type        = string
   default     = "sm-cos-key"
-  description = "The name to give the Key which will be created for the Secrets Manager COS bucket. Not used if supplying an existing Key."
+  description = "The name to give to the new KMS root key that will be used to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN."
 }
 
 ########################################################################################################################
