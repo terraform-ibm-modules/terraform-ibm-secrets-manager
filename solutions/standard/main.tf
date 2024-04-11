@@ -69,3 +69,14 @@ module "secrets_manager" {
   skip_en_iam_authorization_policy = var.skip_en_iam_authorization_policy
   endpoint_type                    = var.allowed_network == "private-only" ? "private" : "public"
 }
+
+# Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.
+module "iam_secrets_engine" {
+  count                = var.iam_engine_enabled ? 1 : 0
+  source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
+  version              = "1.1.0"
+  region               = var.region
+  iam_engine_name      = var.iam_engine_name
+  secrets_manager_guid = module.secrets_manager.secrets_manager_guid
+  endpoint_type        = var.allowed_network == "private-only" ? "private" : "public"
+}
