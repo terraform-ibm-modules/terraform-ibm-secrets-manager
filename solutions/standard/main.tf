@@ -56,7 +56,7 @@ module "secrets_manager" {
   region               = var.region
   secrets_manager_name = var.secrets_manager_instance_name
   sm_service_plan      = var.service_plan
-  service_endpoints    = var.service_endpoints
+  allowed_network      = var.allowed_network
   sm_tags              = var.secret_manager_tags
   # kms dependency
   kms_encryption_enabled            = true
@@ -67,7 +67,7 @@ module "secrets_manager" {
   enable_event_notification        = var.existing_en_instance_crn != null ? true : false
   existing_en_instance_crn         = var.existing_en_instance_crn
   skip_en_iam_authorization_policy = var.skip_en_iam_authorization_policy
-  endpoint_type                    = var.service_endpoints == "private" ? var.service_endpoints : "public"
+  endpoint_type                    = var.allowed_network == "private-only" ? "private" : "public"
 }
 
 # Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.

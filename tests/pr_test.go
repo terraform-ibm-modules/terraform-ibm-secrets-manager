@@ -131,7 +131,7 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		{Name: "region", Value: options.Region, DataType: "string"},
 		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
-		{Name: "service_endpoints", Value: "private", DataType: "string"},
+		{Name: "allowed_network", Value: "private-only", DataType: "string"},
 		{Name: "existing_kms_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
 		{Name: "kms_region", Value: "us-south", DataType: "string"}, // KMS instance is in us-south
 		{Name: "iam_engine_enabled", Value: true, DataType: "bool"},

@@ -4,8 +4,6 @@
 
 # Validation
 locals {
-  allowed_network = var.service_endpoints == "private" ? "private-only" : "public-and-private"
-
   # Validation (approach based on https://github.com/hashicorp/terraform/issues/25609#issuecomment-1057614400)
   # tflint-ignore: terraform_unused_declarations
   validate_kms_values = (!var.kms_encryption_enabled && var.kms_key_crn != null) ? tobool("When passing values for var.kms_key_crn, you must set var.kms_encryption_enabled to true. Otherwise unset them to use default encryption") : (!var.kms_encryption_enabled && var.existing_kms_instance_guid != null) ? tobool("When passing values for var.existing_kms_instance_guid, you must set var.kms_encryption_enabled to true. Otherwise unset them to use default encryption") : true
@@ -16,7 +14,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_event_notification = var.enable_event_notification && var.existing_en_instance_crn == null ? tobool("When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn") : true
   # tflint-ignore: terraform_unused_declarations
-  validate_endpoint = var.enable_event_notification && (var.endpoint_type == "public" && var.service_endpoints == "private") || (var.endpoint_type == "private" && var.service_endpoints == "public") ? tobool("It is not allowed to have conflicting var.endpoint_type and var.service_endpoints values.") : true
+  validate_endpoint = var.enable_event_notification && var.endpoint_type == "public" && var.allowed_network == "private-only" ? tobool("It is not allowed to have conflicting var.endpoint_type and var.allowed_network values.") : true
 }
 
 # Create Secrets Manager Instance
@@ -24,13 +22,12 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
   depends_on        = [ibm_iam_authorization_policy.kms_policy]
   name              = var.secrets_manager_name
   service           = "secrets-manager"
-  service_endpoints = var.service_endpoints
   plan              = var.sm_service_plan
   location          = var.region
   resource_group_id = var.resource_group_id
   tags              = var.sm_tags
   parameters = {
-    "allowed_network" = local.allowed_network
+    "allowed_network" = var.allowed_network
     "kms_instance"    = var.existing_kms_instance_guid
     "kms_key"         = var.kms_key_crn
   }

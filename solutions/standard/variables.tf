@@ -45,14 +45,13 @@ variable "service_plan" {
   }
 }
 
-variable "service_endpoints" {
-  # public-and-private until IBM Console connects to SM via private endpoints
+variable "allowed_network" {
   type        = string
-  description = "The service endpoints to enable for all services deployed by this solution. Allowed values are `private` or `public-and-private`. If selecting `public-and-private`, communication to the instances will all be done over the public endpoints. Ensure to enable virtual routing and forwarding (VRF) in your account if using `private`, and that the terraform runtime has access to the the IBM Cloud private network."
+  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values are `private-only` or `public-and-private`."
   default     = "public-and-private"
   validation {
-    condition     = contains(["private", "public-and-private"], var.service_endpoints)
-    error_message = "The specified service_endpoints is not a valid selection. Allowed values are `private` or `public-and-private`."
+    condition     = contains(["private-only", "public-and-private"], var.allowed_network)
+    error_message = "The specified allowed_network is not a valid selection!"
   }
 }
 
