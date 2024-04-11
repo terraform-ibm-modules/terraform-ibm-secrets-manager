@@ -33,13 +33,13 @@ variable "sm_tags" {
   default     = []
 }
 
-variable "service_endpoints" {
+variable "allowed_network" {
   type        = string
-  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values are `public`, `private` or `public-and-private`."
+  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values are `private-only` or `public-and-private`."
   default     = "public-and-private"
   validation {
-    condition     = contains(["public", "private", "public-and-private"], var.service_endpoints)
-    error_message = "The specified service_endpoints is not a valid selection!"
+    condition     = contains(["private-only", "public-and-private"], var.allowed_network)
+    error_message = "The specified allowed_network is not a valid selection!"
   }
 }
 
