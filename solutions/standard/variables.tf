@@ -102,7 +102,7 @@ variable "kms_region" {
 variable "existing_kms_guid" {
   type        = string
   default     = null
-  description = "The GUID of of the KMS instance used for the Secrets Manager root Key. Only required if not supplying an existing KMS root key CRN and if 'skip_cos_kms_auth_policy' is true."
+  description = "The GUID of of the KMS instance used for the Secrets Manager root Key. Only required if not supplying an existing KMS root key CRN and if 'skip_kms_iam_authorization_policy' is true."
 }
 
 variable "kms_endpoint_type" {

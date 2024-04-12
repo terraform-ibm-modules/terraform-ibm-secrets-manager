@@ -15,7 +15,7 @@ module "resource_group" {
 locals {
   kms_key_crn = var.existing_sm_kms_key_crn != null ? var.existing_sm_kms_key_crn : module.kms[0].keys[format("%s.%s", var.kms_key_ring_name, var.kms_key_name)].crn
 }
-# KMS root key for Secrets Manager COS bucket
+# KMS root key for Secrets Manager secret encryption
 module "kms" {
   providers = {
     ibm = ibm.kms
