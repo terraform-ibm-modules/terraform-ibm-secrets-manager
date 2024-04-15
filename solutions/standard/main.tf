@@ -13,7 +13,7 @@ module "resource_group" {
 # KMS Key
 #######################################################################################################################
 locals {
-  kms_key_crn = var.existing_sm_kms_key_crn == null ? (var.prefix != null ? module.kms[0].keys[format("%s.%s", "${var.prefix}-${var.sm_key_ring_name}", "${var.prefix}-${var.sm_key_name}")].crn: module.kms[0].keys[format("%s.%s", var.sm_key_ring_name, var.sm_key_name)].crn) : var.existing_sm_kms_key_crn
+  kms_key_crn = var.existing_sm_kms_key_crn == null ? (var.prefix != null ? module.kms[0].keys[format("%s.%s", "${var.prefix}-${var.sm_key_ring_name}", "${var.prefix}-${var.sm_key_name}")].crn : module.kms[0].keys[format("%s.%s", var.sm_key_ring_name, var.sm_key_name)].crn) : var.existing_sm_kms_key_crn
 }
 # KMS root key for Secrets Manager COS bucket
 module "kms" {
