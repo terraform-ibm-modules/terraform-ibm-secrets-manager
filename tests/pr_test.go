@@ -128,8 +128,10 @@ func TestRunDASolutionSchematics(t *testing.T) {
 
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+		{Name: "prefix", Value: options.Prefix, DataType: "string"},
 		{Name: "region", Value: options.Region, DataType: "string"},
-		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
+		{Name: "existing_resource_group", Value: true, DataType: "string"},
+		{Name: "resource_group_name", Value: options.ResourceGroup, DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
 		{Name: "allowed_network", Value: "private-only", DataType: "string"},
 		{Name: "existing_kms_guid", Value: permanentResources["hpcs_south"], DataType: "string"},

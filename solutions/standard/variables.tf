@@ -25,6 +25,12 @@ variable "region" {
   default     = "us-south"
 }
 
+variable "prefix" {
+  type        = string
+  description = "Prefix to append to all resources created by this solution."
+  default     = null
+}
+
 ########################################################################################################################
 # Secrets Manager
 ########################################################################################################################
