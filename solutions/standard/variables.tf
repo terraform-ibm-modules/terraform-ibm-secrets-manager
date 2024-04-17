@@ -95,21 +95,25 @@ variable "existing_sm_kms_key_crn" {
   default     = null
 }
 
+########################################################################################################################
+# KMS properties required when creating an encryption key, rather than passing an existing key CRN.
+########################################################################################################################
+
 variable "kms_region" {
   type        = string
   default     = "us-south"
-  description = "The region in which KMS instance exists."
+  description = "The region in which KMS instance exists. Only required if not supplying an existing KMS root key CRN."
 }
 
 variable "existing_kms_guid" {
   type        = string
   default     = null
-  description = "The GUID of of the KMS instance used for the Secrets Manager root Key. Only required if not supplying an existing KMS root key and if 'skip_cos_kms_auth_policy' is true."
+  description = "The GUID of of the KMS instance used for the Secrets Manager root Key. Only required if not supplying an existing KMS root key CRN and if 'skip_kms_iam_authorization_policy' is true."
 }
 
 variable "kms_endpoint_type" {
   type        = string
-  description = "The type of endpoint to be used for communicating with the KMS instance. Allowed values are: 'public' or 'private' (default)"
+  description = "The type of endpoint to be used for communicating with the KMS instance. Allowed values are: 'public' or 'private' (default). Only required if not supplying an existing KMS root key CRN."
   default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
