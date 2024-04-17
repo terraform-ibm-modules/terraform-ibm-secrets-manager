@@ -17,7 +17,7 @@ locals {
   kms_key_ring_name = var.prefix != null ? "${var.prefix}-${var.kms_key_ring_name}" : var.kms_key_ring_name
   kms_key_name      = var.prefix != null ? "${var.prefix}-${var.kms_key_name}" : var.kms_key_name
 }
-# KMS root key for Secrets Manager COS bucket
+# KMS root key for Secrets Manager secret encryption
 module "kms" {
   providers = {
     ibm = ibm.kms
