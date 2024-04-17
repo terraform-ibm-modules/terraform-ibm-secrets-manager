@@ -16,7 +16,7 @@ variable "existing_resource_group" {
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or an existing resource group in which to provision Secrets Manager resources to."
+  description = "The name of a new or an existing resource group in which to provision Secrets Manager resources to. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 variable "region" {
@@ -25,13 +25,19 @@ variable "region" {
   default     = "us-south"
 }
 
+variable "prefix" {
+  type        = string
+  description = "(Optional) Prefix to append to all resources created by this solution."
+  default     = null
+}
+
 ########################################################################################################################
 # Secrets Manager
 ########################################################################################################################
 
 variable "secrets_manager_instance_name" {
   type        = string
-  description = "The name to give the Secrets Manager instance that will be provisioned by this solution."
+  description = "The name to give the Secrets Manager instance that will be provisioned by this solution. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
   default     = "base-security-services-sm"
 }
 
@@ -69,7 +75,7 @@ variable "iam_engine_enabled" {
 
 variable "iam_engine_name" {
   type        = string
-  description = "The name of the IAM Engine used to configure an IBM Secrets Manager IAM credentials engine."
+  description = "The name of the IAM Engine used to configure an IBM Secrets Manager IAM credentials engine. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
   default     = "base-sm-iam-engine"
 }
 
@@ -118,13 +124,13 @@ variable "kms_endpoint_type" {
 variable "kms_key_ring_name" {
   type        = string
   default     = "sm-cos-key-ring"
-  description = "The name to give to the new KMS key ring that will be used to store the KMS key to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN."
+  description = "The name to give to the new KMS key ring that will be used to store the KMS key to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 variable "kms_key_name" {
   type        = string
   default     = "sm-cos-key"
-  description = "The name to give to the new KMS root key that will be used to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN."
+  description = "The name to give to the new KMS root key that will be used to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 ########################################################################################################################
