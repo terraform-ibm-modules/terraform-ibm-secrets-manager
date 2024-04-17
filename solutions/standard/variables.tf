@@ -120,13 +120,13 @@ variable "kms_endpoint_type" {
 variable "kms_key_ring_name" {
   type        = string
   default     = "sm-cos-key-ring"
-  description = "The name to give the Key Ring which will be created for the Secrets Manager COS bucket Key. Not used if supplying an existing Key. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to give to the new KMS key ring that will be used to store the KMS key to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 variable "kms_key_name" {
   type        = string
   default     = "sm-cos-key"
-  description = "The name to give the Key which will be created for the Secrets Manager COS bucket. Not used if supplying an existing Key. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to give to the new KMS root key that will be used to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 ########################################################################################################################
