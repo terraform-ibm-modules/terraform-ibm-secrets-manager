@@ -16,7 +16,7 @@ variable "existing_resource_group" {
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or an existing resource group in which to provision Secrets Manager resources to."
+  description = "The name of a new or an existing resource group in which to provision Secrets Manager resources to. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 variable "region" {
@@ -37,7 +37,7 @@ variable "prefix" {
 
 variable "secrets_manager_instance_name" {
   type        = string
-  description = "The name to give the Secrets Manager instance that will be provisioned by this solution."
+  description = "The name to give the Secrets Manager instance that will be provisioned by this solution. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
   default     = "base-security-services-sm"
 }
 
@@ -75,7 +75,7 @@ variable "iam_engine_enabled" {
 
 variable "iam_engine_name" {
   type        = string
-  description = "The name of the IAM Engine used to configure an IBM Secrets Manager IAM credentials engine."
+  description = "The name of the IAM Engine used to configure an IBM Secrets Manager IAM credentials engine. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
   default     = "base-sm-iam-engine"
 }
 
@@ -120,13 +120,13 @@ variable "kms_endpoint_type" {
 variable "sm_key_ring_name" {
   type        = string
   default     = "sm-cos-key-ring"
-  description = "The name to give the Key Ring which will be created for the Secrets Manager COS bucket Key. Not used if supplying an existing Key."
+  description = "The name to give the Key Ring which will be created for the Secrets Manager COS bucket Key. Not used if supplying an existing Key. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 variable "sm_key_name" {
   type        = string
   default     = "sm-cos-key"
-  description = "The name to give the Key which will be created for the Secrets Manager COS bucket. Not used if supplying an existing Key."
+  description = "The name to give the Key which will be created for the Secrets Manager COS bucket. Not used if supplying an existing Key. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
 ########################################################################################################################
