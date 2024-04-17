@@ -27,7 +27,7 @@ variable "region" {
 
 variable "prefix" {
   type        = string
-  description = "Prefix to append to all resources created by this solution."
+  description = "(Optional) Prefix to append to all resources created by this solution."
   default     = null
 }
 
@@ -117,13 +117,13 @@ variable "kms_endpoint_type" {
   }
 }
 
-variable "sm_key_ring_name" {
+variable "kms_key_ring_name" {
   type        = string
   default     = "sm-cos-key-ring"
   description = "The name to give the Key Ring which will be created for the Secrets Manager COS bucket Key. Not used if supplying an existing Key. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
 }
 
-variable "sm_key_name" {
+variable "kms_key_name" {
   type        = string
   default     = "sm-cos-key"
   description = "The name to give the Key which will be created for the Secrets Manager COS bucket. Not used if supplying an existing Key. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"

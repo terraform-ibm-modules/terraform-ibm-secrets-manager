@@ -13,9 +13,9 @@ module "resource_group" {
 # KMS Key
 #######################################################################################################################
 locals {
-  kms_key_crn      = var.existing_sm_kms_key_crn == null ? (var.prefix != null ? module.kms[0].keys[format("%s.%s", "${var.prefix}-${var.sm_key_ring_name}", "${var.prefix}-${var.sm_key_name}")].crn : module.kms[0].keys[format("%s.%s", var.sm_key_ring_name, var.sm_key_name)].crn) : var.existing_sm_kms_key_crn
-  sm_key_ring_name = var.prefix != null ? "${var.prefix}-${var.sm_key_ring_name}" : var.sm_key_ring_name
-  sm_key_name      = var.prefix != null ? "${var.prefix}-${var.sm_key_name}" : var.sm_key_name
+  kms_key_crn       = var.existing_sm_kms_key_crn != null ? var.existing_sm_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn
+  kms_key_ring_name = var.prefix != null ? "${var.prefix}-${var.kms_key_ring_name}" : var.kms_key_ring_name
+  kms_key_name      = var.prefix != null ? "${var.prefix}-${var.kms_key_name}" : var.kms_key_name
 }
 # KMS root key for Secrets Manager COS bucket
 module "kms" {
@@ -32,12 +32,12 @@ module "kms" {
   key_endpoint_type           = var.kms_endpoint_type
   keys = [
     {
-      key_ring_name         = local.sm_key_ring_name
+      key_ring_name         = local.kms_key_ring_name
       existing_key_ring     = false
       force_delete_key_ring = true
       keys = [
         {
-          key_name                 = local.sm_key_name
+          key_name                 = local.kms_key_name
           standard_key             = false
           rotation_interval_month  = 3
           dual_auth_delete_enabled = false
