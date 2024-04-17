@@ -59,31 +59,16 @@
           },
           "configuration" : [
             {
-              "key": "ibmcloud_api_key",
-              "required": true
+              "key": "ibmcloud_api_key"
             },
             {
-              "key": "use_existing_resource_group",
-              "default_value": false,
-              "options": [
-                {
-                  "displayname": "True",
-                  "value": true
-                },
-                {
-                  "displayname": "False",
-                  "value": false
-                }
-              ]
+              "key": "use_existing_resource_group"
             },
             {
-              "key": "resource_group_name",
-              "required": true
+              "key": "resource_group_name"
             },
             {
               "key": "region",
-              "required": true,
-              "default_value": "us-south",
               "options": [
                 {
                   "displayname": "Dallas (us-south)",
@@ -128,13 +113,10 @@
               ]
             },
             {
-              "key": "secrets_manager_instance_name",
-              "default_value": "base-security-services-sm"
+              "key": "secrets_manager_instance_name"
             },
             {
               "key": "service_plan",
-              "required": true,
-              "default_value": "standard",
               "options": [
                 {
                   "displayname": "Standard",
@@ -148,8 +130,6 @@
             },
             {
               "key": "allowed_network",
-              "required": true,
-              "default_value": "public-and-private",
               "options": [
                 {
                   "displayname": "Public and private",
@@ -165,44 +145,20 @@
               "key": "secret_manager_tags"
             },
             {
-              "key": "iam_engine_enabled",
-              "default_value": false,
-              "options": [
-                {
-                  "displayname": "True",
-                  "value": true
-                },
-                {
-                  "displayname": "False",
-                  "value": false
-                }
-              ]
+              "key": "iam_engine_enabled"
             },
             {
               "key": "iam_engine_name",
               "default_value": "base-sm-iam-engine"
             },
             {
-              "key": "skip_kms_iam_authorization_policy",
-              "default_value": false,
-              "options": [
-                {
-                  "displayname": "True",
-                  "value": true
-                },
-                {
-                  "displayname": "False",
-                  "value": false
-                }
-              ]
+              "key": "skip_kms_iam_authorization_policy"
             },
             {
               "key": "existing_sm_kms_key_crn"
             },
             {
               "key": "kms_region",
-              "default_value": "us-south",
-              "required": true,
               "options": [
                 {
                   "displayname": "Dallas (us-south)",
@@ -251,7 +207,6 @@
             },
             {
               "key": "kms_endpoint_type",
-              "default_value": "private",
               "options": [
                 {
                   "displayname": "Public",
@@ -264,29 +219,16 @@
               ]
             },
             {
-              "key": "sm_key_ring_name",
-              "default_value": "sm-cos-key-ring"
+              "key": "sm_key_ring_name"
             },
             {
-              "key": "sm_key_name",
-              "default_value": "sm-cos-key"
+              "key": "sm_key_name"
             },
             {
               "key": "existing_en_instance_crn"
             },
             {
-              "key": "skip_en_iam_authorization_policy",
-              "default_value": false,
-              "options": [
-                {
-                  "displayname": "True",
-                  "value": true
-                },
-                {
-                  "displayname": "False",
-                  "value": false
-                }
-              ]
+              "key": "skip_en_iam_authorization_policy"
             }
           ],
           "architecture": {
