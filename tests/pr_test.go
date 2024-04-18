@@ -112,6 +112,8 @@ func TestRunDASolutionSchematics(t *testing.T) {
 	t.Parallel()
 
 	const region = "us-south"
+	// mock private key for testing purposes
+	const acme_letsencrypt_private_key = "-----BEGIN PRIVATE " + "KEY-----\nMIGHAgAAMBMGByqGSM49AgEGCCqGSA49AwEHBG0wawIBAQQga6dzn07PTooHUa8S\nuYWp+LIMPtJ76id7qfzODx5DHOOhRANCAASY42YYpQwm6ewGtOTBvHDA5p8Bg9mU\nCO8eGQ70wa1OMVEO8iQldX6tTEqqCz53WWNqI/j6KorOjXVlpI4QMEBu\n-----END PRIVATE " + "KEY-----" // pragma: allowlist secret
 
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
@@ -136,6 +138,12 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		{Name: "existing_kms_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
 		{Name: "kms_region", Value: "us-south", DataType: "string"}, // KMS instance is in us-south
 		{Name: "iam_engine_enabled", Value: true, DataType: "bool"},
+		{Name: "public_engine_enabled", Value: true, DataType: "bool"},
+		{Name: "private_engine_enabled", Value: true, DataType: "bool"},
+		{Name: "cis_id", Value: permanentResources["cisInstanceId"], DataType: "string"},
+		{Name: "ca_name", Value: permanentResources["certificateAuthorityName"], DataType: "string"},
+		{Name: "dns_provider_name", Value: permanentResources["dnsProviderName"], DataType: "string"},
+		{Name: "acme_letsencrypt_private_key", Value: acme_letsencrypt_private_key, DataType: "string"},
 	}
 
 	err := options.RunSchematicTest()
