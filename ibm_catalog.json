@@ -125,22 +125,6 @@
               "key": "existing_sm_kms_key_crn"
             },
             {
-              "custom_config": {
-                "config_constraints": {
-                  "generationType": "2"
-                },
-                "grouping": "deployment",
-                "original_grouping": "deployment",
-                "type": "region"
-              },
-              "key": "kms_region",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "key": "existing_kms_guid"
-            },
-            {
               "key": "kms_endpoint_type",
               "options": [
                 {
