@@ -81,6 +81,9 @@
               "type": "string"
             },
             {
+              "key": "prefix"
+            },
+            {
               "key": "secrets_manager_instance_name"
             },
             {
@@ -122,7 +125,10 @@
               "key": "skip_kms_iam_authorization_policy"
             },
             {
-              "key": "existing_sm_kms_key_crn"
+              "key": "existing_secrets_manager_kms_key_crn"
+            },
+            {
+              "key": "existing_kms_instance_crn"
             },
             {
               "key": "kms_endpoint_type",
@@ -138,16 +144,16 @@
               ]
             },
             {
-              "key": "sm_key_ring_name"
+              "key": "kms_key_ring_name"
             },
             {
-              "key": "sm_key_name"
+              "key": "kms_key_name"
             },
             {
-              "key": "existing_en_instance_crn"
+              "key": "existing_event_notification_instance_crn"
             },
             {
-              "key": "skip_en_iam_authorization_policy"
+              "key": "skip_event_notification_iam_authorization_policy"
             }
           ],
           "architecture": {
