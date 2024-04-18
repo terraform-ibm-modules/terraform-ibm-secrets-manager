@@ -5,7 +5,7 @@
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.4"
-  resource_group_name          = var.use_existing_resource_group == false ? var.resource_group_name : null
+  resource_group_name          = var.use_existing_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
 
@@ -13,7 +13,9 @@ module "resource_group" {
 # KMS Key
 #######################################################################################################################
 locals {
-  kms_key_crn = var.existing_sm_kms_key_crn != null ? var.existing_sm_kms_key_crn : module.kms[0].keys[format("%s.%s", var.kms_key_ring_name, var.kms_key_name)].crn
+  kms_key_crn       = var.existing_sm_kms_key_crn != null ? var.existing_sm_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn
+  kms_key_ring_name = var.prefix != null ? "${var.prefix}-${var.kms_key_ring_name}" : var.kms_key_ring_name
+  kms_key_name      = var.prefix != null ? "${var.prefix}-${var.kms_key_name}" : var.kms_key_name
 }
 # KMS root key for Secrets Manager secret encryption
 module "kms" {
@@ -30,12 +32,12 @@ module "kms" {
   key_endpoint_type           = var.kms_endpoint_type
   keys = [
     {
-      key_ring_name         = var.kms_key_ring_name
+      key_ring_name         = local.kms_key_ring_name
       existing_key_ring     = false
       force_delete_key_ring = true
       keys = [
         {
-          key_name                 = var.kms_key_name
+          key_name                 = local.kms_key_name
           standard_key             = false
           rotation_interval_month  = 3
           dual_auth_delete_enabled = false
@@ -54,7 +56,7 @@ module "secrets_manager" {
   source               = "../.."
   resource_group_id    = module.resource_group.resource_group_id
   region               = var.region
-  secrets_manager_name = var.secrets_manager_instance_name
+  secrets_manager_name = var.prefix != null ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
   sm_service_plan      = var.service_plan
   allowed_network      = var.allowed_network
   sm_tags              = var.secret_manager_tags
@@ -76,7 +78,7 @@ module "iam_secrets_engine" {
   source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
   version              = "1.1.0"
   region               = var.region
-  iam_engine_name      = var.iam_engine_name
+  iam_engine_name      = var.prefix != null ? "${var.prefix}-${var.iam_engine_name}" : var.iam_engine_name
   secrets_manager_guid = module.secrets_manager.secrets_manager_guid
   endpoint_type        = var.allowed_network == "private-only" ? "private" : "public"
 }
