@@ -89,7 +89,7 @@ variable "skip_kms_iam_authorization_policy" {
   default     = false
 }
 
-variable "existing_sm_kms_key_crn" {
+variable "existing_secrets_manager_kms_key_crn" {
   type        = string
   description = "The CRN of an existing KMS key to use for Secrets Manager. If not supplied, a new key ring and key will be created."
   default     = null
@@ -137,13 +137,13 @@ variable "kms_key_name" {
 # Event Notifications
 ########################################################################################################################
 
-variable "existing_en_instance_crn" {
+variable "existing_event_notification_instance_crn" {
   type        = string
   description = "The CRN of the Event Notifications service to enable lifecycle notifications for your Secrets Manager instance."
   default     = null
 }
 
-variable "skip_en_iam_authorization_policy" {
+variable "skip_event_notification_iam_authorization_policy" {
   type        = bool
   description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances (scoped to the resource group) an 'Event Source Manager' role to the given Event Notifications instance passed in the `existing_en_instance_crn` input variable."
   default     = false
