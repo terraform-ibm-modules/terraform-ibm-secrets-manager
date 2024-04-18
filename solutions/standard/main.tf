@@ -62,7 +62,7 @@ module "secrets_manager" {
   sm_tags              = var.secret_manager_tags
   # kms dependency
   kms_encryption_enabled            = true
-  existing_kms_instance_guid        = var.existing_kms_guid
+  existing_kms_instance_guid        = var.existing_kms_instance_crn
   kms_key_crn                       = local.kms_key_crn
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy
   # event notifications dependency
