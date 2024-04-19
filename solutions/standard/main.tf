@@ -5,8 +5,8 @@
 module "resource_group" {
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.4"
-  resource_group_name          = var.existing_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
-  existing_resource_group_name = var.existing_resource_group == true ? var.resource_group_name : null
+  resource_group_name          = var.use_existing_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
+  existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
 
 #######################################################################################################################
@@ -16,7 +16,12 @@ locals {
   kms_key_crn       = var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn
   kms_key_ring_name = var.prefix != null ? "${var.prefix}-${var.kms_key_ring_name}" : var.kms_key_ring_name
   kms_key_name      = var.prefix != null ? "${var.prefix}-${var.kms_key_name}" : var.kms_key_name
+
+  parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
+  kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
+  existing_kms_guid                = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[7] : null
 }
+
 # KMS root key for Secrets Manager secret encryption
 module "kms" {
   providers = {
@@ -26,8 +31,8 @@ module "kms" {
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
   version                     = "4.8.5"
   create_key_protect_instance = false
-  region                      = var.kms_region
-  existing_kms_instance_guid  = var.existing_kms_guid
+  region                      = local.kms_region
+  existing_kms_instance_guid  = local.existing_kms_guid
   key_ring_endpoint_type      = var.kms_endpoint_type
   key_endpoint_type           = var.kms_endpoint_type
   keys = [
@@ -62,7 +67,7 @@ module "secrets_manager" {
   sm_tags              = var.secret_manager_tags
   # kms dependency
   kms_encryption_enabled            = true
-  existing_kms_instance_guid        = var.existing_kms_guid
+  existing_kms_instance_guid        = local.existing_kms_guid
   kms_key_crn                       = local.kms_key_crn
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy
   # event notifications dependency
