@@ -8,7 +8,7 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
-variable "existing_resource_group" {
+variable "use_existing_resource_group" {
   type        = bool
   description = "Whether to use an existing resource group."
   default     = false
@@ -166,7 +166,7 @@ variable "iam_engine_name" {
 
 variable "skip_kms_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the existing_kms_instance_guid variable."
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the existing_kms_instance_crn variable."
   default     = false
 }
 
@@ -180,16 +180,10 @@ variable "existing_secrets_manager_kms_key_crn" {
 # KMS properties required when creating an encryption key, rather than passing an existing key CRN.
 ########################################################################################################################
 
-variable "kms_region" {
-  type        = string
-  default     = "us-south"
-  description = "The region in which KMS instance exists. Only required if not supplying an existing KMS root key CRN."
-}
-
-variable "existing_kms_guid" {
+variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The GUID of of the KMS instance used for the Secrets Manager root Key. Only required if not supplying an existing KMS root key CRN and if 'skip_kms_iam_authorization_policy' is true."
+  description = "The CRN of the existed Hyper Protect Crypto Services or Key Protect instance. Only required if not supplying an existing KMS key to use for Secrets Manager."
 }
 
 variable "kms_endpoint_type" {
