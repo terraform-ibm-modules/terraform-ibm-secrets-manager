@@ -57,6 +57,105 @@
               }
             ]
           },
+          "configuration" : [
+            {
+              "key": "ibmcloud_api_key"
+            },
+            {
+              "key": "use_existing_resource_group"
+            },
+            {
+              "key": "resource_group_name"
+            },
+            {
+              "custom_config": {
+                "config_constraints": {
+                  "generationType": "2"
+                },
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "type": "region"
+              },
+              "key": "region",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "key": "prefix"
+            },
+            {
+              "key": "secrets_manager_instance_name"
+            },
+            {
+              "key": "service_plan",
+              "options": [
+                {
+                  "displayname": "Standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "Trial",
+                  "value": "trial"
+                }
+              ]
+            },
+            {
+              "key": "allowed_network",
+              "options": [
+                {
+                  "displayname": "Public and private",
+                  "value": "public-and-private"
+                },
+                {
+                  "displayname": "Private only",
+                  "value": "private-only"
+                }
+              ]
+            },
+            {
+              "key": "secret_manager_tags"
+            },
+            {
+              "key": "iam_engine_enabled"
+            },
+            {
+              "key": "iam_engine_name"
+            },
+            {
+              "key": "skip_kms_iam_authorization_policy"
+            },
+            {
+              "key": "existing_secrets_manager_kms_key_crn"
+            },
+            {
+              "key": "existing_kms_instance_crn"
+            },
+            {
+              "key": "kms_endpoint_type",
+              "options": [
+                {
+                  "displayname": "Public",
+                  "value": "public"
+                },
+                {
+                  "displayname": "Private",
+                  "value": "private"
+                }
+              ]
+            },
+            {
+              "key": "kms_key_ring_name"
+            },
+            {
+              "key": "kms_key_name"
+            },
+            {
+              "key": "existing_event_notification_instance_crn"
+            },
+            {
+              "key": "skip_event_notification_iam_authorization_policy"
+            }
+          ],
           "architecture": {
             "descriptions": "This architecture supports creating and configuring a Secrets Manager instance.",
             "features": [
