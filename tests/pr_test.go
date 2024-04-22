@@ -2,11 +2,14 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"testing"
 
+	"github.com/IBM/go-sdk-core/v5/core"
+	"github.com/IBM/secrets-manager-go-sdk/v2/secretsmanagerv2"
 	"github.com/stretchr/testify/assert"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/common"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
@@ -112,8 +115,7 @@ func TestRunDASolutionSchematics(t *testing.T) {
 	t.Parallel()
 
 	const region = "us-south"
-	// mock private key for testing purposes
-	const acme_letsencrypt_private_key = "-----BEGIN PRIVATE " + "KEY-----\nMIGHAgAAMBMGByqGSM49AgEGCCqGSA49AwEHBG0wawIBAQQga6dzn07PTooHUa8S\nuYWp+LIMPtJ76id7qfzODx5DHOOhRANCAASY42YYpQwm6ewGtOTBvHDA5p8Bg9mU\nCO8eGQ70wa1OMVEO8iQldX6tTEqqCz53WWNqI/j6KorOjXVlpI4QMEBu\n-----END PRIVATE " + "KEY-----" // pragma: allowlist secret
+	acme_letsencrypt_private_key := GetSecretsManagerKey(permanentResources["acme_letsencrypt_private_key_secret_id"].(string))
 
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
@@ -147,4 +149,37 @@ func TestRunDASolutionSchematics(t *testing.T) {
 
 	err := options.RunSchematicTest()
 	assert.NoError(t, err, "Schematic Test had unexpected error")
+}
+
+func GetSecretsManagerKey(key_id string) string {
+	type Secret struct {
+		Payload string `json:"payload"`
+	}
+
+	secretsManagerService, err := secretsmanagerv2.NewSecretsManagerV2(&secretsmanagerv2.SecretsManagerV2Options{
+		URL: fmt.Sprintf("https://%s.%s.secrets-manager.appdomain.cloud", permanentResources["acme_letsencrypt_private_key_sm_id"], permanentResources["acme_letsencrypt_private_key_sm_region"]),
+		Authenticator: &core.IamAuthenticator{
+			ApiKey: os.Getenv("TF_VAR_ibmcloud_api_key"),
+		},
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	getSecretOptions := secretsManagerService.NewGetSecretOptions(
+		key_id,
+	)
+
+	secret, _, err := secretsManagerService.GetSecret(getSecretOptions)
+	if err != nil {
+		panic(err)
+	}
+	b, _ := json.MarshalIndent(secret, "", "  ")
+	var result Secret
+	err = json.Unmarshal(b, &result)
+	if err != nil {
+		panic(err)
+	}
+	return result.Payload
 }

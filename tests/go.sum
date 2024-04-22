@@ -203,6 +203,8 @@ github.com/IBM/platform-services-go-sdk v0.62.2 h1:MgngCFHBLrlvM1HS522agIMnjshHR
 github.com/IBM/platform-services-go-sdk v0.62.2/go.mod h1:fd7gUOmsuQYhYLTZVLL+posObT/ISxVV+6JzsfDs5qE=
 github.com/IBM/schematics-go-sdk v0.2.3 h1:lgTt0Sbudii3cuSk1YSQgrtiZAXDbBABAoVj3eQuBrU=
 github.com/IBM/schematics-go-sdk v0.2.3/go.mod h1:Tw2OSAPdpC69AxcwoyqcYYaGTTW6YpERF9uNEU+BFRQ=
+github.com/IBM/secrets-manager-go-sdk/v2 v2.0.4 h1:xa9e+POVqaXxXHXkSMCOVAbKdUNEu86jQmo5hcpd+L4=
+github.com/IBM/secrets-manager-go-sdk/v2 v2.0.4/go.mod h1:5gq8D8uWOIbqOm1uztay6lpOysgJaxxEsaVZLWGWb40=
 github.com/IBM/vpc-go-sdk v1.0.2 h1:WhI1Cb8atA8glUdFg0SEUh9u8afjnKHxZAj9onQBi04=
 github.com/IBM/vpc-go-sdk v1.0.2/go.mod h1:42NO/XCXsyrYqpvtxoX5xwSEv/jBU1MKEoyaYkIUico=
 github.com/Microsoft/go-winio v0.5.2/go.mod h1:WpS1mjBmmwHBEWmogvA2mj8546UReBk4v8QkMxJ6pZY=
