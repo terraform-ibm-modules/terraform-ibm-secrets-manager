@@ -2,7 +2,6 @@
 package test
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -115,7 +114,11 @@ func TestRunDASolutionSchematics(t *testing.T) {
 	t.Parallel()
 
 	const region = "us-south"
-	acme_letsencrypt_private_key := GetSecretsManagerKey(permanentResources["acme_letsencrypt_private_key_secret_id"].(string))
+	acme_letsencrypt_private_key := GetSecretsManagerKey( // pragma: allowlist secret
+		permanentResources["acme_letsencrypt_private_key_sm_id"].(string),
+		permanentResources["acme_letsencrypt_private_key_sm_region"].(string),
+		permanentResources["acme_letsencrypt_private_key_secret_id"].(string),
+	)
 
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
@@ -151,35 +154,25 @@ func TestRunDASolutionSchematics(t *testing.T) {
 	assert.NoError(t, err, "Schematic Test had unexpected error")
 }
 
-func GetSecretsManagerKey(key_id string) string {
-	type Secret struct {
-		Payload string `json:"payload"`
-	}
-
+func GetSecretsManagerKey(sm_id string, sm_region string, sm_key_id string) *string {
 	secretsManagerService, err := secretsmanagerv2.NewSecretsManagerV2(&secretsmanagerv2.SecretsManagerV2Options{
-		URL: fmt.Sprintf("https://%s.%s.secrets-manager.appdomain.cloud", permanentResources["acme_letsencrypt_private_key_sm_id"], permanentResources["acme_letsencrypt_private_key_sm_region"]),
+		URL: fmt.Sprintf("https://%s.%s.secrets-manager.appdomain.cloud", sm_id, sm_region),
 		Authenticator: &core.IamAuthenticator{
 			ApiKey: os.Getenv("TF_VAR_ibmcloud_api_key"),
 		},
 	})
-
 	if err != nil {
 		panic(err)
 	}
 
 	getSecretOptions := secretsManagerService.NewGetSecretOptions(
-		key_id,
+		sm_key_id,
 	)
 
 	secret, _, err := secretsManagerService.GetSecret(getSecretOptions)
 	if err != nil {
 		panic(err)
 	}
-	b, _ := json.MarshalIndent(secret, "", "  ")
-	var result Secret
-	err = json.Unmarshal(b, &result)
-	if err != nil {
-		panic(err)
-	}
-	return result.Payload
+
+	return secret.(*secretsmanagerv2.ArbitrarySecret).Payload
 }
