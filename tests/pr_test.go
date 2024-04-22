@@ -147,7 +147,7 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		{Name: "cis_id", Value: permanentResources["cisInstanceId"], DataType: "string"},
 		{Name: "ca_name", Value: permanentResources["certificateAuthorityName"], DataType: "string"},
 		{Name: "dns_provider_name", Value: permanentResources["dnsProviderName"], DataType: "string"},
-		{Name: "acme_letsencrypt_private_key", Value: acme_letsencrypt_private_key, DataType: "string"},
+		{Name: "acme_letsencrypt_private_key", Value: *acme_letsencrypt_private_key, DataType: "string"},
 	}
 
 	err := options.RunSchematicTest()
@@ -173,6 +173,5 @@ func GetSecretsManagerKey(sm_id string, sm_region string, sm_key_id string) *str
 	if err != nil {
 		panic(err)
 	}
-
 	return secret.(*secretsmanagerv2.ArbitrarySecret).Payload
 }

@@ -25,7 +25,7 @@ variable "existing_resource_group" {
 variable "resource_group" {
   type        = string
   description = "A resource group name to use for this example, if `existing_resource_group` is false a new resource group will be created"
-  default     = "sm-fscloud"
+  default     = null
 }
 
 variable "resource_tags" {
