@@ -5,11 +5,17 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/IBM/go-sdk-core/v5/core"
 	"github.com/IBM/secrets-manager-go-sdk/v2/secretsmanagerv2"
+	"github.com/gruntwork-io/terratest/modules/files"
+	"github.com/gruntwork-io/terratest/modules/logger"
+	"github.com/gruntwork-io/terratest/modules/random"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/common"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testschematic"
@@ -174,4 +180,78 @@ func GetSecretsManagerKey(sm_id string, sm_region string, sm_key_id string) *str
 		panic(err)
 	}
 	return secret.(*secretsmanagerv2.ArbitrarySecret).Payload
+}
+
+// A test to pass existing resources to the SM DA
+func TestRunExistingResourcesInstances(t *testing.T) {
+	t.Parallel()
+
+	// ------------------------------------------------------------------------------------
+	// Provision Event Notification, KMS key and resource group first
+	// ------------------------------------------------------------------------------------
+
+	prefix := fmt.Sprintf("scc-exist-%s", strings.ToLower(random.UniqueId()))
+	realTerraformDir := "./existing-resources"
+	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
+	tags := common.GetTagsFromTravis()
+	region := "us-south"
+
+	// Verify ibmcloud_api_key variable is set
+	checkVariable := "TF_VAR_ibmcloud_api_key"
+	val, present := os.LookupEnv(checkVariable)
+	require.True(t, present, checkVariable+" environment variable not set")
+	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
+	logger.Log(t, "Tempdir: ", tempTerraformDir)
+	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: tempTerraformDir,
+		Vars: map[string]interface{}{
+			"prefix":        prefix,
+			"region":        region,
+			"resource_tags": tags,
+		},
+		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
+		// This is the same as setting the -upgrade=true flag with terraform.
+		Upgrade: true,
+	})
+
+	terraform.WorkspaceSelectOrNew(t, existingTerraformOptions, prefix)
+	_, existErr := terraform.InitAndApplyE(t, existingTerraformOptions)
+	if existErr != nil {
+		assert.True(t, existErr == nil, "Init and Apply of temp existing resource failed")
+	} else {
+
+		options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
+			Testing:      t,
+			TerraformDir: solutionsTerraformDir,
+			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
+			ImplicitRequired: false,
+			Region:           region,
+			TerraformVars: map[string]interface{}{
+				"ibmcloud_api_key":                         os.Getenv("TF_VAR_ibmcloud_api_key"),
+				"region":                                   region,
+				"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
+				"use_existing_resource_group":              true,
+				"existing_event_notification_instance_crn": terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"),
+				"existing_secrets_manager_kms_key_crn":     terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_key_crn"),
+				"existing_kms_instance_crn":                terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"),
+			},
+		})
+
+		output, err := options.RunTestConsistency()
+		assert.Nil(t, err, "This should not have errored")
+		assert.NotNil(t, output, "Expected some output")
+
+	}
+
+	// Check if "DO_NOT_DESTROY_ON_FAILURE" is set
+	envVal, _ := os.LookupEnv("DO_NOT_DESTROY_ON_FAILURE")
+	// Destroy the temporary existing resources if required
+	if t.Failed() && strings.ToLower(envVal) == "true" {
+		fmt.Println("Terratest failed. Debug the test and delete resources manually.")
+	} else {
+		logger.Log(t, "START: Destroy (existing resources)")
+		terraform.Destroy(t, existingTerraformOptions)
+		terraform.WorkspaceDelete(t, existingTerraformOptions, prefix)
+		logger.Log(t, "END: Destroy (existing resources)")
+	}
 }
