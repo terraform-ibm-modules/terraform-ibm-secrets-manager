@@ -7,7 +7,7 @@ variable "ibmcloud_api_key" {
 variable "prefix" {
   type        = string
   description = "Prefix for sm instance"
-  default     = "secrets-manager-test"
+  default     = "sm-com"
 }
 variable "sm_service_plan" {
   type        = string

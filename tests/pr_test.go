@@ -7,6 +7,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/IBM/go-sdk-core/v5/core"
+	"github.com/IBM/secrets-manager-go-sdk/v2/secretsmanagerv2"
 	"github.com/stretchr/testify/assert"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/common"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
@@ -112,6 +114,11 @@ func TestRunDASolutionSchematics(t *testing.T) {
 	t.Parallel()
 
 	const region = "us-south"
+	acme_letsencrypt_private_key := GetSecretsManagerKey( // pragma: allowlist secret
+		permanentResources["acme_letsencrypt_private_key_sm_id"].(string),
+		permanentResources["acme_letsencrypt_private_key_sm_region"].(string),
+		permanentResources["acme_letsencrypt_private_key_secret_id"].(string),
+	)
 
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
@@ -135,8 +142,36 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		{Name: "allowed_network", Value: "private-only", DataType: "string"},
 		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 		{Name: "iam_engine_enabled", Value: true, DataType: "bool"},
+		{Name: "public_engine_enabled", Value: true, DataType: "bool"},
+		{Name: "private_engine_enabled", Value: true, DataType: "bool"},
+		{Name: "cis_id", Value: permanentResources["cisInstanceId"], DataType: "string"},
+		{Name: "ca_name", Value: permanentResources["certificateAuthorityName"], DataType: "string"},
+		{Name: "dns_provider_name", Value: permanentResources["dnsProviderName"], DataType: "string"},
+		{Name: "acme_letsencrypt_private_key", Value: *acme_letsencrypt_private_key, DataType: "string"},
 	}
 
 	err := options.RunSchematicTest()
 	assert.NoError(t, err, "Schematic Test had unexpected error")
+}
+
+func GetSecretsManagerKey(sm_id string, sm_region string, sm_key_id string) *string {
+	secretsManagerService, err := secretsmanagerv2.NewSecretsManagerV2(&secretsmanagerv2.SecretsManagerV2Options{
+		URL: fmt.Sprintf("https://%s.%s.secrets-manager.appdomain.cloud", sm_id, sm_region),
+		Authenticator: &core.IamAuthenticator{
+			ApiKey: os.Getenv("TF_VAR_ibmcloud_api_key"),
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	getSecretOptions := secretsManagerService.NewGetSecretOptions(
+		sm_key_id,
+	)
+
+	secret, _, err := secretsManagerService.GetSecret(getSecretOptions)
+	if err != nil {
+		panic(err)
+	}
+	return secret.(*secretsmanagerv2.ArbitrarySecret).Payload
 }

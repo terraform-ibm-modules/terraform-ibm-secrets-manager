@@ -87,3 +87,45 @@ module "iam_secrets_engine" {
   secrets_manager_guid = module.secrets_manager.secrets_manager_guid
   endpoint_type        = var.allowed_network == "private-only" ? "private" : "public"
 }
+
+locals {
+  # tflint-ignore: terraform_unused_declarations
+  validate_public_secret_engine = var.public_engine_enabled && var.public_engine_name == null ? tobool("When setting var.public_engine_enabled to true, a value must be passed for var.public_engine_name") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_private_secret_engine = var.private_engine_enabled && var.private_engine_name == null ? tobool("When setting var.private_engine_enabled to true, a value must be passed for var.private_engine_name") : true
+}
+
+# Configure an IBM Secrets Manager public certificate engine for an existing IBM Secrets Manager instance.
+module "secrets_manager_public_cert_engine" {
+  count   = var.public_engine_enabled ? 1 : 0
+  source  = "terraform-ibm-modules/secrets-manager-public-cert-engine/ibm"
+  version = "1.0.0"
+  providers = {
+    ibm              = ibm
+    ibm.secret-store = ibm
+  }
+  secrets_manager_guid         = module.secrets_manager.secrets_manager_guid
+  region                       = module.secrets_manager.secrets_manager_region
+  internet_services_crn        = var.cis_id
+  ibmcloud_cis_api_key         = var.ibmcloud_api_key
+  dns_config_name              = var.dns_provider_name
+  ca_config_name               = var.ca_name
+  acme_letsencrypt_private_key = var.acme_letsencrypt_private_key
+  service_endpoints            = var.allowed_network == "private-only" ? "private" : "public"
+}
+
+
+# Configure an IBM Secrets Manager private certificate engine for an existing IBM Secrets Manager instance.
+module "private_secret_engine" {
+  count                     = var.private_engine_enabled ? 1 : 0
+  source                    = "terraform-ibm-modules/secrets-manager-private-cert-engine/ibm"
+  version                   = "1.3.0"
+  secrets_manager_guid      = module.secrets_manager.secrets_manager_guid
+  region                    = var.region
+  root_ca_name              = var.root_ca_name
+  root_ca_common_name       = var.root_ca_common_name
+  root_ca_max_ttl           = var.root_ca_max_ttl
+  intermediate_ca_name      = var.intermediate_ca_name
+  certificate_template_name = var.certificate_template_name
+  endpoint_type             = var.allowed_network == "private-only" ? "private" : "public"
+}
