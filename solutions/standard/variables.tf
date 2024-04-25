@@ -41,6 +41,12 @@ variable "secrets_manager_instance_name" {
   default     = "base-security-services-sm"
 }
 
+variable "existing_secrets_manager_crn" {
+  type        = string
+  description = "The CRN of an existing KMS key to use for Secrets Manager. If not supplied, a new key ring and key will be created."
+  default     = null
+}
+
 variable "service_plan" {
   type        = string
   description = "The service/pricing plan to use when provisioning a new Secrets Manager instance. Allowed values: 'standard' and 'trial'. Only used if `provision_sm_instance` is set to true."

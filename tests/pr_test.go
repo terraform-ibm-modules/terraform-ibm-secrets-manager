@@ -25,6 +25,7 @@ const completeExampleTerraformDir = "examples/complete"
 const fscloudExampleTerraformDir = "examples/fscloud"
 const solutionsTerraformDir = "solutions/standard"
 
+const bestRegionYAMLPath = "../common-dev-assets/common-go-assets/cloudinfo-region-secmgr-prefs.yaml"
 const resourceGroup = "geretain-test-scc-module"
 
 // Define a struct with fields that match the structure of the YAML data
@@ -54,7 +55,7 @@ func setupOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 		 there is a restriction with the Event Notification service, which allows only one Lite plan instance per resource group.
 		*/
 		// ResourceGroup:      resourceGroup,
-		BestRegionYAMLPath: "../common-dev-assets/common-go-assets/cloudinfo-region-secmgr-prefs.yaml",
+		BestRegionYAMLPath: bestRegionYAMLPath,
 	})
 
 	return options
@@ -93,7 +94,7 @@ func TestFSCloudInSchematics(t *testing.T) {
 			fscloudExampleTerraformDir + "/*.tf",
 			"modules/fscloud/*.tf",
 		},
-		BestRegionYAMLPath: "../common-dev-assets/common-go-assets/cloudinfo-region-secmgr-prefs.yaml",
+		BestRegionYAMLPath: bestRegionYAMLPath,
 		// ResourceGroup:          resourceGroup,
 		TemplateFolder:         fscloudExampleTerraformDir,
 		Tags:                   []string{"test-schematic"},
@@ -133,7 +134,7 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
-		BestRegionYAMLPath:     "../common-dev-assets/common-go-assets/cloudinfo-region-secmgr-prefs.yaml",
+		BestRegionYAMLPath:     bestRegionYAMLPath,
 	})
 
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
@@ -189,7 +190,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 		TerraformDir: solutionsTerraformDir,
 		// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
 		ImplicitRequired:   false,
-		BestRegionYAMLPath: "../common-dev-assets/common-go-assets/cloudinfo-region-secmgr-prefs.yaml",
+		BestRegionYAMLPath: bestRegionYAMLPath,
 	})
 
 	// ------------------------------------------------------------------------------------
@@ -235,6 +236,10 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			"existing_secrets_manager_kms_key_crn":     terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_key_crn"),
 			"existing_kms_instance_crn":                terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"),
 			"service_plan":                             "trial",
+			"existing_secrets_manager_crn":             terraform.Output(t, existingTerraformOptions, "secrets_manager_instance_crn"),
+			"iam_engine_enabled":                       true,
+			"public_engine_enabled":                    true,
+			"private_engine_enabled":                   true,
 		}
 
 		output, err := options.RunTestConsistency()
