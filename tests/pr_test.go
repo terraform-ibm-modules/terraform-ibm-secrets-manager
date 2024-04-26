@@ -201,7 +201,6 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	realTerraformDir := "./existing-resources"
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
 	tags := common.GetTagsFromTravis()
-	region := "us-south"
 
 	// Verify ibmcloud_api_key variable is set
 	checkVariable := "TF_VAR_ibmcloud_api_key"
@@ -229,7 +228,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 		// add existing resources to previously created options
 		options.TerraformVars = map[string]interface{}{
 			"ibmcloud_api_key":                         os.Getenv("TF_VAR_ibmcloud_api_key"),
-			"region":                                   region,
+			"region":                                   options.Region,
 			"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 			"use_existing_resource_group":              true,
 			"existing_event_notification_instance_crn": terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"),
@@ -238,7 +237,6 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			"service_plan":                             "trial",
 			"existing_secrets_manager_crn":             terraform.Output(t, existingTerraformOptions, "secrets_manager_instance_crn"),
 			"iam_engine_enabled":                       true,
-			"public_engine_enabled":                    true,
 			"private_engine_enabled":                   true,
 		}
 
