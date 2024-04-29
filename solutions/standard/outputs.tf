@@ -15,7 +15,7 @@ output "secrets_manager_guid" {
 
 output "secrets_manager_id" {
   description = "ID of Secrets Manager instance"
-  value       = var.existing_secrets_manager_crn == null ? module.secrets_manager[0].secrets_manager_id : null
+  value       = var.existing_secrets_manager_crn == null ? module.secrets_manager[0].secrets_manager_id : local.secrets_manager_guid
 }
 
 output "secrets_manager_name" {
