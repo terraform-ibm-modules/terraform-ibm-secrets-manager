@@ -43,7 +43,7 @@ variable "secrets_manager_instance_name" {
 
 variable "existing_secrets_manager_crn" {
   type        = string
-  description = "The CRN of an existing KMS key to use for Secrets Manager. If not supplied, a new key ring and key will be created."
+  description = "The CRN of an existing Secrets Manager instance. If not supplied, a new Secrets Manager instance will be created."
   default     = null
 }
 
