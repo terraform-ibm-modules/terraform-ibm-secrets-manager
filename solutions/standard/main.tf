@@ -140,4 +140,3 @@ module "private_secret_engine" {
   certificate_template_name = var.certificate_template_name
   endpoint_type             = var.allowed_network == "private-only" ? "private" : "public"
 }
-
