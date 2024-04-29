@@ -13,9 +13,6 @@ module "resource_group" {
 # KMS Key
 #######################################################################################################################
 locals {
-  # tflint-ignore: terraform_unused_declarations
-  validate_auth_policy = var.existing_secrets_manager_crn != null && var.existing_secrets_manager_kms_key_crn == null ? tobool("When var.skip_kms_iam_authorization_policy is set to false, and var.kms_encryption_enabled to true, a value must be passed for var.existing_kms_instance_guid in order to create the auth policy.") : true
-
   kms_key_crn       = var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn
   kms_key_ring_name = var.prefix != null ? "${var.prefix}-${var.kms_key_ring_name}" : var.kms_key_ring_name
   kms_key_name      = var.prefix != null ? "${var.prefix}-${var.kms_key_name}" : var.kms_key_name
