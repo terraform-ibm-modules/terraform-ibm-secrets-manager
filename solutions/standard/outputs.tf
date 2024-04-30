@@ -1,11 +1,11 @@
 output "resource_group_name" {
   description = "Resource group name"
-  value       = var.existing_secrets_manager_crn == null ? module.resource_group.resource_group_name : data.ibm_resource_instance.existing_sm[0].resource_group_name
+  value       = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_name : data.ibm_resource_instance.existing_sm[0].resource_group_name
 }
 
 output "resource_group_id" {
   description = "Resource group ID"
-  value       = var.existing_secrets_manager_crn == null ? module.resource_group.resource_group_name : data.ibm_resource_instance.existing_sm[0].resource_group_id
+  value       = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_name : data.ibm_resource_instance.existing_sm[0].resource_group_id
 }
 
 output "secrets_manager_guid" {
