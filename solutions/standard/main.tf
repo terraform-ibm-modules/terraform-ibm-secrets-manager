@@ -1,6 +1,10 @@
 ########################################################################################################################
 # Resource Group
 ########################################################################################################################
+locals {
+  # tflint-ignore: terraform_unused_declarations
+  validate_resource_group = (var.existing_secrets_manager_crn == null && var.resource_group_name == null) ? tobool("Resource group name can not be null if existing secrets manager CRN is not set.") : true
+}
 
 module "resource_group" {
   count                        = var.existing_secrets_manager_crn == null ? 1 : 0
