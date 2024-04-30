@@ -3,6 +3,7 @@
 ########################################################################################################################
 
 module "resource_group" {
+  count                        = var.existing_secrets_manager_crn == null ? 1 : 0
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.4"
   resource_group_name          = var.use_existing_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
@@ -13,7 +14,7 @@ module "resource_group" {
 # KMS Key
 #######################################################################################################################
 locals {
-  kms_key_crn       = var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn
+  kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn) : null
   kms_key_ring_name = var.prefix != null ? "${var.prefix}-${var.kms_key_ring_name}" : var.kms_key_ring_name
   kms_key_name      = var.prefix != null ? "${var.prefix}-${var.kms_key_name}" : var.kms_key_name
 
@@ -67,7 +68,7 @@ locals {
 module "secrets_manager" {
   count                = var.existing_secrets_manager_crn != null ? 0 : 1
   source               = "../.."
-  resource_group_id    = module.resource_group.resource_group_id
+  resource_group_id    = module.resource_group[0].resource_group_id
   region               = var.region
   secrets_manager_name = var.prefix != null ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
   sm_service_plan      = var.service_plan
@@ -136,4 +137,9 @@ module "private_secret_engine" {
   intermediate_ca_name      = var.intermediate_ca_name
   certificate_template_name = var.certificate_template_name
   endpoint_type             = var.allowed_network == "private-only" ? "private" : "public"
+}
+
+data "ibm_resource_instance" "existing_sm" {
+  count      = var.existing_secrets_manager_crn == null ? 0 : 1
+  identifier = var.existing_secrets_manager_crn
 }
