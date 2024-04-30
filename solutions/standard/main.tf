@@ -57,7 +57,15 @@ module "kms" {
 # Secrets Manager
 ########################################################################################################################
 
+locals {
+  parsed_existing_secrets_manager_crn = var.existing_secrets_manager_crn != null ? split(":", var.existing_secrets_manager_crn) : []
+  secrets_manager_guid                = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[7] : null) : module.secrets_manager[0].secrets_manager_guid
+  secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager[0].secrets_manager_crn
+  secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager[0].secrets_manager_region
+}
+
 module "secrets_manager" {
+  count                = var.existing_secrets_manager_crn != null ? 0 : 1
   source               = "../.."
   resource_group_id    = module.resource_group.resource_group_id
   region               = var.region
@@ -84,7 +92,7 @@ module "iam_secrets_engine" {
   version              = "1.1.0"
   region               = var.region
   iam_engine_name      = var.prefix != null ? "${var.prefix}-${var.iam_engine_name}" : var.iam_engine_name
-  secrets_manager_guid = module.secrets_manager.secrets_manager_guid
+  secrets_manager_guid = local.secrets_manager_guid
   endpoint_type        = var.allowed_network == "private-only" ? "private" : "public"
 }
 
@@ -104,8 +112,8 @@ module "secrets_manager_public_cert_engine" {
     ibm              = ibm
     ibm.secret-store = ibm
   }
-  secrets_manager_guid         = module.secrets_manager.secrets_manager_guid
-  region                       = module.secrets_manager.secrets_manager_region
+  secrets_manager_guid         = local.secrets_manager_guid
+  region                       = local.secrets_manager_region
   internet_services_crn        = var.cis_id
   ibmcloud_cis_api_key         = var.ibmcloud_api_key
   dns_config_name              = var.dns_provider_name
@@ -120,7 +128,7 @@ module "private_secret_engine" {
   count                     = var.private_engine_enabled ? 1 : 0
   source                    = "terraform-ibm-modules/secrets-manager-private-cert-engine/ibm"
   version                   = "1.3.0"
-  secrets_manager_guid      = module.secrets_manager.secrets_manager_guid
+  secrets_manager_guid      = local.secrets_manager_guid
   region                    = var.region
   root_ca_name              = var.root_ca_name
   root_ca_common_name       = var.root_ca_common_name
