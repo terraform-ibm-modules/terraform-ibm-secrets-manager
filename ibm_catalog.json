@@ -65,7 +65,8 @@
               "key": "use_existing_resource_group"
             },
             {
-              "key": "resource_group_name"
+              "key": "resource_group_name",
+              "required": true
             },
             {
               "custom_config": {
