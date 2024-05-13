@@ -108,7 +108,6 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
-		{Name: "allowed_network", Value: "private-only", DataType: "string"},
 		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 		{Name: "iam_engine_enabled", Value: true, DataType: "bool"},
 		{Name: "public_engine_enabled", Value: true, DataType: "bool"},
@@ -198,6 +197,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_secrets_manager_crn":             terraform.Output(t, existingTerraformOptions, "secrets_manager_instance_crn"),
 				"iam_engine_enabled":                       true,
 				"private_engine_enabled":                   true,
+				"allowed_network":                          "public-and-private",
 			},
 		})
 
