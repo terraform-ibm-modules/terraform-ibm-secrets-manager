@@ -9,7 +9,7 @@ locals {
 module "resource_group" {
   count                        = var.existing_secrets_manager_crn == null ? 1 : 0
   source                       = "terraform-ibm-modules/resource-group/ibm"
-  version                      = "1.1.4"
+  version                      = "1.1.5"
   resource_group_name          = var.use_existing_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
@@ -34,7 +34,7 @@ module "kms" {
   }
   count                       = var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.8.5"
+  version                     = "4.11.2"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_guid  = local.existing_kms_guid
@@ -67,6 +67,7 @@ locals {
   secrets_manager_guid                = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[7] : null) : module.secrets_manager[0].secrets_manager_guid
   secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager[0].secrets_manager_crn
   secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager[0].secrets_manager_region
+  sm_endpoint_type                    = var.existing_secrets_manager_crn != null ? var.existing_secrets_endpoint_type : var.allowed_network == "private-only" ? "private" : "public"
 }
 
 module "secrets_manager" {
@@ -87,18 +88,18 @@ module "secrets_manager" {
   enable_event_notification        = var.existing_event_notification_instance_crn != null ? true : false
   existing_en_instance_crn         = var.existing_event_notification_instance_crn
   skip_en_iam_authorization_policy = var.skip_event_notification_iam_authorization_policy
-  endpoint_type                    = var.allowed_network == "private-only" ? "private" : "public"
+  endpoint_type                    = local.sm_endpoint_type
 }
 
 # Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.
 module "iam_secrets_engine" {
   count                = var.iam_engine_enabled ? 1 : 0
   source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
-  version              = "1.1.0"
+  version              = "1.2.0"
   region               = local.secrets_manager_region
   iam_engine_name      = var.prefix != null ? "${var.prefix}-${var.iam_engine_name}" : var.iam_engine_name
   secrets_manager_guid = local.secrets_manager_guid
-  endpoint_type        = var.allowed_network == "private-only" ? "private" : "public"
+  endpoint_type        = local.sm_endpoint_type
 }
 
 locals {
@@ -124,7 +125,7 @@ module "secrets_manager_public_cert_engine" {
   dns_config_name              = var.dns_provider_name
   ca_config_name               = var.ca_name
   acme_letsencrypt_private_key = var.acme_letsencrypt_private_key
-  service_endpoints            = var.allowed_network == "private-only" ? "private" : "public"
+  service_endpoints            = local.sm_endpoint_type
 }
 
 
@@ -132,7 +133,7 @@ module "secrets_manager_public_cert_engine" {
 module "private_secret_engine" {
   count                     = var.private_engine_enabled ? 1 : 0
   source                    = "terraform-ibm-modules/secrets-manager-private-cert-engine/ibm"
-  version                   = "1.3.0"
+  version                   = "1.3.1"
   secrets_manager_guid      = local.secrets_manager_guid
   region                    = var.region
   root_ca_name              = var.root_ca_name
@@ -140,7 +141,7 @@ module "private_secret_engine" {
   root_ca_max_ttl           = var.root_ca_max_ttl
   intermediate_ca_name      = var.intermediate_ca_name
   certificate_template_name = var.certificate_template_name
-  endpoint_type             = var.allowed_network == "private-only" ? "private" : "public"
+  endpoint_type             = local.sm_endpoint_type
 }
 
 data "ibm_resource_instance" "existing_sm" {

@@ -8,7 +8,7 @@ module "resource_group" {
 
 module "key_protect" {
   source                    = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                   = "4.8.5"
+  version                   = "4.11.2"
   key_protect_instance_name = "${var.prefix}-key-protect"
   resource_group_id         = module.resource_group.resource_group_id
   region                    = var.region
@@ -26,7 +26,7 @@ module "key_protect" {
 
 module "event_notification" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "1.2.2"
+  version           = "1.3.2"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en"
   tags              = var.resource_tags
