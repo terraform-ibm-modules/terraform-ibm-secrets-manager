@@ -9,7 +9,7 @@ locals {
 module "resource_group" {
   count                        = var.existing_secrets_manager_crn == null ? 1 : 0
   source                       = "terraform-ibm-modules/resource-group/ibm"
-  version                      = "1.1.4"
+  version                      = "1.1.5"
   resource_group_name          = var.use_existing_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
@@ -95,7 +95,7 @@ module "secrets_manager" {
 module "iam_secrets_engine" {
   count                = var.iam_engine_enabled ? 1 : 0
   source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
-  version              = "1.1.0"
+  version              = "1.2.0"
   region               = local.secrets_manager_region
   iam_engine_name      = var.prefix != null ? "${var.prefix}-${var.iam_engine_name}" : var.iam_engine_name
   secrets_manager_guid = local.secrets_manager_guid
@@ -133,7 +133,7 @@ module "secrets_manager_public_cert_engine" {
 module "private_secret_engine" {
   count                     = var.private_engine_enabled ? 1 : 0
   source                    = "terraform-ibm-modules/secrets-manager-private-cert-engine/ibm"
-  version                   = "1.3.0"
+  version                   = "1.3.1"
   secrets_manager_guid      = local.secrets_manager_guid
   region                    = var.region
   root_ca_name              = var.root_ca_name
