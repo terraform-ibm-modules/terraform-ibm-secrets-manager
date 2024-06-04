@@ -37,10 +37,12 @@ module "key_protect" {
   region                    = var.region
   keys = [
     {
-      key_ring_name = "${var.prefix}-sm"
+      key_ring_name         = "${var.prefix}-sm"
+      force_delete_key_ring = true
       keys = [
         {
-          key_name = "${var.prefix}-sm-key"
+          key_name     = "${var.prefix}-sm-key"
+          force_delete = true
         }
       ]
     }
