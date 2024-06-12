@@ -16,19 +16,19 @@ variable "use_existing_resource_group" {
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or an existing resource group in which to provision Secrets Manager resources to. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'. Optional if existing_secrets_manager_crn is not set."
+  description = "The name of a new or an existing resource group where the Secrets Manager resources are provisioned. If prefix input variable is passed then it is prefixed in front of the value in the format of '<prefix>-value'. Optional if existing_secrets_manager_crn is not set."
   default     = null
 }
 
 variable "region" {
   type        = string
-  description = "The region in which to provision Secrets Manager resources."
+  description = "The region where Secrets Manager resources are provisioned."
   default     = "us-south"
 }
 
 variable "prefix" {
   type        = string
-  description = "(Optional) Prefix to append to all resources created by this solution."
+  description = "An optional prefix to append to all resources created by this solution."
   default     = null
 }
 
@@ -38,13 +38,13 @@ variable "prefix" {
 
 variable "secrets_manager_instance_name" {
   type        = string
-  description = "The name to give the Secrets Manager instance that will be provisioned by this solution. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to give the Secrets Manager instance provisioned by this solution. If the prefix input variable is passed then it is prefixed infront of the value in the format of '<prefix>-value'"
   default     = "base-security-services-sm"
 }
 
 variable "existing_secrets_manager_crn" {
   type        = string
-  description = "The CRN of an existing Secrets Manager instance. If not supplied, a new Secrets Manager instance will be created."
+  description = "The CRN of an existing Secrets Manager instance. If not supplied, a new instance is created."
   default     = null
 }
 
@@ -54,64 +54,64 @@ variable "existing_secrets_endpoint_type" {
   default     = "private"
   validation {
     condition     = contains(["public", "private"], var.existing_secrets_endpoint_type)
-    error_message = "Allowed values for 'existing_secrets_endpoint_type' are \"public\" and \"private\"."
+    error_message = "Only \"public\" and \"private\" are allowed values for 'existing_secrets_endpoint_type'."
   }
 }
 
 variable "service_plan" {
   type        = string
-  description = "The service/pricing plan to use when provisioning a new Secrets Manager instance. Allowed values: 'standard' and 'trial'. Only used if `provision_sm_instance` is set to true."
+  description = "The pricing plan to use when provisioning a new Secrets Manager instance. Only 'standard' and 'trial' are allowed values. This variable is only used if `provision_sm_instance` is set to true."
   default     = "standard"
   validation {
     condition     = contains(["standard", "trial"], var.service_plan)
-    error_message = "Allowed values for sm_service_plan are \"standard\" and \"trial\"."
+    error_message = "Only \"standard\" and \"trial\" are allowed values for sm_service_plan."
   }
 }
 
 variable "allowed_network" {
   type        = string
-  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values are `private-only` or `public-and-private`."
+  description = "The types of service endpoints to set on the Secrets Manager instance. Only `private-only` or `public-and-private` are allowed."
   default     = "private-only"
   validation {
     condition     = contains(["private-only", "public-and-private"], var.allowed_network)
-    error_message = "The specified allowed_network is not a valid selection!"
+    error_message = "The specified allowed_network is not a valid selection."
   }
 }
 
 variable "secret_manager_tags" {
   type        = list(any)
-  description = "The list of resource tags that you want to associate with your Secrets Manager instance."
+  description = "The list of resource tags you want to associate with your Secrets Manager instance."
   default     = []
 }
 
 variable "public_engine_enabled" {
   type        = bool
-  description = "Set this to true to to configure an IBM Secrets Manager public certificate engine for an existing IBM Secrets Manager instance. If set to false, no public certificate engine will be configured for your secrets manager instance. For more details, see https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-prepare-order-certificates."
+  description = "Set this to true to configure an Secrets Manager public certificate engine for an existing Secrets Manager instance. If set to false, no public certificate engine will be configured for your instance."
   default     = false
 }
 
 # Public cert engine config
 variable "public_engine_name" {
   type        = string
-  description = "The name of the IAM Engine used to configure an IBM Secrets Manager public certificate engine for an existing IBM Secrets Manager instance."
+  description = "The name of the IAM engine used to configure a Secrets Manager public certificate engine for an existing instance."
   default     = "public-engine-sm"
 }
 
 variable "cis_id" {
   type        = string
-  description = "Cloud Internet Service ID"
+  description = "Cloud Internet Service ID."
   default     = null
 }
 
 variable "dns_provider_name" {
   type        = string
-  description = "Name of the DNS provider for the public_cert secrets engine"
+  description = "The name of the DNS provider for the public_cert secrets engine."
   default     = "certificate-dns"
 }
 
 variable "ca_name" {
   type        = string
-  description = "Secret Managers certificate authority name"
+  description = "The name of the certificate authority for Secrets Manager."
   default     = "cert-auth"
 }
 
@@ -125,37 +125,37 @@ variable "acme_letsencrypt_private_key" {
 # Private cert engine config
 variable "private_engine_enabled" {
   type        = bool
-  description = "Set this to true to to configure an IBM Secrets Manager private certificate engine for an existing IBM Secrets Manager instance. If set to false, no private certificate engine will be configured for your secrets manager instance. For more details, see https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-prepare-create-certificates#:~:text=In%20Secrets%20Manager%2C%20the%20private,and%20manage%20in%20the%20service."
+  description = "Set this to true to configure a Secrets Manager private certificate engine for an existing instance. If set to false, no private certificate engine will be configured for your instance."
   default     = false
 }
 
 variable "private_engine_name" {
   type        = string
-  description = "The name of the IAM Engine used to configure an IBM Secrets Manager private certificate engine for an existing IBM Secrets Manager instance."
+  description = "The name of the IAM Engine used to configure a Secrets Manager private certificate engine for an existing instance."
   default     = "private-engine-sm"
 }
 
 variable "root_ca_name" {
   type        = string
-  description = "Name of the Root CA to create for a private_cert secret engine"
+  description = "The name of the root certificate authority associated with the private_cert secret engine."
   default     = "root-ca"
 }
 
 variable "root_ca_common_name" {
   type        = string
-  description = "Fully qualified domain name or host domain name for the certificate to be created"
+  description = "The fully qualified domain name or host domain name for the certificate that will be created."
   default     = "terraform-modules.ibm.com"
 }
 
 variable "root_ca_max_ttl" {
   type        = string
-  description = "Maximum TTL value for the root CA"
+  description = "The maximum time-to-live value for the root certificate authority."
   default     = "87600h"
 }
 
 variable "intermediate_ca_name" {
   type        = string
-  description = "A human-readable unique name to assign to the intermediate CA configuration."
+  description = "A human-readable unique name to assign to the intermediate certificate authority configuration."
   default     = "intermediate-ca"
 }
 
@@ -167,13 +167,13 @@ variable "certificate_template_name" {
 
 variable "iam_engine_enabled" {
   type        = bool
-  description = "Set this to true to to configure an IBM Secrets Manager IAM credentials engine. If set to false, no iam engine will be configured for your secrets manager instance. For more details, see https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-configure-iam-engine."
+  description = "Set this to true to to configure a Secrets Manager IAM credentials engine. If set to false, no IAM engine will be configured for your instance."
   default     = false
 }
 
 variable "iam_engine_name" {
   type        = string
-  description = "The name of the IAM Engine used to configure an IBM Secrets Manager IAM credentials engine. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name of the IAM engine used to configure a Secrets Manager IAM credentials engine. If the prefix input variable is passed it is attached before the value in the format of '<prefix>-value'."
   default     = "base-sm-iam-engine"
 }
 
@@ -183,13 +183,13 @@ variable "iam_engine_name" {
 
 variable "skip_kms_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the existing_kms_instance_crn variable."
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key. If set to false, pass in a value for the Key Protect or Hyper Protect Crypto Service instance in the existing_kms_instance_crn variable."
   default     = false
 }
 
 variable "existing_secrets_manager_kms_key_crn" {
   type        = string
-  description = "The CRN of an existing KMS key to use for Secrets Manager. If not supplied, a new key ring and key will be created."
+  description = "The CRN of an existing Key Protect key to use for Secrets Manager. If not supplied, a new key ring and key will be created."
   default     = null
 }
 
@@ -200,12 +200,12 @@ variable "existing_secrets_manager_kms_key_crn" {
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the existed Hyper Protect Crypto Services or Key Protect instance. Only required if not supplying an existing KMS key to use for Secrets Manager."
+  description = "The CRN of the existing Hyper Protect Crypto Services or Key Protect instance. This is only required if not supplying an existing key to use for Secrets Manager."
 }
 
 variable "kms_endpoint_type" {
   type        = string
-  description = "The type of endpoint to be used for communicating with the KMS instance. Allowed values are: 'public' or 'private' (default). Only required if not supplying an existing KMS root key CRN."
+  description = "The type of endpoint to be used for communicating with the Key Protect or Hyper Protect Crypto Services instance. Both 'public' or 'private' are allowed. This value is only required if not supplying an existing root key CRN."
   default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
@@ -216,13 +216,13 @@ variable "kms_endpoint_type" {
 variable "kms_key_ring_name" {
   type        = string
   default     = "sm-cos-key-ring"
-  description = "The name to give to the new KMS key ring that will be used to store the KMS key to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to give to the new key ring used to store the key. Only required if not supplying an existing root key CRN. If the prefix input variable is passed it is added in the format of '<prefix>-value'."
 }
 
 variable "kms_key_name" {
   type        = string
   default     = "sm-cos-key"
-  description = "The name to give to the new KMS root key that will be used to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to give to the new root key. Only required if not supplying an existing root key CRN. If the prefix input variable is passed it is added in the format of '<prefix>-value'."
 }
 
 ########################################################################################################################
@@ -231,12 +231,12 @@ variable "kms_key_name" {
 
 variable "existing_event_notification_instance_crn" {
   type        = string
-  description = "The CRN of the Event Notifications service to enable lifecycle notifications for your Secrets Manager instance."
+  description = "The CRN of the Event Notifications service used to enable lifecycle notifications for your Secrets Manager instance."
   default     = null
 }
 
 variable "skip_event_notification_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances (scoped to the resource group) an 'Event Source Manager' role to the given Event Notifications instance passed in the `existing_event_notification_instance_crn` input variable."
+  description = "If set to true, this skips the creation of a service to service authorization from Secrets Manager to Event Notifications. If false, the service to service authorization is created."
   default     = false
 }
