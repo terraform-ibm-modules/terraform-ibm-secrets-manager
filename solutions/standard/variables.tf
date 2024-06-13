@@ -50,7 +50,7 @@ variable "existing_secrets_manager_crn" {
 
 variable "existing_secrets_endpoint_type" {
   type        = string
-  description = "The endpoint type to use if passing a value for `existing_secrets_manager_crn`."
+  description = "The endpoint type to use if existing_secrets_manager_crn is specified. Possible values: public, private."
   default     = "private"
   validation {
     condition     = contains(["public", "private"], var.existing_secrets_endpoint_type)
