@@ -200,7 +200,7 @@ variable "existing_secrets_manager_kms_key_crn" {
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the existing Hyper Protect Crypto Services or Key Protect instance. This is only required if not supplying an existing key to use for Secrets Manager."
+  description = "The CRN of the Hyper Protect Crypto Services or Key Protect instance. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
 }
 
 variable "kms_endpoint_type" {
