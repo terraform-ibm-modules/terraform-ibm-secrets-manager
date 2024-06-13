@@ -216,7 +216,7 @@ variable "kms_endpoint_type" {
 variable "kms_key_ring_name" {
   type        = string
   default     = "sm-cos-key-ring"
-  description = "The name to give to the new key ring used to store the key. Only required if not supplying an existing root key CRN. If the prefix input variable is passed it is added in the format of '<prefix>-value'."
+  description = "The name for the new key ring to store the key. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. If a prefix input variable is passed, it is added to the value in the `<prefix>-value` format. ."
 }
 
 variable "kms_key_name" {
