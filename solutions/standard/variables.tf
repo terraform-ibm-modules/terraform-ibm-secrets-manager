@@ -22,7 +22,7 @@ variable "resource_group_name" {
 
 variable "region" {
   type        = string
-  description = "The region where Secrets Manager resources are provisioned."
+  description = "The region to provision resources to."
   default     = "us-south"
 }
 
