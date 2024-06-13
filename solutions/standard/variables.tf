@@ -189,7 +189,7 @@ variable "skip_kms_iam_authorization_policy" {
 
 variable "existing_secrets_manager_kms_key_crn" {
   type        = string
-  description = "The CRN of an existing Key Protect key to use for Secrets Manager. If not supplied, a new key ring and key will be created."
+  description = "The CRN of a Key Protect or Hyper Protect Crypto Services key to use for Secrets Manager. If not specified, a key ring and key are created."
   default     = null
 }
 
