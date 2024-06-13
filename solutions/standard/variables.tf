@@ -86,7 +86,7 @@ variable "secret_manager_tags" {
 
 variable "public_engine_enabled" {
   type        = bool
-  description = "Set this to true to configure an Secrets Manager public certificate engine for an existing Secrets Manager instance. If set to false, no public certificate engine will be configured for your instance."
+  description = "Set this to true to configure a Secrets Manager public certificate engine for an existing Secrets Manager instance. If set to false, no public certificate engine will be configured for your instance."
   default     = false
 }
 
