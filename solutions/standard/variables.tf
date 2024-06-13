@@ -28,7 +28,7 @@ variable "region" {
 
 variable "prefix" {
   type        = string
-  description = "An optional prefix to append to all resources created by this solution."
+  description = "The prefix to apply to all resources created by this solution."
   default     = null
 }
 
