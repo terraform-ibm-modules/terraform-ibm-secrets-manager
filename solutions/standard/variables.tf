@@ -38,7 +38,7 @@ variable "prefix" {
 
 variable "secrets_manager_instance_name" {
   type        = string
-  description = "The name to give the Secrets Manager instance provisioned by this solution. If the prefix input variable is passed then it is prefixed infront of the value in the format of '<prefix>-value'"
+  description = "The name to give the Secrets Manager instance provisioned by this solution. If a prefix input variable is specified, it is added to the value in the `<prefix>-value` format."
   default     = "base-security-services-sm"
 }
 
