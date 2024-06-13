@@ -222,7 +222,7 @@ variable "kms_key_ring_name" {
 variable "kms_key_name" {
   type        = string
   default     = "sm-cos-key"
-  description = "The name to give to the new root key. Only required if not supplying an existing root key CRN. If the prefix input variable is passed it is added in the format of '<prefix>-value'."
+  description = "The name for the new root key. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. If a prefix input variable is passed, it is added to the value in the `<prefix>-value` format."
 }
 
 ########################################################################################################################
