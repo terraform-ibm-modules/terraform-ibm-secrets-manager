@@ -16,7 +16,7 @@ variable "use_existing_resource_group" {
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or an existing resource group where the Secrets Manager resources are provisioned. If prefix input variable is passed then it is prefixed in front of the value in the format of '<prefix>-value'. Optional if existing_secrets_manager_crn is not set."
+  description = "The name of a new or existing resource group to provision resources to. If a prefix input variable is passed, it is added to the value in the `<prefix>-value` format. Optional if `existing_secrets_manager_crn` is not specified."
   default     = null
 }
 
