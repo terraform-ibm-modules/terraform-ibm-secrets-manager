@@ -16,7 +16,7 @@ variable "use_existing_resource_group" {
 
 variable "resource_group_name" {
   type        = string
-  description = "The name of a new or existing resource group to provision resources to. If a prefix input variable is passed, it is added to the value in the `<prefix>-value` format. Optional if `existing_secrets_manager_crn` is not specified."
+  description = "The name of a new or existing resource group to provision resources to. If a prefix input variable is specified, it's added to the value in the `<prefix>-value` format. Optional if `existing_secrets_manager_crn` is not specified."
   default     = null
 }
 
@@ -60,7 +60,7 @@ variable "existing_secrets_endpoint_type" {
 
 variable "service_plan" {
   type        = string
-  description = "The pricing plan to use when provisioning a new Secrets Manager instance. Only 'standard' and 'trial' are allowed values. This variable is only used if `provision_sm_instance` is set to true."
+  description = "The pricing plan to use when provisioning a Secrets Manager instance. Possible values: `standard`, `trial`. Applies only if `provision_sm_instance` is set to `true`."
   default     = "standard"
   validation {
     condition     = contains(["standard", "trial"], var.service_plan)
@@ -70,7 +70,7 @@ variable "service_plan" {
 
 variable "allowed_network" {
   type        = string
-  description = "The types of service endpoints to set on the Secrets Manager instance. Only `private-only` or `public-and-private` are allowed."
+  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values: `private-only`, `public-and-private`."
   default     = "private-only"
   validation {
     condition     = contains(["private-only", "public-and-private"], var.allowed_network)
@@ -105,7 +105,7 @@ variable "cis_id" {
 
 variable "dns_provider_name" {
   type        = string
-  description = "The name of the DNS provider for the public_cert secrets engine."
+  description = "The name of the DNS provider for the public certificate secrets engine configuration."
   default     = "certificate-dns"
 }
 
