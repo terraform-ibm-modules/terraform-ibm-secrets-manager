@@ -240,3 +240,9 @@ variable "skip_event_notification_iam_authorization_policy" {
   description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances (scoped to the resource group) an 'Event Source Manager' role to the given Event Notifications instance passed in the `existing_event_notification_instance_crn` input variable."
   default     = false
 }
+
+variable "sm_en_email_list" {
+  type        = list(string)
+  description = "The list of email address to target out when Secrets Manager triggers an event"
+  default     = []
+}
