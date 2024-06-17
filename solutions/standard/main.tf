@@ -9,7 +9,7 @@ locals {
 module "resource_group" {
   count                        = var.existing_secrets_manager_crn == null ? 1 : 0
   source                       = "terraform-ibm-modules/resource-group/ibm"
-  version                      = "1.1.5"
+  version                      = "1.1.6"
   resource_group_name          = var.use_existing_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
@@ -34,7 +34,7 @@ module "kms" {
   }
   count                       = var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.13.1"
+  version                     = "4.13.2"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_guid  = local.existing_kms_guid
@@ -95,7 +95,7 @@ module "secrets_manager" {
 module "iam_secrets_engine" {
   count                = var.iam_engine_enabled ? 1 : 0
   source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
-  version              = "1.2.1"
+  version              = "1.2.2"
   region               = local.secrets_manager_region
   iam_engine_name      = var.prefix != null ? "${var.prefix}-${var.iam_engine_name}" : var.iam_engine_name
   secrets_manager_guid = local.secrets_manager_guid
@@ -113,7 +113,7 @@ locals {
 module "secrets_manager_public_cert_engine" {
   count   = var.public_engine_enabled ? 1 : 0
   source  = "terraform-ibm-modules/secrets-manager-public-cert-engine/ibm"
-  version = "1.0.0"
+  version = "1.0.1"
   providers = {
     ibm              = ibm
     ibm.secret-store = ibm
@@ -133,7 +133,7 @@ module "secrets_manager_public_cert_engine" {
 module "private_secret_engine" {
   count                     = var.private_engine_enabled ? 1 : 0
   source                    = "terraform-ibm-modules/secrets-manager-private-cert-engine/ibm"
-  version                   = "1.3.1"
+  version                   = "1.3.2"
   secrets_manager_guid      = local.secrets_manager_guid
   region                    = var.region
   root_ca_name              = var.root_ca_name
