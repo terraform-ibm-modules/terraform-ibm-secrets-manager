@@ -154,8 +154,8 @@ data "ibm_resource_instance" "existing_sm" {
 #######################################################################################################################
 
 locals {
-  parsed_existing_en_instance_crn = var.existing_event_notification_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
-  existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[7] : null
+  parsed_existing_en_instance_crn = var.existing_event_notification_instance_crn != null ? split(":", var.existing_event_notification_instance_crn) : []
+  existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
 }
 
 data "ibm_en_destinations" "en_destinations" {
@@ -186,9 +186,9 @@ resource "ibm_en_subscription_email" "email_subscription" {
   topic_id       = ibm_en_topic.en_topic[count.index].topic_id
   attributes {
     add_notification_payload = true
-    reply_to_mail            = "compliancealert@ibm.com"
+    reply_to_mail            = var.sm_en_reply_to_email
     reply_to_name            = "Secret Manager Event Notifications Bot"
-    from_name                = "sm_en_notifications@ibm.com"
+    from_name                = var.sm_en_from_email
     invited                  = var.sm_en_email_list
   }
 }

@@ -246,3 +246,15 @@ variable "sm_en_email_list" {
   description = "The list of email address to target out when Secrets Manager triggers an event"
   default     = []
 }
+
+variable "sm_en_from_email" {
+  type        = string
+  description = "The email address in the used in the 'from' of any Secret Manager event coming from Event Notifications"
+  default     = "compliancealert@ibm.com"
+}
+
+variable "sm_en_reply_to_email" {
+  type        = string
+  description = "The email address used in the 'reply_to' of any Secret Manager event coming from Event Notifications"
+  default     = "no-reply@ibm.com"
+}
