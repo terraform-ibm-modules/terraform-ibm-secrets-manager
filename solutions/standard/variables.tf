@@ -240,3 +240,21 @@ variable "skip_event_notification_iam_authorization_policy" {
   description = "If set to true, this skips the creation of a service to service authorization from Secrets Manager to Event Notifications. If false, the service to service authorization is created."
   default     = false
 }
+
+variable "sm_en_email_list" {
+  type        = list(string)
+  description = "The list of email address to target out when Secrets Manager triggers an event"
+  default     = []
+}
+
+variable "sm_en_from_email" {
+  type        = string
+  description = "The email address in the used in the 'from' of any Secret Manager event coming from Event Notifications"
+  default     = "compliancealert@ibm.com"
+}
+
+variable "sm_en_reply_to_email" {
+  type        = string
+  description = "The email address used in the 'reply_to' of any Secret Manager event coming from Event Notifications"
+  default     = "no-reply@ibm.com"
+}
