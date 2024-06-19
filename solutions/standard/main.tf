@@ -9,7 +9,7 @@ locals {
 module "resource_group" {
   count                        = var.existing_secrets_manager_crn == null ? 1 : 0
   source                       = "terraform-ibm-modules/resource-group/ibm"
-  version                      = "1.1.5"
+  version                      = "1.1.6"
   resource_group_name          = var.use_existing_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
@@ -61,7 +61,7 @@ module "kms" {
   }
   count                       = var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.13.1"
+  version                     = "4.13.2"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_guid  = local.existing_kms_guid
@@ -123,7 +123,7 @@ module "secrets_manager" {
 module "iam_secrets_engine" {
   count                = var.iam_engine_enabled ? 1 : 0
   source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
-  version              = "1.2.1"
+  version              = "1.2.2"
   region               = local.secrets_manager_region
   iam_engine_name      = var.prefix != null ? "${var.prefix}-${var.iam_engine_name}" : var.iam_engine_name
   secrets_manager_guid = local.secrets_manager_guid
@@ -141,7 +141,7 @@ locals {
 module "secrets_manager_public_cert_engine" {
   count   = var.public_engine_enabled ? 1 : 0
   source  = "terraform-ibm-modules/secrets-manager-public-cert-engine/ibm"
-  version = "1.0.0"
+  version = "1.0.1"
   providers = {
     ibm              = ibm
     ibm.secret-store = ibm
@@ -161,7 +161,7 @@ module "secrets_manager_public_cert_engine" {
 module "private_secret_engine" {
   count                     = var.private_engine_enabled ? 1 : 0
   source                    = "terraform-ibm-modules/secrets-manager-private-cert-engine/ibm"
-  version                   = "1.3.1"
+  version                   = "1.3.2"
   secrets_manager_guid      = local.secrets_manager_guid
   region                    = var.region
   root_ca_name              = var.root_ca_name
@@ -175,4 +175,48 @@ module "private_secret_engine" {
 data "ibm_resource_instance" "existing_sm" {
   count      = var.existing_secrets_manager_crn == null ? 0 : 1
   identifier = var.existing_secrets_manager_crn
+}
+
+#######################################################################################################################
+# Secrets Manager Event Notifications Configuration
+#######################################################################################################################
+
+locals {
+  parsed_existing_en_instance_crn = var.existing_event_notification_instance_crn != null ? split(":", var.existing_event_notification_instance_crn) : []
+  existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
+}
+
+data "ibm_en_destinations" "en_destinations" {
+  count         = var.existing_event_notification_instance_crn != null ? 1 : 0
+  instance_guid = local.existing_en_guid
+}
+
+resource "ibm_en_topic" "en_topic" {
+  count         = var.existing_event_notification_instance_crn != null ? 1 : 0
+  instance_guid = local.existing_en_guid
+  name          = "Secrets Manager Topic"
+  description   = "Topic for Secrets Manager events routing"
+  sources {
+    id = local.secrets_manager_crn
+    rules {
+      enabled           = true
+      event_type_filter = "$.*"
+    }
+  }
+}
+
+resource "ibm_en_subscription_email" "email_subscription" {
+  count          = var.existing_event_notification_instance_crn != null && length(var.sm_en_email_list) > 0 ? 1 : 0
+  instance_guid  = local.existing_en_guid
+  name           = "Email for Secrets Manager Subscription"
+  description    = "Subscription for Secret Manager Events"
+  destination_id = [for s in toset(data.ibm_en_destinations.en_destinations[count.index].destinations) : s.id if s.type == "smtp_ibm"][0]
+  topic_id       = ibm_en_topic.en_topic[count.index].topic_id
+  attributes {
+    add_notification_payload = true
+    reply_to_mail            = var.sm_en_reply_to_email
+    reply_to_name            = "Secret Manager Event Notifications Bot"
+    from_name                = var.sm_en_from_email
+    invited                  = var.sm_en_email_list
+  }
 }
