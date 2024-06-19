@@ -183,7 +183,7 @@ variable "iam_engine_name" {
 
 variable "skip_kms_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the existing_kms_instance_crn variable."
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the existing_kms_instance_crn variable. To support cross account functionality you must also provide a value for `ibmcloud_kms_api_key`."
   default     = false
 }
 
@@ -200,12 +200,12 @@ variable "existing_secrets_manager_kms_key_crn" {
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the existed Hyper Protect Crypto Services or Key Protect instance. Only required if not supplying an existing KMS key to use for Secrets Manager."
+  description = "The CRN of the existed Hyper Protect Crypto Services or Key Protect instance. Only required if not supplying an existing KMS key to use for Secrets Manager. To support cross account functionality you must also provide a value for `ibmcloud_kms_api_key`"
 }
 
 variable "kms_endpoint_type" {
   type        = string
-  description = "The type of endpoint to be used for communicating with the KMS instance. Allowed values are: 'public' or 'private' (default). Only required if not supplying an existing KMS root key CRN."
+  description = "The type of endpoint to be used for communicating with the KMS instance. Allowed values are: 'public' or 'private' (default). Only required if not supplying an existing KMS root key CRN. To support cross account functionality you must also provide a value for `ibmcloud_kms_api_key`"
   default     = "public"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
