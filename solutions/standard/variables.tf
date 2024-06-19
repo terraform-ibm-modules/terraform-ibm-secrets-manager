@@ -51,7 +51,7 @@ variable "existing_secrets_manager_crn" {
 variable "existing_secrets_endpoint_type" {
   type        = string
   description = "The endpoint type to use if passing a value for `existing_secrets_manager_crn`."
-  default     = "private"
+  default     = "public"
   validation {
     condition     = contains(["public", "private"], var.existing_secrets_endpoint_type)
     error_message = "Allowed values for 'existing_secrets_endpoint_type' are \"public\" and \"private\"."
@@ -206,7 +206,7 @@ variable "existing_kms_instance_crn" {
 variable "kms_endpoint_type" {
   type        = string
   description = "The type of endpoint to be used for communicating with the KMS instance. Allowed values are: 'public' or 'private' (default). Only required if not supplying an existing KMS root key CRN."
-  default     = "private"
+  default     = "public"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
     error_message = "The kms_endpoint_type value must be 'public' or 'private'."
@@ -223,6 +223,13 @@ variable "kms_key_name" {
   type        = string
   default     = "sm-cos-key"
   description = "The name to give to the new KMS root key that will be used to enable advanced, customer-managed encryption for your Secrets Manager secrets. Only required if not supplying an existing KMS root key CRN. If prefix input variable is passed then it will get prefixed infront of the value in the format of '<prefix>-value'"
+}
+
+variable "ibmcloud_kms_api_key" {
+  type        = string
+  description = "The IBM Cloud API key with access to create a root key and key ring in the key management service instance. If the KMS instance is in a different account, specify a key from that account. If not specified, the ibmcloud_api_key variable is used."
+  sensitive   = true
+  default     = null
 }
 
 ########################################################################################################################

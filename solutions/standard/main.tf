@@ -25,6 +25,33 @@ locals {
   parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
   existing_kms_guid                = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[7] : null
+  apply_cross_account_auth_policy  = !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null ? 1 : 0
+
+  kms_service_name = local.kms_key_crn != null ? (
+    can(regex(".*kms.*", local.kms_key_crn)) ? "kms" : can(regex(".*hs-crypto.*", local.kms_key_crn)) ? "hs-crypto" : null
+  ) : null
+}
+
+data "ibm_iam_account_settings" "iam_account_settings" {
+  count = local.apply_cross_account_auth_policy
+}
+
+resource "ibm_iam_authorization_policy" "kms_policy" {
+  count                       = local.apply_cross_account_auth_policy
+  provider                    = ibm.kms
+  source_service_account      = data.ibm_iam_account_settings.iam_account_settings[0].account_id
+  source_service_name         = "secrets-manager"
+  source_resource_group_id    = module.resource_group[0].resource_group_id
+  target_service_name         = local.kms_service_name
+  target_resource_instance_id = local.existing_kms_guid
+  roles                       = ["Reader"]
+  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} to read from the ${local.kms_service_name} instance GUID ${local.existing_kms_guid}"
+}
+
+# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
+resource "time_sleep" "wait_for_authorization_policy" {
+  depends_on      = [ibm_iam_authorization_policy.kms_policy]
+  create_duration = "30s"
 }
 
 # KMS root key for Secrets Manager secret encryption
@@ -72,6 +99,7 @@ locals {
 
 module "secrets_manager" {
   count                = var.existing_secrets_manager_crn != null ? 0 : 1
+  depends_on           = [ibm_iam_authorization_policy.kms_policy]
   source               = "../.."
   resource_group_id    = module.resource_group[0].resource_group_id
   region               = var.region
@@ -83,7 +111,7 @@ module "secrets_manager" {
   kms_encryption_enabled            = true
   existing_kms_instance_guid        = local.existing_kms_guid
   kms_key_crn                       = local.kms_key_crn
-  skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy
+  skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || var.ibmcloud_kms_api_key != null
   # event notifications dependency
   enable_event_notification        = var.existing_event_notification_instance_crn != null ? true : false
   existing_en_instance_crn         = var.existing_event_notification_instance_crn
