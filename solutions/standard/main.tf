@@ -45,7 +45,7 @@ resource "ibm_iam_authorization_policy" "kms_policy" {
   target_service_name         = local.kms_service_name
   target_resource_instance_id = local.existing_kms_guid
   roles                       = ["Reader"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} to read from the ${local.kms_service_name} instance GUID ${local.existing_kms_guid}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} in account ${data.ibm_iam_account_settings.iam_account_settings[0].account_id} to read from the ${local.kms_service_name} instance GUID ${local.existing_kms_guid}"
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
@@ -99,7 +99,7 @@ locals {
 
 module "secrets_manager" {
   count                = var.existing_secrets_manager_crn != null ? 0 : 1
-  depends_on           = [ibm_iam_authorization_policy.kms_policy]
+  depends_on           = [time_sleep.wait_for_authorization_policy]
   source               = "../.."
   resource_group_id    = module.resource_group[0].resource_group_id
   region               = var.region
