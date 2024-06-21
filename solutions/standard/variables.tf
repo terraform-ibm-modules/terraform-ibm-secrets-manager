@@ -183,7 +183,7 @@ variable "iam_engine_name" {
 
 variable "skip_kms_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key. If set to false, pass in a value for the Key Protect or Hyper Protect Crypto Service instance in the existing_kms_instance_crn variable. To support cross account functionality you must also provide a value for `ibmcloud_kms_api_key`"
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key. If set to false, pass in a value for the Key Protect or Hyper Protect Crypto Service instance in the existing_kms_instance_crn variable."
   default     = false
 }
 
@@ -200,12 +200,12 @@ variable "existing_secrets_manager_kms_key_crn" {
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the Hyper Protect Crypto Services or Key Protect instance. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. To support cross account functionality you must also provide a value for `ibmcloud_kms_api_key`"
+  description = "The CRN of the Hyper Protect Crypto Services or Key Protect instance. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`"
 }
 
 variable "kms_endpoint_type" {
   type        = string
-  description = "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. To support cross account functionality you must also provide a value for `ibmcloud_kms_api_key`"
+  description = "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
   default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
