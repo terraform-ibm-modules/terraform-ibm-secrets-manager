@@ -4,7 +4,7 @@ This solution supports the following:
 - Creating a new resource group, or taking in an existing one.
 - Provisioning and configuring of a Secrets Manager instance.
 - Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance.
-- Configuring KMS encryption using a newly created key, or passing an existing key. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`
+- Configuring KMS encryption using a newly created key, or passing an existing key.
 
 ![secret-manager-deployable-architecture](../../reference-architecture/secrets_manager.svg)
 
