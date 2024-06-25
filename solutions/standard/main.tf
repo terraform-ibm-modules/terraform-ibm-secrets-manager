@@ -163,8 +163,15 @@ data "ibm_en_destinations" "en_destinations" {
   instance_guid = local.existing_en_guid
 }
 
+resource "time_sleep" "wait_for_secrets_manager" {
+  depends_on = [module.secrets_manager]
+
+  create_duration = "30s"
+}
+
 resource "ibm_en_topic" "en_topic" {
   count         = var.existing_event_notification_instance_crn != null ? 1 : 0
+  depends_on    = [time_sleep.wait_for_secrets_manager]
   instance_guid = local.existing_en_guid
   name          = "Secrets Manager Topic"
   description   = "Topic for Secrets Manager events routing"
