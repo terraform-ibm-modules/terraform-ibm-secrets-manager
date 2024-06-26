@@ -183,7 +183,7 @@ variable "iam_engine_name" {
 
 variable "skip_kms_iam_authorization_policy" {
   type        = bool
-  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key. If set to false, pass in a value for the Key Protect or Hyper Protect Crypto Service instance in the existing_kms_instance_crn variable."
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the `existing_kms_instance_crn` variable. If a value is specified for `ibmcloud_kms_api_key`, the policy is created in the KMS account. In addition, no policy is created if `kms_encryption_enabled` is set to false."
   default     = false
 }
 
@@ -200,7 +200,7 @@ variable "existing_secrets_manager_kms_key_crn" {
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the Hyper Protect Crypto Services or Key Protect instance. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`"
+  description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Applies only if `existing_secrets_manager_kms_key_crn` is not specified and if `skip_kms_iam_auth_policy` is false. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`"
 }
 
 variable "kms_endpoint_type" {
@@ -227,7 +227,7 @@ variable "kms_key_name" {
 
 variable "ibmcloud_kms_api_key" {
   type        = string
-  description = "The IBM Cloud API key with access to create a root key and key ring in the key management service instance. If the KMS instance is in a different account, specify a key from that account. If not specified, the ibmcloud_api_key variable is used."
+  description = "The IBM Cloud API key that can create a root key and key ring in the key management service (KMS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the instance in `existing_kms_instance_crn` is in an account that's different from the Secrets Manager instance. Leave this input empty if the same account owns both instances."
   sensitive   = true
   default     = null
 }
