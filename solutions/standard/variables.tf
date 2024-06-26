@@ -200,7 +200,7 @@ variable "existing_secrets_manager_kms_key_crn" {
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Applies only if `existing_secrets_manager_kms_key_crn` is not specified and if `skip_kms_iam_auth_policy` is false. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`"
+  description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Applies only if `existing_secrets_manager_kms_key_crn` is not specified and if `skip_kms_iam_authorization_policy` is false. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`"
 }
 
 variable "kms_endpoint_type" {
