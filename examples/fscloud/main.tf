@@ -83,4 +83,21 @@ module "secrets_manager" {
       }]
     }
   ]
+  secrets = [{
+    secret_group_name = "${var.prefix}-secret-group"
+    secrets = [{
+      secret_name             = "${var.prefix}-secret1"
+      secret_type             = "arbitrary"
+      secret_username         = "test"
+      secret_payload_password = "test"
+      },
+      {
+        secret_name             = "${var.prefix}-secret2"
+        secret_type             = "arbitrary"
+        secret_username         = "test"
+        secret_payload_password = "test"
+      }
+    ]
+    }
+  ]
 }
