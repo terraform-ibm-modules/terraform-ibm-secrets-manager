@@ -54,8 +54,7 @@ module "key_protect" {
 ##############################################################################
 
 module "secrets_manager" {
-  source                     = "terraform-ibm-modules/secrets-manager/ibm"
-  version                    = "1.14.1"
+  source                     = "../.."
   resource_group_id          = module.resource_group.resource_group_id
   region                     = var.region
   secrets_manager_name       = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
