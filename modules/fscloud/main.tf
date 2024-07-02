@@ -15,3 +15,11 @@ module "secrets_manager" {
   kms_key_crn                      = var.kms_key_crn
   cbr_rules                        = var.cbr_rules
 }
+
+module "secrets" {
+  source                      = "../../modules/secrets"
+  existing_sm_instance_guid   = module.secrets_manager.secrets_manager_guid
+  existing_sm_instance_region = var.region
+  secrets                     = var.secrets
+  endpoint_type               = "private"
+}
