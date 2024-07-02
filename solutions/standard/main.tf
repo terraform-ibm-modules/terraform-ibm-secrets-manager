@@ -25,6 +25,33 @@ locals {
   parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
   existing_kms_guid                = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[7] : null
+  create_cross_account_auth_policy = !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
+
+  kms_service_name = local.kms_key_crn != null ? (
+    can(regex(".*kms.*", local.kms_key_crn)) ? "kms" : can(regex(".*hs-crypto.*", local.kms_key_crn)) ? "hs-crypto" : null
+  ) : null
+}
+
+data "ibm_iam_account_settings" "iam_account_settings" {
+  count = local.create_cross_account_auth_policy ? 1 : 0
+}
+
+resource "ibm_iam_authorization_policy" "kms_policy" {
+  count                       = local.create_cross_account_auth_policy ? 1 : 0
+  provider                    = ibm.kms
+  source_service_account      = data.ibm_iam_account_settings.iam_account_settings[0].account_id
+  source_service_name         = "secrets-manager"
+  source_resource_group_id    = module.resource_group[0].resource_group_id
+  target_service_name         = local.kms_service_name
+  target_resource_instance_id = local.existing_kms_guid
+  roles                       = ["Reader"]
+  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} in the account ${data.ibm_iam_account_settings.iam_account_settings[0].account_id} to read from the ${local.kms_service_name} instance GUID ${local.existing_kms_guid}"
+}
+
+# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
+resource "time_sleep" "wait_for_authorization_policy" {
+  depends_on      = [ibm_iam_authorization_policy.kms_policy]
+  create_duration = "30s"
 }
 
 # KMS root key for Secrets Manager secret encryption
@@ -34,7 +61,7 @@ module "kms" {
   }
   count                       = var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.13.2"
+  version                     = "4.13.4"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_guid  = local.existing_kms_guid
@@ -72,6 +99,7 @@ locals {
 
 module "secrets_manager" {
   count                = var.existing_secrets_manager_crn != null ? 0 : 1
+  depends_on           = [time_sleep.wait_for_authorization_policy]
   source               = "../.."
   resource_group_id    = module.resource_group[0].resource_group_id
   region               = var.region
@@ -83,7 +111,7 @@ module "secrets_manager" {
   kms_encryption_enabled            = true
   existing_kms_instance_guid        = local.existing_kms_guid
   kms_key_crn                       = local.kms_key_crn
-  skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy
+  skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || local.create_cross_account_auth_policy
   # event notifications dependency
   enable_event_notification        = var.existing_event_notification_instance_crn != null ? true : false
   existing_en_instance_crn         = var.existing_event_notification_instance_crn
@@ -147,4 +175,55 @@ module "private_secret_engine" {
 data "ibm_resource_instance" "existing_sm" {
   count      = var.existing_secrets_manager_crn == null ? 0 : 1
   identifier = var.existing_secrets_manager_crn
+}
+
+#######################################################################################################################
+# Secrets Manager Event Notifications Configuration
+#######################################################################################################################
+
+locals {
+  parsed_existing_en_instance_crn = var.existing_event_notification_instance_crn != null ? split(":", var.existing_event_notification_instance_crn) : []
+  existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
+}
+
+data "ibm_en_destinations" "en_destinations" {
+  count         = var.existing_event_notification_instance_crn != null ? 1 : 0
+  instance_guid = local.existing_en_guid
+}
+
+resource "time_sleep" "wait_for_secrets_manager" {
+  depends_on = [module.secrets_manager]
+
+  create_duration = "30s"
+}
+
+resource "ibm_en_topic" "en_topic" {
+  count         = var.existing_event_notification_instance_crn != null ? 1 : 0
+  depends_on    = [time_sleep.wait_for_secrets_manager]
+  instance_guid = local.existing_en_guid
+  name          = "Secrets Manager Topic"
+  description   = "Topic for Secrets Manager events routing"
+  sources {
+    id = local.secrets_manager_crn
+    rules {
+      enabled           = true
+      event_type_filter = "$.*"
+    }
+  }
+}
+
+resource "ibm_en_subscription_email" "email_subscription" {
+  count          = var.existing_event_notification_instance_crn != null && length(var.sm_en_email_list) > 0 ? 1 : 0
+  instance_guid  = local.existing_en_guid
+  name           = "Email for Secrets Manager Subscription"
+  description    = "Subscription for Secret Manager Events"
+  destination_id = [for s in toset(data.ibm_en_destinations.en_destinations[count.index].destinations) : s.id if s.type == "smtp_ibm"][0]
+  topic_id       = ibm_en_topic.en_topic[count.index].topic_id
+  attributes {
+    add_notification_payload = true
+    reply_to_mail            = var.sm_en_reply_to_email
+    reply_to_name            = "Secret Manager Event Notifications Bot"
+    from_name                = var.sm_en_from_email
+    invited                  = var.sm_en_email_list
+  }
 }
