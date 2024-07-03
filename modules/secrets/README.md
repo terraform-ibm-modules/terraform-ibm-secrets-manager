@@ -19,15 +19,15 @@ module "secrets_manager" {
   existing_sm_instance_region = "us-south"
   endpoint_type               = "public"
   secrets = [{
-    secret_group_name = "${var.prefix}-secret-group"
+    secret_group_name = "secret-group"
     secrets = [{
-      secret_name             = "${var.prefix}-secret1"
+      secret_name             = "secret1"
       secret_type             = "arbitrary"
       secret_username         = "test"
       secret_payload_password = "test"
       },
       {
-        secret_name             = "${var.prefix}-secret2"
+        secret_name             = "secret2"
         secret_type             = "arbitrary"
         secret_username         = "test"
         secret_payload_password = "test"
@@ -50,14 +50,14 @@ module "secrets_manager" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_secrets_manager_groups"></a> [secrets\_manager\_groups](#module\_secrets\_manager\_groups) | terraform-ibm-modules/secrets-manager-secret-group/ibm | 1.2.2 |
+| <a name="module_secret_groups"></a> [secret\_groups](#module\_secret\_groups) | terraform-ibm-modules/secrets-manager-secret-group/ibm | 1.2.2 |
 | <a name="module_sm_secrets"></a> [sm\_secrets](#module\_sm\_secrets) | terraform-ibm-modules/secrets-manager-secret/ibm | 1.3.2 |
 
 ### Resources
 
 | Name | Type |
 |------|------|
-| [ibm_sm_secret_groups.secret_groups](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/sm_secret_groups) | data source |
+| [ibm_sm_secret_groups.existing_secret_groups](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/sm_secret_groups) | data source |
 
 ### Inputs
 

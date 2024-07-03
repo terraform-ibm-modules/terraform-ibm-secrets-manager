@@ -49,4 +49,25 @@ module "secrets_manager" {
   kms_key_crn                = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
   enable_event_notification  = true
   existing_en_instance_crn   = module.event_notification.crn
+  secrets = [
+    {
+      secret_group_name = "${var.prefix}-secret-group"
+      secrets = [{
+        secret_name             = "${var.prefix}-kp-key-crn"
+        secret_type             = "arbitrary"
+        secret_payload_password = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
+        }
+      ]
+    },
+    {
+      secret_group_name     = "default"
+      existing_secret_group = true
+      secrets = [{
+        secret_name             = "${var.prefix}-kp-key-id"
+        secret_type             = "arbitrary"
+        secret_payload_password = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].key_id
+        }
+      ]
+    }
+  ]
 }

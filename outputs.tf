@@ -27,4 +27,14 @@ output "secrets_manager_region" {
   description = "Region of the Secrets Manager instance"
 }
 
+output "secret_groups" {
+  value       = module.secrets.secret_groups
+  description = "IDs of the created Secret Group"
+}
+
+output "secrets" {
+  value       = module.secrets.secrets
+  description = "List of secret mananger secret config data"
+}
+
 ##############################################################################

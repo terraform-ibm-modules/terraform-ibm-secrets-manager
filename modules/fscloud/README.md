@@ -37,7 +37,6 @@ module "secrets_manager" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_secrets"></a> [secrets](#module\_secrets) | ../../modules/secrets | n/a |
 | <a name="module_secrets_manager"></a> [secrets\_manager](#module\_secrets\_manager) | ../.. | n/a |
 
 ### Resources

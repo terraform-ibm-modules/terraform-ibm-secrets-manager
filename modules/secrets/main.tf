@@ -12,13 +12,13 @@ locals {
   ])
 }
 
-data "ibm_sm_secret_groups" "secret_groups" {
+data "ibm_sm_secret_groups" "existing_secret_groups" {
   instance_id   = var.existing_sm_instance_guid
   region        = var.existing_sm_instance_region
   endpoint_type = var.endpoint_type
 }
 
-module "secrets_manager_groups" {
+module "secret_groups" {
   for_each                 = { for obj in local.secret_groups : obj.secret_group_name => obj }
   source                   = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
   version                  = "1.2.2"
@@ -38,12 +38,12 @@ locals {
     for secret_group in var.secrets :
     secret_group.existing_secret_group ? [
       for secret in secret_group.secrets != null ? secret_group.secrets : [] : merge({
-        secret_group_id   = secret_group.secret_group_name != null ? data.ibm_sm_secret_groups.secret_groups.secret_groups[index(data.ibm_sm_secret_groups.secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id : null
+        secret_group_id   = secret_group.secret_group_name != null ? data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id : null
         secret_group_name = secret_group.secret_group_name != null ? secret_group.secret_group_name : "default"
       }, secret)
       ] : [
       for secret in secret_group.secrets != null ? secret_group.secrets : [] : merge({
-        secret_group_id   = secret_group.secret_group_name != null ? module.secrets_manager_groups[secret_group.secret_group_name].secret_group_id : null
+        secret_group_id   = secret_group.secret_group_name != null ? module.secret_groups[secret_group.secret_group_name].secret_group_id : null
         secret_group_name = secret_group.secret_group_name != null ? secret_group.secret_group_name : "default"
       }, secret)
     ]

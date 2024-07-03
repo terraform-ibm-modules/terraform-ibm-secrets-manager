@@ -4,7 +4,7 @@
 
 output "secret_groups" {
   description = "IDs of the created Secret Group"
-  value       = module.secrets_manager_groups
+  value       = module.secret_groups
 }
 
 output "secrets" {
