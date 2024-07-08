@@ -11,7 +11,6 @@ import (
 
 func TestRunBasicExample(t *testing.T) {
 	t.Parallel()
-
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:      t,
 		TerraformDir: "examples/basic",
@@ -28,6 +27,21 @@ func TestRunCompleteExample(t *testing.T) {
 
 	options := setupOptions(t, "secrets-mgr")
 
+	output, err := options.RunTestConsistency()
+	assert.Nil(t, err, "This should not have errored")
+	assert.NotNil(t, output, "Expected some output")
+}
+
+func TestRunExistingSecretManagerExample(t *testing.T) {
+	t.Parallel()
+	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
+		Testing:      t,
+		TerraformDir: "examples/existing-secret-manager",
+		Prefix:       "secrets-mgr-ex",
+		TerraformVars: map[string]interface{}{
+			"existing_sm_instance_crn": permanentResources["secretsManagerCRN"].(string),
+		},
+	})
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")

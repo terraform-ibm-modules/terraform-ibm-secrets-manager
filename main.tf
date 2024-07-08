@@ -15,10 +15,24 @@ locals {
   validate_event_notification = var.enable_event_notification && var.existing_en_instance_crn == null ? tobool("When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn") : true
   # tflint-ignore: terraform_unused_declarations
   validate_endpoint = var.enable_event_notification && var.endpoint_type == "public" && var.allowed_network == "private-only" ? tobool("It is not allowed to have conflicting var.endpoint_type and var.allowed_network values.") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_region = var.existing_sm_instance_crn == null && var.region == null ? tobool("When existing_sm_instance_crn is null, a value must be passed for var.region") : true
 }
 
+
+
+locals {
+  parsed_existing_sm_instance_crn = var.existing_sm_instance_crn != null ? split(":", var.existing_sm_instance_crn) : []
+  existing_sm_guid                = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[7] : null
+  existing_sm_region              = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[5] : null
+}
+data "ibm_resource_instance" "sm_instance" {
+  count      = var.existing_sm_instance_crn == null ? 0 : 1
+  identifier = local.existing_sm_guid
+}
 # Create Secrets Manager Instance
 resource "ibm_resource_instance" "secrets_manager_instance" {
+  count             = var.existing_sm_instance_crn == null ? 1 : 0
   depends_on        = [ibm_iam_authorization_policy.kms_policy]
   name              = var.secrets_manager_name
   service           = "secrets-manager"
@@ -65,7 +79,9 @@ resource "time_sleep" "wait_for_authorization_policy" {
 
 
 locals {
-  secrets_manager_guid = tolist(ibm_resource_instance.secrets_manager_instance[*].guid)[0]
+  secrets_manager_guid              = var.existing_sm_instance_crn != null ? local.existing_sm_guid : tolist(ibm_resource_instance.secrets_manager_instance[*].guid)[0]
+  secrets_manager_region            = var.existing_sm_instance_crn != null ? local.existing_sm_region : var.region
+  secrets_manager_resource_group_id = var.existing_sm_instance_crn != null ? data.ibm_resource_instance.sm_instance[0].resource_group_id : var.resource_group_id
 }
 
 ##############################################################################
@@ -112,7 +128,7 @@ module "cbr_rule" {
 resource "ibm_iam_authorization_policy" "en_policy" {
   count                       = var.enable_event_notification == false || var.skip_en_iam_authorization_policy ? 0 : 1
   source_service_name         = "secrets-manager"
-  source_resource_group_id    = var.resource_group_id
+  source_resource_group_id    = local.secrets_manager_resource_group_id
   target_service_name         = "event-notifications"
   target_resource_instance_id = regex(".*:(.*)::", var.existing_en_instance_crn)[0]
   roles                       = ["Event Source Manager"]
@@ -123,7 +139,7 @@ resource "ibm_sm_en_registration" "sm_en_registration" {
   count                                  = var.enable_event_notification ? 1 : 0
   depends_on                             = [time_sleep.wait_for_authorization_policy]
   instance_id                            = local.secrets_manager_guid
-  region                                 = var.region
+  region                                 = local.secrets_manager_region
   event_notifications_instance_crn       = var.existing_en_instance_crn
   event_notifications_source_description = "Secret Manager"
   event_notifications_source_name        = var.secrets_manager_name
