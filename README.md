@@ -20,8 +20,8 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
 * [Examples](./examples)
     * [Basic example](./examples/basic)
     * [Complete example with BYOK encryption](./examples/complete)
-    * [Complete example with BYOK encryption](./examples/existing-secret-manager)
     * [Financial Services Cloud profile example with KYOK encryption](./examples/fscloud)
+    * [existing-secret-manager example](./examples/existing-secret-manager)
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 

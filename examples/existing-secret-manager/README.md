@@ -1,6 +1,6 @@
-# Complete example with BYOK encryption
+# existing-secret-manager example
 
-This examples handles the provisioning of a new Secrets Manager instance.
+This examples handles the use of existing Secrets Manager instance
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ### Requirements
