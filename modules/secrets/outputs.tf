@@ -9,5 +9,5 @@ output "secret_groups" {
 
 output "secrets" {
   description = "List of secret mananger secret config data"
-  value       = module.sm_secrets
+  value       = module.secrets
 }

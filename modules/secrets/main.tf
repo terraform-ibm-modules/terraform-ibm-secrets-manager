@@ -5,10 +5,10 @@
 locals {
   secret_groups = flatten([
     for secret_group in var.secrets :
-    secret_group.existing_secret_group || secret_group.secret_group_name == null ? [] : [{
+    secret_group.existing_secret_group ? [] : [{
       secret_group_name        = secret_group.secret_group_name
       secret_group_description = secret_group.secret_group_description
-    }] if secret_group.secret_group_name != null
+    }]
   ])
 }
 
@@ -37,22 +37,20 @@ locals {
   secrets = flatten([
     for secret_group in var.secrets :
     secret_group.existing_secret_group ? [
-      for secret in secret_group.secrets != null ? secret_group.secrets : [] : merge({
-        secret_group_id   = secret_group.secret_group_name != null ? data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id : null
-        secret_group_name = secret_group.secret_group_name != null ? secret_group.secret_group_name : "default"
+      for secret in secret_group.secrets : merge({
+        secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id
       }, secret)
       ] : [
-      for secret in secret_group.secrets != null ? secret_group.secrets : [] : merge({
-        secret_group_id   = secret_group.secret_group_name != null ? module.secret_groups[secret_group.secret_group_name].secret_group_id : null
-        secret_group_name = secret_group.secret_group_name != null ? secret_group.secret_group_name : "default"
+      for secret in secret_group.secrets : merge({
+        secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
       }, secret)
     ]
   ])
 }
 
 # create secret
-module "sm_secrets" {
-  for_each                                = { for obj in local.secrets : "${obj.secret_group_name}.${obj.secret_name}" => obj }
+module "secrets" {
+  for_each                                = { for obj in local.secrets : obj.secret_name => obj }
   source                                  = "terraform-ibm-modules/secrets-manager-secret/ibm"
   version                                 = "1.3.2"
   region                                  = var.existing_sm_instance_region

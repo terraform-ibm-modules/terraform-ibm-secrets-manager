@@ -44,10 +44,10 @@ variable "secrets" {
   description = "Secret Manager secrets configurations."
   default     = []
   validation {
-    error_message = "The name of the secret group cannot be empty string."
+    error_message = "The name of the secret group cannot be null or empty string."
     condition = length([
       for secret in var.secrets :
-      true if(secret.secret_group_name == "")
+      true if(secret.secret_group_name == "" || secret.secret_group_name == null)
     ]) == 0
   }
   validation {
