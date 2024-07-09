@@ -37,5 +37,5 @@ variable "en_region" {
 variable "existing_sm_instance_crn" {
   type        = string
   description = "An existing Secrets Manager instance CRN. If not provided an new instance will be provisioned."
-  default = null
+  default     = null
 }
