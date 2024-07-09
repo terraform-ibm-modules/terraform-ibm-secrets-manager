@@ -2,14 +2,14 @@ module github.com/terraform-ibm-modules/terraform-ibm-secrets-manager
 
 go 1.21
 
-toolchain go1.22.4
+toolchain go1.22.5
 
 require (
 	github.com/IBM/go-sdk-core/v5 v5.17.4
 	github.com/IBM/secrets-manager-go-sdk/v2 v2.0.4
 	github.com/gruntwork-io/terratest v0.46.16
 	github.com/stretchr/testify v1.9.0
-	github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper v1.35.2
+	github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper v1.35.3
 )
 
 require (
