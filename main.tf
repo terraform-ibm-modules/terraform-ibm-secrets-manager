@@ -145,3 +145,15 @@ resource "ibm_sm_en_registration" "sm_en_registration" {
   event_notifications_source_name        = var.secrets_manager_name
   endpoint_type                          = var.endpoint_type
 }
+
+##############################################################################
+# Secret Groups/Secrets
+##############################################################################
+
+module "secrets" {
+  source                      = "./modules/secrets"
+  existing_sm_instance_guid   = local.secrets_manager_guid
+  existing_sm_instance_region = var.region
+  secrets                     = var.secrets
+  endpoint_type               = var.endpoint_type
+}
