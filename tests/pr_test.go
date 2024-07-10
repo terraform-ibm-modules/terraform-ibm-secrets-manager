@@ -153,7 +153,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	// ------------------------------------------------------------------------------------
 	region := validRegions[rand.Intn(len(validRegions))]
 	prefix := fmt.Sprintf("scc-exist-%s", strings.ToLower(random.UniqueId()))
-	realTerraformDir := "./existing-resources"
+	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
 	tags := common.GetTagsFromTravis()
 
@@ -164,7 +164,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
 	logger.Log(t, "Tempdir: ", tempTerraformDir)
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: tempTerraformDir,
+		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
 			"prefix":        prefix,
 			"region":        region,
