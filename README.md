@@ -17,6 +17,7 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
 * [terraform-ibm-secrets-manager](#terraform-ibm-secrets-manager)
 * [Submodules](./modules)
     * [fscloud](./modules/fscloud)
+    * [secrets](./modules/secrets)
 * [Examples](./examples)
     * [Basic example](./examples/basic)
     * [Complete example with BYOK encryption](./examples/complete)
@@ -75,6 +76,7 @@ You need the following permissions to run this module.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_cbr_rule"></a> [cbr\_rule](#module\_cbr\_rule) | terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module | 1.22.2 |
+| <a name="module_secrets"></a> [secrets](#module\_secrets) | ./modules/secrets | n/a |
 
 ### Resources
 
@@ -100,6 +102,7 @@ You need the following permissions to run this module.
 | <a name="input_kms_key_crn"></a> [kms\_key\_crn](#input\_kms\_key\_crn) | The root key CRN of a Key Management Service like Key Protect or Hyper Protect Crypto Services (HPCS) that you want to use for encryption. Only used if `kms_encryption_enabled` is set to true. | `string` | `null` | no |
 | <a name="input_region"></a> [region](#input\_region) | The region to provision the Secrets Manager instance to. | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | The ID of the resource group to provision the Secrets Manager instance to. | `string` | n/a | yes |
+| <a name="input_secrets"></a> [secrets](#input\_secrets) | Secret Manager secrets configurations. | <pre>list(object({<br>    secret_group_name        = string<br>    secret_group_description = optional(string)<br>    existing_secret_group    = optional(bool, false)<br>    secrets = optional(list(object({<br>      secret_name                             = string<br>      secret_description                      = optional(string)<br>      secret_type                             = optional(string)<br>      imported_cert_certificate               = optional(string)<br>      imported_cert_private_key               = optional(string)<br>      imported_cert_intermediate              = optional(string)<br>      secret_username                         = optional(string)<br>      secret_labels                           = optional(list(string), [])<br>      secret_payload_password                 = optional(string, "")<br>      secret_auto_rotation                    = optional(bool, true)<br>      secret_auto_rotation_unit               = optional(string, "day")<br>      secret_auto_rotation_interval           = optional(number, 89)<br>      service_credentials_ttl                 = optional(string, "7776000") # 90 days<br>      service_credentials_source_service_crn  = optional(string)<br>      service_credentials_source_service_role = optional(string)<br>    })))<br>  }))</pre> | `[]` | no |
 | <a name="input_secrets_manager_name"></a> [secrets\_manager\_name](#input\_secrets\_manager\_name) | The name to give the Secrets Manager instance. | `string` | n/a | yes |
 | <a name="input_skip_en_iam_authorization_policy"></a> [skip\_en\_iam\_authorization\_policy](#input\_skip\_en\_iam\_authorization\_policy) | Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances (scoped to the resource group) an 'Event Source Manager' role to the given Event Notifications instance passed in the `existing_en_instance_crn` input variable. In addition, no policy is created if `enable_event_notification` is set to false. | `bool` | `false` | no |
 | <a name="input_skip_kms_iam_authorization_policy"></a> [skip\_kms\_iam\_authorization\_policy](#input\_skip\_kms\_iam\_authorization\_policy) | Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the `existing_kms_instance_guid` variable. In addition, no policy is created if `kms_encryption_enabled` is set to false. | `bool` | `false` | no |
@@ -110,6 +113,8 @@ You need the following permissions to run this module.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_secret_groups"></a> [secret\_groups](#output\_secret\_groups) | IDs of the created Secret Group |
+| <a name="output_secrets"></a> [secrets](#output\_secrets) | List of secret mananger secret config data |
 | <a name="output_secrets_manager_crn"></a> [secrets\_manager\_crn](#output\_secrets\_manager\_crn) | CRN of the Secrets Manager instance |
 | <a name="output_secrets_manager_guid"></a> [secrets\_manager\_guid](#output\_secrets\_manager\_guid) | GUID of Secrets Manager instance |
 | <a name="output_secrets_manager_id"></a> [secrets\_manager\_id](#output\_secrets\_manager\_id) | ID of the Secrets Manager instance |

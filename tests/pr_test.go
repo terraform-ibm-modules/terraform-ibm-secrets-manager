@@ -93,7 +93,7 @@ func TestRunDASolutionSchematics(t *testing.T) {
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing:                t,
-		TarIncludePatterns:     []string{"*.tf", fmt.Sprintf("%s/*.tf", solutionsTerraformDir)},
+		TarIncludePatterns:     []string{"*.tf", fmt.Sprintf("%s/*.tf", solutionsTerraformDir), "modules/secrets/*.tf"},
 		TemplateFolder:         solutionsTerraformDir,
 		ResourceGroup:          resourceGroup,
 		Prefix:                 "sm-da",
