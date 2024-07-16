@@ -10,12 +10,6 @@ variable "prefix" {
   default     = "sm-com"
 }
 
-variable "region" {
-  type        = string
-  description = "Region where resources will be created"
-  default     = "us-east"
-}
-
 variable "resource_group" {
   type        = string
   description = "An existing resource group name to use for this example, if unset a new resource group will be created"

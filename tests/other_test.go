@@ -34,7 +34,7 @@ func TestRunCompleteExample(t *testing.T) {
 
 func TestRunExistingSecretManagerExample(t *testing.T) {
 	t.Parallel()
-	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
+	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
 		Testing:      t,
 		TerraformDir: "examples/existing-secret-manager",
 		Prefix:       "secrets-mgr-ex",
