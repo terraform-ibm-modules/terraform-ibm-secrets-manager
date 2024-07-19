@@ -166,9 +166,10 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
-			"prefix":        prefix,
-			"region":        region,
-			"resource_tags": tags,
+			"prefix":                   prefix,
+			"region":                   region,
+			"resource_tags":            tags,
+			"existing_sm_instance_crn": permanentResources["secretsManagerCRN"].(string),
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.

@@ -8,13 +8,13 @@ variable "resource_group_id" {
 
 variable "region" {
   type        = string
-  description = "The region where the resource will be provisioned"
+  description = "The region where the resource will be provisioned.Its not required if passing a value for existing_sm_instance_crn"
   default     = null
 }
 
 variable "secrets_manager_name" {
   type        = string
-  description = "The name of the Secrets Manager instance"
+  description = "The name of the Secrets Manager instance to create"
 }
 
 variable "sm_service_plan" {

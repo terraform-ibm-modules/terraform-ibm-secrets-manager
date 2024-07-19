@@ -153,7 +153,7 @@ resource "ibm_sm_en_registration" "sm_en_registration" {
 module "secrets" {
   source                      = "./modules/secrets"
   existing_sm_instance_guid   = local.secrets_manager_guid
-  existing_sm_instance_region = var.region
+  existing_sm_instance_region = local.secrets_manager_region
   secrets                     = var.secrets
   endpoint_type               = var.endpoint_type
 }
