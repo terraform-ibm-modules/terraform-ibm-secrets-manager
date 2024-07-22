@@ -33,5 +33,5 @@ variable "resource_tags" {
 variable "existing_sm_instance_crn" {
   type        = string
   description = "An existing Secrets Manager instance CRN. If not provided, a new instance will be provisioned."
-  default = null
+  default     = null
 }

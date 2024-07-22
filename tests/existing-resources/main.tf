@@ -67,7 +67,7 @@ module "secrets_manager" {
   resource_group_id          = module.resource_group.resource_group_id
   existing_sm_instance_crn   = var.existing_sm_instance_crn
   secrets_manager_name       = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
-  region                     = var.region 
+  region                     = var.region
   sm_service_plan            = "trial"
   sm_tags                    = var.resource_tags
   kms_encryption_enabled     = true
