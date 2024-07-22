@@ -63,11 +63,11 @@ locals {
 resource "ibm_iam_authorization_policy" "kms_policy" {
   count                       = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy ? 1 : 0
   source_service_name         = "secrets-manager"
-  source_resource_group_id    = var.resource_group_id
+  source_resource_group_id    = local.secrets_manager_resource_group_id
   target_service_name         = local.kms_service_name
   target_resource_instance_id = var.existing_kms_instance_guid
   roles                       = ["Reader"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${local.secrets_manager_resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
@@ -132,7 +132,7 @@ resource "ibm_iam_authorization_policy" "en_policy" {
   target_service_name         = "event-notifications"
   target_resource_instance_id = regex(".*:(.*)::", var.existing_en_instance_crn)[0]
   roles                       = ["Event Source Manager"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} 'Event Source Manager' role access on the Event Notification instance GUID ${regex(".*:(.*)::", var.existing_en_instance_crn)[0]}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${local.secrets_manager_resource_group_id} 'Event Source Manager' role access on the Event Notification instance GUID ${regex(".*:(.*)::", var.existing_en_instance_crn)[0]}"
 }
 
 resource "ibm_sm_en_registration" "sm_en_registration" {
@@ -153,7 +153,7 @@ resource "ibm_sm_en_registration" "sm_en_registration" {
 module "secrets" {
   source                      = "./modules/secrets"
   existing_sm_instance_guid   = local.secrets_manager_guid
-  existing_sm_instance_region = var.region
+  existing_sm_instance_region = local.secrets_manager_region
   secrets                     = var.secrets
   endpoint_type               = var.endpoint_type
 }

@@ -53,10 +53,16 @@ module "key_protect" {
 # Secrets Manager
 ##############################################################################
 
+locals {
+  parsed_existing_sm_instance_crn = var.existing_sm_instance_crn != null ? split(":", var.existing_sm_instance_crn) : []
+  existing_sm_region              = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[5] : null
+  sm_region                       = var.existing_sm_instance_crn == null ? var.region : local.existing_sm_region
+}
+
 module "secrets_manager" {
   source                     = "../.."
   resource_group_id          = module.resource_group.resource_group_id
-  region                     = var.region
+  region                     = local.sm_region
   secrets_manager_name       = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
   sm_service_plan            = "trial"
   sm_tags                    = var.resource_tags
@@ -65,4 +71,5 @@ module "secrets_manager" {
   kms_key_crn                = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
   enable_event_notification  = true
   existing_en_instance_crn   = module.event_notifications.crn
+  existing_sm_instance_crn   = var.existing_sm_instance_crn
 }

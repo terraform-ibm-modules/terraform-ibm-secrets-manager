@@ -98,11 +98,12 @@ locals {
 }
 
 module "secrets_manager" {
-  count                = var.existing_secrets_manager_crn != null ? 0 : 1
+  count                = var.existing_secrets_manager_crn != null ? 1 : 1
   depends_on           = [time_sleep.wait_for_authorization_policy]
   source               = "../.."
-  resource_group_id    = module.resource_group[0].resource_group_id
+  resource_group_id    = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_id: null
   region               = var.region
+  existing_sm_instance_crn = var.existing_secrets_manager_crn
   secrets_manager_name = var.prefix != null ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
   sm_service_plan      = var.service_plan
   allowed_network      = var.allowed_network
@@ -110,7 +111,7 @@ module "secrets_manager" {
   # kms dependency
   kms_encryption_enabled            = true
   existing_kms_instance_guid        = local.existing_kms_guid
-  kms_key_crn                       = local.kms_key_crn
+  kms_key_crn                       = "crn:v1:bluemix:public:kms:us-south:a/abac0df06b644a9cabc6e44f55b3880e:3a96dcb4-2c00-4ef8-ab84-4e99ab043cd7:key:186f7f06-68de-4dbc-b40d-8744b2afbeba"
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || local.create_cross_account_auth_policy
   # event notifications dependency
   enable_event_notification        = var.existing_event_notification_instance_crn != null ? true : false

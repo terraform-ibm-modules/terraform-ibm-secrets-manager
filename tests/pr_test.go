@@ -167,8 +167,9 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
 			"prefix":        prefix,
-			"region":        region,
+			"region":        "us-south",
 			"resource_tags": tags,
+			"existing_sm_instance_crn": "crn:v1:bluemix:public:secrets-manager:us-south:a/abac0df06b644a9cabc6e44f55b3880e:79c6d411-c18f-4670-b009-b0044a238667::",
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
