@@ -114,7 +114,7 @@ module "secrets_manager" {
   kms_key_crn                       = "crn:v1:bluemix:public:kms:us-south:a/abac0df06b644a9cabc6e44f55b3880e:3a96dcb4-2c00-4ef8-ab84-4e99ab043cd7:key:186f7f06-68de-4dbc-b40d-8744b2afbeba"
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || local.create_cross_account_auth_policy
   # event notifications dependency
-  enable_event_notification        = var.existing_event_notification_instance_crn != null ? true : false
+  enable_event_notification        = false
   existing_en_instance_crn         = var.existing_event_notification_instance_crn
   skip_en_iam_authorization_policy = var.skip_event_notification_iam_authorization_policy
   endpoint_type                    = local.sm_endpoint_type
