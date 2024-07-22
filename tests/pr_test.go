@@ -167,9 +167,9 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
 			"prefix":                   prefix,
-			"region":                   region,
 			"resource_tags":            tags,
-			"existing_sm_instance_crn": permanentResources["secretsManagerCRN"].(string),
+			"region":                   region,
+			"existing_sm_instance_crn": permanentResources["secretsManagerCRN"],
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
@@ -187,8 +187,9 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
 			ImplicitRequired: false,
 			TerraformVars: map[string]interface{}{
+				"prefix":                                   "khuz2",
 				"ibmcloud_api_key":                         os.Getenv("TF_VAR_ibmcloud_api_key"),
-				"region":                                   region,
+				"region":                                   terraform.Output(t, existingTerraformOptions, "secrets_manager_region"),
 				"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":              true,
 				"existing_event_notification_instance_crn": terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"),
@@ -196,7 +197,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_kms_instance_crn":                terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"),
 				"service_plan":                             "trial",
 				"existing_secrets_manager_crn":             terraform.Output(t, existingTerraformOptions, "secrets_manager_instance_crn"),
-				"iam_engine_enabled":                       true,
+				"iam_engine_enabled":                       false,
 				"private_engine_enabled":                   true,
 				"existing_secrets_endpoint_type":           "public",
 			},
