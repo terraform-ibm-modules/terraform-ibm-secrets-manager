@@ -10,10 +10,6 @@ module "resource_group" {
   existing_resource_group_name = var.resource_group
 }
 
-data "ibm_resource_instance" "existing_sm" {
-  count      = var.existing_sm_instance_crn == null ? 0 : 1
-  identifier = var.existing_sm_instance_crn
-}
 ##############################################################################
 # Event Notification
 ##############################################################################
