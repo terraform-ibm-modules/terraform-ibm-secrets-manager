@@ -11,6 +11,7 @@ import (
 
 func TestRunBasicExample(t *testing.T) {
 	t.Parallel()
+	
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:      t,
 		TerraformDir: "examples/basic",

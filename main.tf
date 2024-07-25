@@ -28,8 +28,9 @@ locals {
 }
 data "ibm_resource_instance" "sm_instance" {
   count      = var.existing_sm_instance_crn == null ? 0 : 1
-  identifier = local.existing_sm_guid
+  identifier = var.existing_sm_instance_crn
 }
+
 # Create Secrets Manager Instance
 resource "ibm_resource_instance" "secrets_manager_instance" {
   count             = var.existing_sm_instance_crn == null ? 1 : 0
@@ -63,11 +64,11 @@ locals {
 resource "ibm_iam_authorization_policy" "kms_policy" {
   count                       = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy ? 1 : 0
   source_service_name         = "secrets-manager"
-  source_resource_group_id    = var.resource_group_id
+  source_resource_group_id    = local.secrets_manager_resource_group_id
   target_service_name         = local.kms_service_name
   target_resource_instance_id = var.existing_kms_instance_guid
   roles                       = ["Reader"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${local.secrets_manager_resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
@@ -132,7 +133,7 @@ resource "ibm_iam_authorization_policy" "en_policy" {
   target_service_name         = "event-notifications"
   target_resource_instance_id = regex(".*:(.*)::", var.existing_en_instance_crn)[0]
   roles                       = ["Event Source Manager"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} 'Event Source Manager' role access on the Event Notification instance GUID ${regex(".*:(.*)::", var.existing_en_instance_crn)[0]}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${local.secrets_manager_resource_group_id} 'Event Source Manager' role access on the Event Notification instance GUID ${regex(".*:(.*)::", var.existing_en_instance_crn)[0]}"
 }
 
 resource "ibm_sm_en_registration" "sm_en_registration" {
