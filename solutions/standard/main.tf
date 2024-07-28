@@ -98,16 +98,16 @@ locals {
 }
 
 module "secrets_manager" {
-  count                = var.existing_secrets_manager_crn != null ? 1 : 1
-  depends_on           = [time_sleep.wait_for_authorization_policy]
-  source               = "../.."
-  resource_group_id    = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_id: null
-  region               = var.region
+  count                    = var.existing_secrets_manager_crn != null ? 1 : 1
+  depends_on               = [time_sleep.wait_for_authorization_policy]
+  source                   = "../.."
+  resource_group_id        = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_id : null
+  region                   = var.region
   existing_sm_instance_crn = var.existing_secrets_manager_crn
-  secrets_manager_name = var.prefix != null ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
-  sm_service_plan      = var.service_plan
-  allowed_network      = var.allowed_network
-  sm_tags              = var.secret_manager_tags
+  secrets_manager_name     = var.prefix != null ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
+  sm_service_plan          = var.service_plan
+  allowed_network          = var.allowed_network
+  sm_tags                  = var.secret_manager_tags
   # kms dependency
   kms_encryption_enabled            = true
   existing_kms_instance_guid        = local.existing_kms_guid

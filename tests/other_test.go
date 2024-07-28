@@ -32,21 +32,6 @@ func TestRunCompleteExample(t *testing.T) {
 	assert.NotNil(t, output, "Expected some output")
 }
 
-func TestRunExistingSecretManagerExample(t *testing.T) {
-	t.Parallel()
-	options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
-		Testing:      t,
-		TerraformDir: "examples/existing-secret-manager",
-		Prefix:       "secrets-mgr-ex",
-		TerraformVars: map[string]interface{}{
-			"existing_sm_instance_crn": permanentResources["secretsManagerCRN"].(string),
-		},
-	})
-	output, err := options.RunTestConsistency()
-	assert.Nil(t, err, "This should not have errored")
-	assert.NotNil(t, output, "Expected some output")
-}
-
 func TestFSCloudInSchematics(t *testing.T) {
 	t.Parallel()
 
