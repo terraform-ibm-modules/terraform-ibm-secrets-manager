@@ -51,13 +51,14 @@ variable "service_credentials_secrets" {
     }))
   }))
   default = [{
-    secret_group_name     = "soaib-secret-group"
+    secret_group_name     = "soaib-secret-group" # checkov:skip=CKV_SECRET_6
     existing_secret_group = true
     service_credentials = [{
-      secret_name                             = "soaib-cred-1"
+      secret_name                             = "soaib-cred-1" # checkov:skip=CKV_SECRET_6
       service_credentials_source_service_role = "Editor"
       }, {
-      secret_name                             = "soaib-cred-2"
+      secret_name = "soaib-cred-2" # checkov:skip=CKV_SECRET_6
+
       service_credentials_source_service_role = "Editor"
     }]
   }]

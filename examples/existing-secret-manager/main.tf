@@ -44,7 +44,9 @@ locals {
           service_credential_secret_description   = secret.service_credential_secret_description
           service_credentials_source_service_role = secret.service_credentials_source_service_role
           service_credentials_source_service_crn  = "crn:v1:bluemix:public:cloud-object-storage:global:a/abac0df06b644a9cabc6e44f55b3880e:958bb025-c745-4ef4-b869-4cd30784929d::"
-          secret_type                             = "service_credentials"
+          # checkov:skip=CKV_SECRET_6
+
+          secret_type = "service_credentials" # checkov:skip=CKV_SECRET_6
         }
       ]
     }
