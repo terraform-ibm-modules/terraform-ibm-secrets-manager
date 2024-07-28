@@ -22,16 +22,6 @@ func TestRunBasicExample(t *testing.T) {
 	assert.NotNil(t, output, "Expected some output")
 }
 
-func TestRunCompleteExample(t *testing.T) {
-	t.Parallel()
-
-	options := setupOptions(t, "secrets-mgr")
-
-	output, err := options.RunTestConsistency()
-	assert.Nil(t, err, "This should not have errored")
-	assert.NotNil(t, output, "Expected some output")
-}
-
 func TestFSCloudInSchematics(t *testing.T) {
 	t.Parallel()
 

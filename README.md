@@ -22,7 +22,6 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
     * [Basic example](./examples/basic)
     * [Complete example with BYOK encryption](./examples/complete)
     * [Financial Services Cloud profile example with KYOK encryption](./examples/fscloud)
-    * [existing-secret-manager example](./examples/existing-secret-manager)
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 
