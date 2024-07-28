@@ -8,7 +8,7 @@ variable "resource_group_id" {
 
 variable "region" {
   type        = string
-  description = "The region where the resource will be provisioned.Its not required if passing a value for existing_sm_instance_crn"
+  description = "The region where the resource will be provisioned.Its not required if passing a value for `existing_sm_instance_crn`."
   default     = null
 }
 

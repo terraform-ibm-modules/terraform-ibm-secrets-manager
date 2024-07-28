@@ -26,6 +26,13 @@ locals {
   existing_sm_guid                = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[7] : null
   existing_sm_region              = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[5] : null
 }
+
+moved {
+  from = ibm_resource_instance.secrets_manager_instance
+  to   = ibm_resource_instance.secrets_manager_instance[0]
+}
+
+
 data "ibm_resource_instance" "sm_instance" {
   count      = var.existing_sm_instance_crn == null ? 0 : 1
   identifier = var.existing_sm_instance_crn

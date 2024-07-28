@@ -29,9 +29,3 @@ variable "resource_tags" {
   description = "Optional list of tags to be added to created resources"
   default     = []
 }
-
-variable "existing_sm_instance_crn" {
-  type        = string
-  description = "An existing Secrets Manager instance CRN. If not provided, a new instance will be provisioned."
-  default     = null
-}

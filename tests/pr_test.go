@@ -151,6 +151,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	// ------------------------------------------------------------------------------------
 	// Provision Event Notification, KMS key and resource group first
 	// ------------------------------------------------------------------------------------
+	region := validRegions[rand.Intn(len(validRegions))]
 	prefix := fmt.Sprintf("scc-exist-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
@@ -165,10 +166,9 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
-			"prefix":                   prefix,
-			"region":                   "us-south",
-			"resource_tags":            tags,
-			"existing_sm_instance_crn": permanentResources["secretsManagerCRN"],
+			"prefix":        prefix,
+			"region":        region,
+			"resource_tags": tags,
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
@@ -187,7 +187,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			ImplicitRequired: false,
 			TerraformVars: map[string]interface{}{
 				"ibmcloud_api_key":                         os.Getenv("TF_VAR_ibmcloud_api_key"),
-				"region":                                   "us-south",
+				"region":                                   region,
 				"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":              true,
 				"existing_event_notification_instance_crn": terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"),
