@@ -101,7 +101,7 @@ module "secrets_manager" {
   count                = var.existing_secrets_manager_crn != null ? 0 : 1
   depends_on           = [time_sleep.wait_for_authorization_policy]
   source               = "../.."
-  resource_group_id    = module.resource_group[0].resource_group_name
+  resource_group_id    = module.resource_group[0].resource_group_id
   region               = var.region
   secrets_manager_name = var.prefix != null ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
   sm_service_plan      = var.service_plan
