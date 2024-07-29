@@ -37,21 +37,20 @@ module "event_notification" {
   region            = var.en_region
 }
 
-module "cos" {
-  source              = "terraform-ibm-modules/cos/ibm"
-  version             = "8.5.3"
-  resource_group_id   = module.resource_group.resource_group_id
-  create_cos_instance = true
-  cos_instance_name   = "cos-soaib-test"
-  create_cos_bucket   = false
+module "icd_elasticsearch" {
+  source            = "terraform-ibm-modules/icd-elasticsearch/ibm"
+  version           = "1.14.5"
+  resource_group_id = module.resource_group.resource_group_id
+  name = "dishank-test"
+  region            = var.region
 }
 
 resource "ibm_iam_authorization_policy" "policy" {
-  depends_on                  = [module.cos]
+  depends_on                  = [module.icd_elasticsearch]
   source_service_name         = "secrets-manager"
   source_resource_group_id    = module.resource_group.resource_group_id
-  target_service_name         = "cloud-object-storage"
-  target_resource_instance_id = module.cos.cos_instance_guid
+  target_service_name         = "databases-for-elasticsearch"
+  target_resource_instance_id = module.icd_elasticsearch.id
   roles                       = ["Key Manager"]
 }
 
@@ -93,17 +92,17 @@ module "secrets_manager" {
         }
       ]
       }, {
-      secret_group_name = "test-soaib"
+      secret_group_name = "test-dishank"
       secrets = [{
-        secret_name                             = "soaib-cred-1"
+        secret_name                             = "dishank-cred-1"
         service_credentials_source_service_role = "Editor"
         secret_type                             = "service_credentials" # checkov:skip=CKV_SECRET_6
-        service_credentials_source_service_crn  = module.cos.cos_instance_id
+        service_credentials_source_service_crn  = module.icd_elasticsearch.id
         }, {
-        secret_name                             = "soaib-cred-2"
+        secret_name                             = "dishank-cred-2"
         service_credentials_source_service_role = "Editor"
         secret_type                             = "service_credentials" # checkov:skip=CKV_SECRET_6
-        service_credentials_source_service_crn  = module.cos.cos_instance_id
+        service_credentials_source_service_crn  = module.icd_elasticsearch.id
       }]
     }
   ]

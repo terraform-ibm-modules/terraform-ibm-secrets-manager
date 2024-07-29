@@ -7,7 +7,7 @@ variable "ibmcloud_api_key" {
 variable "prefix" {
   type        = string
   description = "Prefix for sm instance"
-  default     = "sm-com"
+  default     = "dishank-sm-com"
 }
 variable "sm_service_plan" {
   type        = string
