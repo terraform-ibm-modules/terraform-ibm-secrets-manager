@@ -71,11 +71,11 @@ locals {
 resource "ibm_iam_authorization_policy" "kms_policy" {
   count                       = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy ? 1 : 0
   source_service_name         = "secrets-manager"
-  source_resource_group_id    = local.secrets_manager_resource_group_id
+  source_resource_group_id    = var.resource_group_id
   target_service_name         = local.kms_service_name
   target_resource_instance_id = var.existing_kms_instance_guid
   roles                       = ["Reader"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${local.secrets_manager_resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
@@ -87,9 +87,9 @@ resource "time_sleep" "wait_for_authorization_policy" {
 
 
 locals {
-  secrets_manager_guid              = var.existing_sm_instance_crn != null ? local.existing_sm_guid : tolist(ibm_resource_instance.secrets_manager_instance[*].guid)[0]
-  secrets_manager_region            = var.existing_sm_instance_crn != null ? local.existing_sm_region : var.region
-  secrets_manager_resource_group_id = var.existing_sm_instance_crn != null ? data.ibm_resource_instance.sm_instance[0].resource_group_id : var.resource_group_id
+  secrets_manager_guid   = var.existing_sm_instance_crn != null ? local.existing_sm_guid : tolist(ibm_resource_instance.secrets_manager_instance[*].guid)[0]
+  secrets_manager_region = var.existing_sm_instance_crn != null ? local.existing_sm_region : var.region
+
 }
 
 ##############################################################################
@@ -136,11 +136,11 @@ module "cbr_rule" {
 resource "ibm_iam_authorization_policy" "en_policy" {
   count                       = var.enable_event_notification == false || var.skip_en_iam_authorization_policy ? 0 : 1
   source_service_name         = "secrets-manager"
-  source_resource_group_id    = local.secrets_manager_resource_group_id
+  source_resource_group_id    = var.resource_group_id
   target_service_name         = "event-notifications"
   target_resource_instance_id = regex(".*:(.*)::", var.existing_en_instance_crn)[0]
   roles                       = ["Event Source Manager"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${local.secrets_manager_resource_group_id} 'Event Source Manager' role access on the Event Notification instance GUID ${regex(".*:(.*)::", var.existing_en_instance_crn)[0]}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} 'Event Source Manager' role access on the Event Notification instance GUID ${regex(".*:(.*)::", var.existing_en_instance_crn)[0]}"
 }
 
 resource "ibm_sm_en_registration" "sm_en_registration" {
