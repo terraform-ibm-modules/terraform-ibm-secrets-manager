@@ -19,17 +19,10 @@ locals {
   validate_region = var.existing_sm_instance_crn == null && var.region == null ? tobool("When existing_sm_instance_crn is null, a value must be passed for var.region") : true
 }
 
-
-
 locals {
   parsed_existing_sm_instance_crn = var.existing_sm_instance_crn != null ? split(":", var.existing_sm_instance_crn) : []
   existing_sm_guid                = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[7] : null
   existing_sm_region              = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[5] : null
-}
-
-moved {
-  from = ibm_resource_instance.secrets_manager_instance
-  to   = ibm_resource_instance.secrets_manager_instance[0]
 }
 
 
@@ -89,7 +82,6 @@ resource "time_sleep" "wait_for_authorization_policy" {
 locals {
   secrets_manager_guid   = var.existing_sm_instance_crn != null ? local.existing_sm_guid : tolist(ibm_resource_instance.secrets_manager_instance[*].guid)[0]
   secrets_manager_region = var.existing_sm_instance_crn != null ? local.existing_sm_region : var.region
-
 }
 
 ##############################################################################
