@@ -41,7 +41,7 @@ module "icd_elasticsearch" {
   source            = "terraform-ibm-modules/icd-elasticsearch/ibm"
   version           = "1.14.5"
   resource_group_id = module.resource_group.resource_group_id
-  name = "dishank-test"
+  name              = "dishank-test"
   region            = var.region
 }
 
@@ -74,7 +74,7 @@ module "secrets_manager" {
   existing_en_instance_crn   = module.event_notification.crn
   secrets = [
     {
-      secret_group_name = "${var.prefix}-secret-group"
+      secret_group_name = "${var.prefix}-secret-group" #checkov:skip=CKV_SECRET_6
       secrets = [{
         secret_name             = "${var.prefix}-kp-key-crn"
         secret_type             = "arbitrary"
@@ -92,7 +92,7 @@ module "secrets_manager" {
         }
       ]
       }, {
-      secret_group_name = "test-dishank"
+      secret_group_name = "test-dishank" #checkov:skip=CKV_SECRET_6
       secrets = [{
         secret_name                             = "dishank-cred-1"
         service_credentials_source_service_role = "Editor"

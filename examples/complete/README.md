@@ -15,8 +15,8 @@ This examples handles the provisioning of a new Secrets Manager instance.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cos"></a> [cos](#module\_cos) | terraform-ibm-modules/cos/ibm | 8.5.3 |
 | <a name="module_event_notification"></a> [event\_notification](#module\_event\_notification) | terraform-ibm-modules/event-notifications/ibm | 1.6.5 |
+| <a name="module_icd_elasticsearch"></a> [icd\_elasticsearch](#module\_icd\_elasticsearch) | terraform-ibm-modules/icd-elasticsearch/ibm | 1.14.5 |
 | <a name="module_key_protect"></a> [key\_protect](#module\_key\_protect) | terraform-ibm-modules/kms-all-inclusive/ibm | 4.13.4 |
 | <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group) | terraform-ibm-modules/resource-group/ibm | 1.1.6 |
 | <a name="module_secrets_manager"></a> [secrets\_manager](#module\_secrets\_manager) | ../.. | n/a |
@@ -34,7 +34,7 @@ This examples handles the provisioning of a new Secrets Manager instance.
 |------|-------------|------|---------|:--------:|
 | <a name="input_en_region"></a> [en\_region](#input\_en\_region) | Region where event notification will be created | `string` | `"au-syd"` | no |
 | <a name="input_ibmcloud_api_key"></a> [ibmcloud\_api\_key](#input\_ibmcloud\_api\_key) | The IBM Cloud API key this account authenticates to | `string` | n/a | yes |
-| <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for sm instance | `string` | `"sm-com"` | no |
+| <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for sm instance | `string` | `"dishank-sm-com"` | no |
 | <a name="input_region"></a> [region](#input\_region) | Region where resources will be created | `string` | `"us-east"` | no |
 | <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | An existing resource group name to use for this example, if unset a new resource group will be created | `string` | `null` | no |
 | <a name="input_resource_tags"></a> [resource\_tags](#input\_resource\_tags) | Optional list of tags to be added to created resources | `list(string)` | `[]` | no |
