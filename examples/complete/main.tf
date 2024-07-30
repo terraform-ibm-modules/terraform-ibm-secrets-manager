@@ -95,12 +95,12 @@ module "secrets_manager" {
       secret_group_name = "test-dishank" #checkov:skip=CKV_SECRET_6
       secrets = [{
         secret_name                             = "dishank-cred-1"
-        service_credentials_source_service_role = "Editor"
+        service_credentials_source_service_role = "Writer"
         secret_type                             = "service_credentials" # checkov:skip=CKV_SECRET_6
         service_credentials_source_service_crn  = module.icd_elasticsearch.id
         }, {
         secret_name                             = "dishank-cred-2"
-        service_credentials_source_service_role = "Editor"
+        service_credentials_source_service_role = "Writer"
         secret_type                             = "service_credentials" # checkov:skip=CKV_SECRET_6
         service_credentials_source_service_crn  = module.icd_elasticsearch.id
       }]
