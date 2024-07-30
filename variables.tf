@@ -1,20 +1,20 @@
 ##############################################################################
 # Input Variables
 ##############################################################################
-
 variable "resource_group_id" {
   type        = string
-  description = "The ID of the resource group to provision the Secrets Manager instance to."
+  description = "The ID of the resource group"
 }
 
 variable "region" {
   type        = string
-  description = "The region to provision the Secrets Manager instance to."
+  description = "The region where the resource will be provisioned.Its not required if passing a value for `existing_sm_instance_crn`."
+  default     = null
 }
 
 variable "secrets_manager_name" {
   type        = string
-  description = "The name to give the Secrets Manager instance."
+  description = "The name of the Secrets Manager instance to create"
 }
 
 variable "sm_service_plan" {
@@ -64,6 +64,12 @@ variable "existing_kms_instance_guid" {
 variable "kms_key_crn" {
   type        = string
   description = "The root key CRN of a Key Management Service like Key Protect or Hyper Protect Crypto Services (HPCS) that you want to use for encryption. Only used if `kms_encryption_enabled` is set to true."
+  default     = null
+}
+
+variable "existing_sm_instance_crn" {
+  type        = string
+  description = "An existing Secrets Manager instance CRN. If not provided an new instance will be provisioned."
   default     = null
 }
 

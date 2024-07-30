@@ -8,22 +8,23 @@ output "secrets_manager_guid" {
 }
 
 output "secrets_manager_id" {
-  value       = ibm_resource_instance.secrets_manager_instance.id
+  value       = var.existing_sm_instance_crn != null ? var.existing_sm_instance_crn : ibm_resource_instance.secrets_manager_instance[0].crn
   description = "ID of the Secrets Manager instance"
 }
 
+
 output "secrets_manager_name" {
-  value       = ibm_resource_instance.secrets_manager_instance.name
+  value       = var.existing_sm_instance_crn != null ? data.ibm_resource_instance.sm_instance[0].name : ibm_resource_instance.secrets_manager_instance[0].name
   description = "Name of the Secrets Manager instance"
 }
 
 output "secrets_manager_crn" {
-  value       = ibm_resource_instance.secrets_manager_instance.crn
+  value       = var.existing_sm_instance_crn != null ? var.existing_sm_instance_crn : ibm_resource_instance.secrets_manager_instance[0].crn
   description = "CRN of the Secrets Manager instance"
 }
 
 output "secrets_manager_region" {
-  value       = var.region
+  value       = var.existing_sm_instance_crn != null ? local.existing_sm_region : var.region
   description = "Region of the Secrets Manager instance"
 }
 

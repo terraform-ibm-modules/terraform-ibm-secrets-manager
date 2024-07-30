@@ -15,11 +15,11 @@ output "secrets_manager_guid" {
 
 output "secrets_manager_id" {
   description = "ID of Secrets Manager instance. Same value as secrets_manager_guid"
-  value       = var.existing_secrets_manager_crn == null ? module.secrets_manager[0].secrets_manager_id : local.secrets_manager_guid
+  value       = var.existing_secrets_manager_crn == null ? module.secrets_manager.secrets_manager_id : local.secrets_manager_guid
 }
 
 output "secrets_manager_name" {
-  value       = var.existing_secrets_manager_crn == null ? module.secrets_manager[0].secrets_manager_name : data.ibm_resource_instance.existing_sm[0].resource_name
+  value       = var.existing_secrets_manager_crn == null ? module.secrets_manager.secrets_manager_name : data.ibm_resource_instance.existing_sm[0].resource_name
   description = "Name of the Secrets Manager instance"
 }
 
