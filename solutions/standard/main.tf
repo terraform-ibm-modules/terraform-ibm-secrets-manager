@@ -18,7 +18,7 @@ module "resource_group" {
 # KMS Key
 #######################################################################################################################
 locals {
-  kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn) : null
+  kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn) : var.existing_secrets_manager_kms_key_crn
   kms_key_ring_name = var.prefix != null ? "${var.prefix}-${var.kms_key_ring_name}" : var.kms_key_ring_name
   kms_key_name      = var.prefix != null ? "${var.prefix}-${var.kms_key_name}" : var.kms_key_name
 
@@ -91,22 +91,22 @@ module "kms" {
 
 locals {
   parsed_existing_secrets_manager_crn = var.existing_secrets_manager_crn != null ? split(":", var.existing_secrets_manager_crn) : []
-  secrets_manager_guid                = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[7] : null) : module.secrets_manager[0].secrets_manager_guid
-  secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager[0].secrets_manager_crn
-  secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager[0].secrets_manager_region
+  secrets_manager_guid                = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[7] : null) : module.secrets_manager.secrets_manager_guid
+  secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager.secrets_manager_crn
+  secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager.secrets_manager_region
   sm_endpoint_type                    = var.existing_secrets_manager_crn != null ? var.existing_secrets_endpoint_type : var.allowed_network == "private-only" ? "private" : "public"
 }
 
 module "secrets_manager" {
-  count                = var.existing_secrets_manager_crn != null ? 0 : 1
-  depends_on           = [time_sleep.wait_for_authorization_policy]
-  source               = "../.."
-  resource_group_id    = module.resource_group[0].resource_group_id
-  region               = var.region
-  secrets_manager_name = var.prefix != null ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
-  sm_service_plan      = var.service_plan
-  allowed_network      = var.allowed_network
-  sm_tags              = var.secret_manager_tags
+  depends_on               = [time_sleep.wait_for_authorization_policy]
+  source                   = "../.."
+  existing_sm_instance_crn = var.existing_secrets_manager_crn
+  resource_group_id        = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_id : data.ibm_resource_instance.existing_sm[0].resource_group_id
+  region                   = var.region
+  secrets_manager_name     = var.prefix != null ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
+  sm_service_plan          = var.service_plan
+  allowed_network          = var.allowed_network
+  sm_tags                  = var.secret_manager_tags
   # kms dependency
   kms_encryption_enabled            = true
   existing_kms_instance_guid        = local.existing_kms_guid
@@ -191,6 +191,7 @@ data "ibm_en_destinations" "en_destinations" {
   instance_guid = local.existing_en_guid
 }
 
+# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5533
 resource "time_sleep" "wait_for_secrets_manager" {
   depends_on = [module.secrets_manager]
 

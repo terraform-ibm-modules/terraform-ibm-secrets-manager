@@ -15,10 +15,25 @@ locals {
   validate_event_notification = var.enable_event_notification && var.existing_en_instance_crn == null ? tobool("When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn") : true
   # tflint-ignore: terraform_unused_declarations
   validate_endpoint = var.enable_event_notification && var.endpoint_type == "public" && var.allowed_network == "private-only" ? tobool("It is not allowed to have conflicting var.endpoint_type and var.allowed_network values.") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_region = var.existing_sm_instance_crn == null && var.region == null ? tobool("When existing_sm_instance_crn is null, a value must be passed for var.region") : true
+}
+
+locals {
+  parsed_existing_sm_instance_crn = var.existing_sm_instance_crn != null ? split(":", var.existing_sm_instance_crn) : []
+  existing_sm_guid                = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[7] : null
+  existing_sm_region              = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[5] : null
+}
+
+
+data "ibm_resource_instance" "sm_instance" {
+  count      = var.existing_sm_instance_crn == null ? 0 : 1
+  identifier = var.existing_sm_instance_crn
 }
 
 # Create Secrets Manager Instance
 resource "ibm_resource_instance" "secrets_manager_instance" {
+  count             = var.existing_sm_instance_crn == null ? 1 : 0
   depends_on        = [ibm_iam_authorization_policy.kms_policy]
   name              = var.secrets_manager_name
   service           = "secrets-manager"
@@ -65,7 +80,8 @@ resource "time_sleep" "wait_for_authorization_policy" {
 
 
 locals {
-  secrets_manager_guid = tolist(ibm_resource_instance.secrets_manager_instance[*].guid)[0]
+  secrets_manager_guid   = var.existing_sm_instance_crn != null ? local.existing_sm_guid : tolist(ibm_resource_instance.secrets_manager_instance[*].guid)[0]
+  secrets_manager_region = var.existing_sm_instance_crn != null ? local.existing_sm_region : var.region
 }
 
 ##############################################################################
@@ -123,7 +139,7 @@ resource "ibm_sm_en_registration" "sm_en_registration" {
   count                                  = var.enable_event_notification ? 1 : 0
   depends_on                             = [time_sleep.wait_for_authorization_policy]
   instance_id                            = local.secrets_manager_guid
-  region                                 = var.region
+  region                                 = local.secrets_manager_region
   event_notifications_instance_crn       = var.existing_en_instance_crn
   event_notifications_source_description = "Secret Manager"
   event_notifications_source_name        = var.secrets_manager_name
@@ -137,7 +153,7 @@ resource "ibm_sm_en_registration" "sm_en_registration" {
 module "secrets" {
   source                      = "./modules/secrets"
   existing_sm_instance_guid   = local.secrets_manager_guid
-  existing_sm_instance_region = var.region
+  existing_sm_instance_region = local.secrets_manager_region
   secrets                     = var.secrets
   endpoint_type               = var.endpoint_type
 }

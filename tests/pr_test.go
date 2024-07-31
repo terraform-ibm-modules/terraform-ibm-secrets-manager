@@ -212,6 +212,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"iam_engine_enabled":                       true,
 				"private_engine_enabled":                   true,
 				"existing_secrets_endpoint_type":           "public",
+				"allowed_network":                          "public-and-private",
 			},
 		})
 
