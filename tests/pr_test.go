@@ -194,7 +194,38 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	if existErr != nil {
 		assert.True(t, existErr == nil, "Init and Apply of temp existing resource failed")
 	} else {
+
+		// ------------------------------------------------------------------------------------
+		// Test passing an existing SM, RG, EN
+		// ------------------------------------------------------------------------------------
+
 		options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
+			Testing:      t,
+			TerraformDir: solutionsTerraformDir,
+			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
+			ImplicitRequired: false,
+			TerraformVars: map[string]interface{}{
+				"ibmcloud_api_key":                         os.Getenv("TF_VAR_ibmcloud_api_key"),
+				"region":                                   region,
+				"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
+				"use_existing_resource_group":              true,
+				"existing_event_notification_instance_crn": terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"),
+				"existing_secrets_manager_crn":             terraform.Output(t, existingTerraformOptions, "secrets_manager_instance_crn"),
+				"iam_engine_enabled":                       true,
+				"private_engine_enabled":                   true,
+				"existing_secrets_endpoint_type":           "public",
+			},
+		})
+
+		output, err := options.RunTestConsistency()
+		assert.Nil(t, err, "This should not have errored")
+		assert.NotNil(t, output, "Expected some output")
+
+		// ------------------------------------------------------------------------------------
+		// Test passing existing RG, EN, and KMS key
+		// ------------------------------------------------------------------------------------
+
+		options2 := testhelper.TestOptionsDefault(&testhelper.TestOptions{
 			Testing:      t,
 			TerraformDir: solutionsTerraformDir,
 			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
@@ -208,7 +239,6 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_secrets_manager_kms_key_crn":     terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_key_crn"),
 				"existing_kms_instance_crn":                terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"),
 				"service_plan":                             "trial",
-				"existing_secrets_manager_crn":             terraform.Output(t, existingTerraformOptions, "secrets_manager_instance_crn"),
 				"iam_engine_enabled":                       true,
 				"private_engine_enabled":                   true,
 				"existing_secrets_endpoint_type":           "public",
@@ -216,9 +246,9 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 			},
 		})
 
-		output, err := options.RunTestConsistency()
+		output2, err := options2.RunTestConsistency()
 		assert.Nil(t, err, "This should not have errored")
-		assert.NotNil(t, output, "Expected some output")
+		assert.NotNil(t, output2, "Expected some output")
 
 	}
 
