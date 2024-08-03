@@ -37,7 +37,30 @@ module "event_notification" {
   region            = var.en_region
 }
 
+module "icd_elasticsearch" {
+  source            = "terraform-ibm-modules/icd-elasticsearch/ibm"
+  version           = "1.14.5"
+  resource_group_id = module.resource_group.resource_group_id
+  name              = "dishank-test"
+  region            = var.region
+}
+
+resource "ibm_iam_authorization_policy" "policy" {
+  depends_on                  = [module.icd_elasticsearch]
+  source_service_name         = "secrets-manager"
+  source_resource_group_id    = module.resource_group.resource_group_id
+  target_service_name         = "databases-for-elasticsearch"
+  target_resource_instance_id = module.icd_elasticsearch.id
+  roles                       = ["Key Manager"]
+}
+
+resource "time_sleep" "wait_for_authorization_policy" {
+  depends_on      = [ibm_iam_authorization_policy.policy]
+  create_duration = "30s"
+}
+
 module "secrets_manager" {
+  depends_on                 = [time_sleep.wait_for_authorization_policy]
   source                     = "../.."
   resource_group_id          = module.resource_group.resource_group_id
   region                     = var.region
@@ -51,7 +74,7 @@ module "secrets_manager" {
   existing_en_instance_crn   = module.event_notification.crn
   secrets = [
     {
-      secret_group_name = "${var.prefix}-secret-group"
+      secret_group_name = "${var.prefix}-secret-group" #checkov:skip=CKV_SECRET_6
       secrets = [{
         secret_name             = "${var.prefix}-kp-key-crn"
         secret_type             = "arbitrary"
@@ -68,6 +91,19 @@ module "secrets_manager" {
         secret_payload_password = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].key_id
         }
       ]
+      }, {
+      secret_group_name = "test-dishank" #checkov:skip=CKV_SECRET_6
+      secrets = [{
+        secret_name                             = "dishank-cred-1"
+        service_credentials_source_service_role = "Editor"
+        secret_type                             = "service_credentials" # checkov:skip=CKV_SECRET_6
+        service_credentials_source_service_crn  = module.icd_elasticsearch.id
+        }, {
+        secret_name                             = "dishank-cred-2"
+        service_credentials_source_service_role = "Editor"
+        secret_type                             = "service_credentials" # checkov:skip=CKV_SECRET_6
+        service_credentials_source_service_crn  = module.icd_elasticsearch.id
+      }]
     }
   ]
 }
