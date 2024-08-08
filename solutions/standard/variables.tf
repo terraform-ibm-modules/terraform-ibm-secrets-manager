@@ -90,7 +90,10 @@ variable "public_engine_enabled" {
   default     = false
 }
 
+########################################################################################################################
 # Public cert engine config
+########################################################################################################################
+
 variable "public_engine_name" {
   type        = string
   description = "The name of the IAM engine used to configure a Secrets Manager public certificate engine for an existing instance."
@@ -122,7 +125,10 @@ variable "acme_letsencrypt_private_key" {
   default     = null
 }
 
+########################################################################################################################
 # Private cert engine config
+########################################################################################################################
+
 variable "private_engine_enabled" {
   type        = bool
   description = "Set this to true to configure a Secrets Manager private certificate engine for an existing instance. If set to false, no private certificate engine will be configured for your instance."
@@ -164,6 +170,10 @@ variable "certificate_template_name" {
   description = "The name of the certificate template."
   default     = "default-cert-template"
 }
+
+########################################################################################################################
+# IAM engine config
+########################################################################################################################
 
 variable "iam_engine_enabled" {
   type        = bool
@@ -235,6 +245,12 @@ variable "ibmcloud_kms_api_key" {
 ########################################################################################################################
 # Event Notifications
 ########################################################################################################################
+
+variable "enable_event_notification" {
+  type        = bool
+  default     = false
+  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_en_instance_crn` variable."
+}
 
 variable "existing_event_notification_instance_crn" {
   type        = string

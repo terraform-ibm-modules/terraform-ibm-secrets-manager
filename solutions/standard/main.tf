@@ -4,6 +4,8 @@
 locals {
   # tflint-ignore: terraform_unused_declarations
   validate_resource_group = (var.existing_secrets_manager_crn == null && var.resource_group_name == null) ? tobool("Resource group name can not be null if existing secrets manager CRN is not set.") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_event_notifications = (var.existing_event_notification_instance_crn == null && var.enable_event_notification) ? tobool("To enable event notifications, an existing event notifications CRN must be set.") : true
 }
 
 module "resource_group" {
@@ -113,7 +115,7 @@ module "secrets_manager" {
   kms_key_crn                       = local.kms_key_crn
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || local.create_cross_account_auth_policy
   # event notifications dependency
-  enable_event_notification        = var.existing_event_notification_instance_crn != null ? true : false
+  enable_event_notification        = var.enable_event_notification
   existing_en_instance_crn         = var.existing_event_notification_instance_crn
   skip_en_iam_authorization_policy = var.skip_event_notification_iam_authorization_policy
   endpoint_type                    = local.sm_endpoint_type
@@ -187,7 +189,7 @@ locals {
 }
 
 data "ibm_en_destinations" "en_destinations" {
-  count         = var.existing_event_notification_instance_crn != null ? 1 : 0
+  count         = var.enable_event_notification ? 1 : 0
   instance_guid = local.existing_en_guid
 }
 
@@ -199,7 +201,7 @@ resource "time_sleep" "wait_for_secrets_manager" {
 }
 
 resource "ibm_en_topic" "en_topic" {
-  count         = var.existing_event_notification_instance_crn != null ? 1 : 0
+  count         = var.enable_event_notification ? 1 : 0
   depends_on    = [time_sleep.wait_for_secrets_manager]
   instance_guid = local.existing_en_guid
   name          = "Secrets Manager Topic"
@@ -214,7 +216,7 @@ resource "ibm_en_topic" "en_topic" {
 }
 
 resource "ibm_en_subscription_email" "email_subscription" {
-  count          = var.existing_event_notification_instance_crn != null && length(var.sm_en_email_list) > 0 ? 1 : 0
+  count          = var.enable_event_notification && length(var.sm_en_email_list) > 0 ? 1 : 0
   instance_guid  = local.existing_en_guid
   name           = "Email for Secrets Manager Subscription"
   description    = "Subscription for Secret Manager Events"
