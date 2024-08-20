@@ -6,6 +6,8 @@ locals {
   validate_resource_group = (var.existing_secrets_manager_crn == null && var.resource_group_name == null) ? tobool("Resource group name can not be null if existing secrets manager CRN is not set.") : true
   # tflint-ignore: terraform_unused_declarations
   validate_event_notifications = (var.existing_event_notification_instance_crn == null && var.enable_event_notification) ? tobool("To enable event notifications, an existing event notifications CRN must be set.") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_event_notifications_disabled = (var.existing_event_notification_instance_crn != null && !var.enable_event_notification) ? tobool("When an existing event notifications CRN is set, enable_event_notification should be true.") : true
 }
 
 module "resource_group" {
