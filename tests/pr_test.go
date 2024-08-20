@@ -195,6 +195,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"region":                                   region,
 				"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
 				"use_existing_resource_group":              true,
+				"enable_event_notifications":               true,
 				"existing_event_notification_instance_crn": terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"),
 				"existing_secrets_manager_crn":             terraform.Output(t, existingTerraformOptions, "secrets_manager_instance_crn"),
 				"iam_engine_enabled":                       true,
