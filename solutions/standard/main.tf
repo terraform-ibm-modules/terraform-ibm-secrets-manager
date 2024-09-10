@@ -52,6 +52,7 @@ resource "ibm_iam_authorization_policy" "kms_policy" {
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
 resource "time_sleep" "wait_for_authorization_policy" {
+  count           = local.create_cross_account_auth_policy ? 1 : 0
   depends_on      = [ibm_iam_authorization_policy.kms_policy]
   create_duration = "30s"
 }
@@ -195,6 +196,7 @@ data "ibm_en_destinations" "en_destinations" {
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5533
 resource "time_sleep" "wait_for_secrets_manager" {
+  count      = var.enable_event_notification ? 1 : 0
   depends_on = [module.secrets_manager]
 
   create_duration = "30s"
