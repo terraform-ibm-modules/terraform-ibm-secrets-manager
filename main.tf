@@ -34,7 +34,7 @@ data "ibm_resource_instance" "sm_instance" {
 # Create Secrets Manager Instance
 resource "ibm_resource_instance" "secrets_manager_instance" {
   count             = var.existing_sm_instance_crn == null ? 1 : 0
-  depends_on        = [ibm_iam_authorization_policy.kms_policy]
+  depends_on        = [time_sleep.wait_for_authorization_policy]
   name              = var.secrets_manager_name
   service           = "secrets-manager"
   plan              = var.sm_service_plan
@@ -90,7 +90,7 @@ locals {
 module "cbr_rule" {
   count            = length(var.cbr_rules) > 0 ? length(var.cbr_rules) : 0
   source           = "terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module"
-  version          = "1.24.0"
+  version          = "1.24.1"
   rule_description = var.cbr_rules[count.index].description
   enforcement_mode = var.cbr_rules[count.index].enforcement_mode
   rule_contexts    = var.cbr_rules[count.index].rule_contexts
