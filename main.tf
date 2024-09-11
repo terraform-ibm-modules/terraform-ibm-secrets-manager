@@ -126,7 +126,8 @@ module "cbr_rule" {
 
 # Create IAM Authorization Policies to allow SM to access event notification
 resource "ibm_iam_authorization_policy" "en_policy" {
-  count                       = var.enable_event_notification == false || var.skip_en_iam_authorization_policy ? 0 : 1
+  # if existing SM instance CRN is passed (!= null), then never create a policy
+  count                       = var.existing_sm_instance_crn != null || (var.enable_event_notification == false || var.skip_en_iam_authorization_policy) ? 0 : 1
   source_service_name         = "secrets-manager"
   source_resource_group_id    = var.resource_group_id
   target_service_name         = "event-notifications"
@@ -136,7 +137,8 @@ resource "ibm_iam_authorization_policy" "en_policy" {
 }
 
 resource "ibm_sm_en_registration" "sm_en_registration" {
-  count                                  = var.enable_event_notification ? 1 : 0
+  # if existing SM instance CRN is passed (!= null), then never register EN
+  count                                  = var.existing_sm_instance_crn == null && var.enable_event_notification ? 1 : 0
   depends_on                             = [time_sleep.wait_for_authorization_policy]
   instance_id                            = local.secrets_manager_guid
   region                                 = local.secrets_manager_region
