@@ -106,7 +106,7 @@ variable "skip_en_iam_authorization_policy" {
 variable "enable_event_notification" {
   type        = bool
   default     = false
-  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_en_instance_crn` variable."
+  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_en_instance_crn` and `existing_sm_instance_crn` must be null. "
 }
 
 variable "existing_en_instance_crn" {
