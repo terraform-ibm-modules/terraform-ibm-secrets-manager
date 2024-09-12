@@ -190,20 +190,23 @@ locals {
 }
 
 data "ibm_en_destinations" "en_destinations" {
-  count         = var.enable_event_notification ? 1 : 0
+  # if existing SM instance CRN is passed (!= null), then never do data lookup for EN destinations
+  count         = var.existing_secrets_manager_crn == null && var.enable_event_notification ? 1 : 0
   instance_guid = local.existing_en_guid
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/5533
 resource "time_sleep" "wait_for_secrets_manager" {
-  count      = var.enable_event_notification ? 1 : 0
+  # if existing SM instance CRN is passed (!= null), then never work with EN
+  count      = var.existing_secrets_manager_crn == null && var.enable_event_notification ? 1 : 0
   depends_on = [module.secrets_manager]
 
   create_duration = "30s"
 }
 
 resource "ibm_en_topic" "en_topic" {
-  count         = var.enable_event_notification ? 1 : 0
+  # if existing SM instance CRN is passed (!= null), then never create EN topic
+  count         = var.existing_secrets_manager_crn == null && var.enable_event_notification ? 1 : 0
   depends_on    = [time_sleep.wait_for_secrets_manager]
   instance_guid = local.existing_en_guid
   name          = "Secrets Manager Topic"
@@ -218,7 +221,8 @@ resource "ibm_en_topic" "en_topic" {
 }
 
 resource "ibm_en_subscription_email" "email_subscription" {
-  count          = var.enable_event_notification && length(var.sm_en_email_list) > 0 ? 1 : 0
+  # if existing SM instance CRN is passed (!= null), then never create EN email subscription
+  count          = var.existing_secrets_manager_crn == null && var.enable_event_notification && length(var.sm_en_email_list) > 0 ? 1 : 0
   instance_guid  = local.existing_en_guid
   name           = "Email for Secrets Manager Subscription"
   description    = "Subscription for Secret Manager Events"
