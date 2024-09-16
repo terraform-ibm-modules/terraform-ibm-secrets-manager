@@ -14,7 +14,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_event_notification = var.enable_event_notification && var.existing_en_instance_crn == null ? tobool("When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn") : true
   # tflint-ignore: terraform_unused_declarations
-  validate_endpoint = var.enable_event_notification && var.endpoint_type == "public" && var.allowed_network == "private-only" && var.existing_sm_instance_crn == null ? tobool("It is not allowed to have conflicting var.endpoint_type and var.allowed_network values.") : true
+  validate_endpoint = var.endpoint_type == "public" && var.allowed_network == "private-only" && var.existing_sm_instance_crn == null ? tobool("It is not allowed to have conflicting var.endpoint_type and var.allowed_network values.") : true
   # tflint-ignore: terraform_unused_declarations
   validate_region = var.existing_sm_instance_crn == null && var.region == null ? tobool("When existing_sm_instance_crn is null, a value must be passed for var.region") : true
 }
@@ -90,7 +90,7 @@ locals {
 module "cbr_rule" {
   count            = length(var.cbr_rules) > 0 ? length(var.cbr_rules) : 0
   source           = "terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module"
-  version          = "1.24.1"
+  version          = "1.27.0"
   rule_description = var.cbr_rules[count.index].description
   enforcement_mode = var.cbr_rules[count.index].enforcement_mode
   rule_contexts    = var.cbr_rules[count.index].rule_contexts
@@ -126,7 +126,8 @@ module "cbr_rule" {
 
 # Create IAM Authorization Policies to allow SM to access event notification
 resource "ibm_iam_authorization_policy" "en_policy" {
-  count                       = var.enable_event_notification == false || var.skip_en_iam_authorization_policy ? 0 : 1
+  # if existing SM instance CRN is passed (!= null), then never create a policy
+  count                       = var.existing_sm_instance_crn != null || (var.enable_event_notification == false || var.skip_en_iam_authorization_policy) ? 0 : 1
   source_service_name         = "secrets-manager"
   source_resource_group_id    = var.resource_group_id
   target_service_name         = "event-notifications"
@@ -136,7 +137,8 @@ resource "ibm_iam_authorization_policy" "en_policy" {
 }
 
 resource "ibm_sm_en_registration" "sm_en_registration" {
-  count                                  = var.enable_event_notification ? 1 : 0
+  # if existing SM instance CRN is passed (!= null), then never register EN
+  count                                  = var.existing_sm_instance_crn == null && var.enable_event_notification ? 1 : 0
   depends_on                             = [time_sleep.wait_for_authorization_policy]
   instance_id                            = local.secrets_manager_guid
   region                                 = local.secrets_manager_region
