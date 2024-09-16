@@ -35,7 +35,7 @@ var permanentResources map[string]interface{}
 
 // Current supported Event Notification regions
 var validRegions = []string{
-	"us-south",
+	// "us-south", # do not run secrets manager tests in us regions
 	"eu-de",
 	"eu-gb",
 	"au-syd",
