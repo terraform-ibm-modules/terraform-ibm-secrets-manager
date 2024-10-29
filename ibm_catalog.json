@@ -2,7 +2,7 @@
   "products": [
     {
       "name": "deploy-arch-ibm-secrets-manager",
-      "label": "Secrets Manager",
+      "label": "Cloud automation for Secrets Manager",
       "product_kind": "solution",
       "tags": [
         "ibm_created",
