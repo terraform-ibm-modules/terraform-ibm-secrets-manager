@@ -280,7 +280,7 @@
             {
               "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
               "flavors": [
-                "standard"
+                "instances"
               ],
               "id": "b773b1d4-69bb-48db-a657-2307015eb9c1",
               "input_mapping": [
