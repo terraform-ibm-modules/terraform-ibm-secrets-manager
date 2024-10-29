@@ -288,7 +288,7 @@
               ],
               "name": "testing-deploy-arch-ibm-scc",
               "optional": true,
-              "version": "^1.0.3"
+              "version": "^1.0.1"
             }
           ],
           "dependency_version_2": true
