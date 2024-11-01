@@ -2,7 +2,7 @@
   "products": [
     {
       "name": "testing-deploy-arch-ibm-secrets-manager",
-      "label": "Testing - Secrets Manager",
+      "label": "Testing - Cloud automation for Secrets Manager",
       "product_kind": "solution",
       "tags": [
         "ibm_created",
@@ -246,6 +246,7 @@
               ]
             },
             {
+              "name": "deploy-arch-ibm-account-infra-base",
               "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
               "flavors": [
                 "standard"
@@ -257,11 +258,11 @@
                   "version_input": "prefix"
                 }
               ],
-              "name": "deploy-arch-ibm-account-infra-base",
               "optional": true,
               "version": "^1.11.6"
             },
             {
+              "name": "testing-deploy-arch-ibm-event-notifications",
               "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
               "flavors": [
                 "standard"
@@ -273,11 +274,11 @@
                   "version_input": "existing_event_notification_instance_crn"
                 }
               ],
-              "name": "testing-deploy-arch-ibm-event-notifications",
               "optional": true,
               "version": "^1.0.1"
             },
             {
+              "name": "testing-deploy-arch-ibm-scc",
               "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
               "flavors": [
                 "instances"
@@ -286,7 +287,7 @@
               "input_mapping": [
 
               ],
-              "name": "testing-deploy-arch-ibm-scc",
+
               "optional": true,
               "version": "^1.0.1"
             }
