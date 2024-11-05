@@ -68,8 +68,8 @@ module "kms" {
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_crn   = var.existing_kms_instance_crn
-  key_ring_endpoint_type      = var.kms_endpoint_type
-  key_endpoint_type           = var.kms_endpoint_type
+  key_ring_endpoint_type      = "private"
+  key_endpoint_type           = "private"
   keys = [
     {
       key_ring_name     = local.kms_key_ring_name
@@ -96,7 +96,7 @@ locals {
   secrets_manager_guid                = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[7] : null) : module.secrets_manager.secrets_manager_guid
   secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager.secrets_manager_crn
   secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager.secrets_manager_region
-  sm_endpoint_type                    = var.existing_secrets_manager_crn != null ? var.existing_secrets_endpoint_type : var.allowed_network == "private-only" ? "private" : "public"
+  sm_endpoint_type                    = "private"
 }
 
 module "secrets_manager" {
@@ -107,7 +107,7 @@ module "secrets_manager" {
   region                   = var.region
   secrets_manager_name     = var.prefix != null ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
   sm_service_plan          = var.service_plan
-  allowed_network          = var.allowed_network
+  allowed_network          = "private-only"
   sm_tags                  = var.secret_manager_tags
   # kms dependency
   kms_encryption_enabled            = true
