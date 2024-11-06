@@ -60,36 +60,60 @@
           },
           "configuration": [
             {
-              "key": "ibmcloud_api_key"
-            },
-            {
-              "key": "use_existing_resource_group"
-            },
-            {
-              "key": "resource_group_name",
+              "key": "ibmcloud_api_key",
+              "type": "password",
+              "description": "The API Key to use for IBM Cloud.",
               "required": true
             },
             {
+              "key": "use_existing_resource_group",
+              "type": "boolean",
+              "default_value": false,
+              "description": "Whether to use an existing resource group.",
+              "required": false
+            },
+            {
+              "key": "resource_group_name",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The name of a new or existing resource group to provision resources to. If a prefix input variable is specified, it's added to the value in the `<prefix>-value` format. Optional if `existing_secrets_manager_crn` is not specified.",
+              "required": true
+            },
+            {
+              "key": "region",
+              "type": "string",
+              "default_value": "us-south",
+              "description": "The region to provision resources to.",
+              "required": true,
               "custom_config": {
-                "config_constraints": {
-                  "generationType": "2"
-                },
+                "type": "region",
                 "grouping": "deployment",
                 "original_grouping": "deployment",
-                "type": "region"
-              },
-              "key": "region",
-              "required": true,
-              "type": "string"
+                "config_constraints": {
+                  "generationType": "2"
+                }
+              }
             },
             {
-              "key": "prefix"
+              "key": "prefix",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The prefix to apply to all resources created by this solution.",
+              "required": false
             },
             {
-              "key": "secrets_manager_instance_name"
+              "key": "secrets_manager_instance_name",
+              "type": "string",
+              "default_value": "base-security-services-sm",
+              "description": "The name to give the Secrets Manager instance provisioned by this solution. If a prefix input variable is specified, it is added to the value in the `<prefix>-value` format.",
+              "required": false
             },
             {
               "key": "service_plan",
+              "type": "string",
+              "default_value": "standard",
+              "description": "The pricing plan to use when provisioning a Secrets Manager instance. Possible values: `standard`, `trial`. Applies only if `provision_sm_instance` is set to `true`.",
+              "required": false,
               "options": [
                 {
                   "displayname": "Standard",
@@ -103,6 +127,10 @@
             },
             {
               "key": "allowed_network",
+              "type": "string",
+              "default_value": "private-only",
+              "description": "The types of service endpoints to set on the Secrets Manager instance. Possible values: `private-only`, `public-and-private`.",
+              "required": false,
               "options": [
                 {
                   "displayname": "Public and private",
@@ -115,64 +143,143 @@
               ]
             },
             {
-              "key": "secret_manager_tags"
+              "key": "secret_manager_tags",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of resource tags you want to associate with your Secrets Manager instance.",
+              "required": false
             },
             {
-              "key": "iam_engine_enabled"
+              "key": "iam_engine_enabled",
+              "type": "boolean",
+              "default_value": false,
+              "description": "Set this to true to to configure a Secrets Manager IAM credentials engine. If set to false, no IAM engine will be configured for your instance.",
+              "required": false
             },
             {
-              "key": "iam_engine_name"
+              "key": "iam_engine_name",
+              "type": "string",
+              "default_value": "base-sm-iam-engine",
+              "description": "The name of the IAM engine used to configure a Secrets Manager IAM credentials engine. If the prefix input variable is passed it is attached before the value in the format of '<prefix>-value'.",
+              "required": false
             },
             {
-              "key": "public_engine_enabled"
+              "key": "public_engine_enabled",
+              "type": "boolean",
+              "default_value": false,
+              "description": "Set this to true to configure a Secrets Manager public certificate engine for an existing Secrets Manager instance. If set to false, no public certificate engine will be configured for your instance.",
+              "required": false
             },
             {
-              "key": "public_engine_name"
+              "key": "public_engine_name",
+              "type": "string",
+              "default_value": "public-engine-sm",
+              "description": "The name of the IAM engine used to configure a Secrets Manager public certificate engine for an existing instance.",
+              "required": false
             },
             {
-              "key": "cis_id"
+              "key": "cis_id",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "Cloud Internet Service ID.",
+              "required": false
             },
             {
-              "key": "dns_provider_name"
+              "key": "dns_provider_name",
+              "type": "string",
+              "default_value": "certificate-dns",
+              "description": "The name of the DNS provider for the public certificate secrets engine configuration.",
+              "required": false
             },
             {
-              "key": "ca_name"
+              "key": "ca_name",
+              "type": "string",
+              "default_value": "cert-auth",
+              "description": "The name of the certificate authority for Secrets Manager.",
+              "required": false
             },
             {
-              "key": "acme_letsencrypt_private_key"
+              "key": "acme_letsencrypt_private_key",
+              "type": "password",
+              "description": "The private key generated by the ACME account creation tool.",
+              "required": false
             },
             {
-              "key": "private_engine_enabled"
+              "key": "private_engine_enabled",
+              "type": "boolean",
+              "default_value": false,
+              "description": "Set this to true to configure a Secrets Manager private certificate engine for an existing instance. If set to false, no private certificate engine will be configured for your instance.",
+              "required": false
             },
             {
-              "key": "private_engine_name"
+              "key": "private_engine_name",
+              "type": "string",
+              "default_value": "private-engine-sm",
+              "description": "The name of the IAM Engine used to configure a Secrets Manager private certificate engine for an existing instance.",
+              "required": false
             },
             {
-              "key": "root_ca_name"
+              "key": "root_ca_name",
+              "type": "string",
+              "default_value": "root-ca",
+              "description": "The name of the root certificate authority associated with the private_cert secret engine.",
+              "required": false
             },
             {
-              "key": "root_ca_common_name"
+              "key": "root_ca_common_name",
+              "type": "string",
+              "default_value": "terraform-modules.ibm.com",
+              "description": "The fully qualified domain name or host domain name for the certificate that will be created.",
+              "required": false
             },
             {
-              "key": "root_ca_max_ttl"
+              "key": "root_ca_max_ttl",
+              "type": "string",
+              "default_value": "87600h",
+              "description": "The maximum time-to-live value for the root certificate authority.",
+              "required": false
             },
             {
-              "key": "intermediate_ca_name"
+              "key": "intermediate_ca_name",
+              "type": "string",
+              "default_value": "intermediate-ca",
+              "description": "A human-readable unique name to assign to the intermediate certificate authority configuration.",
+              "required": false
             },
             {
-              "key": "certificate_template_name"
+              "key": "certificate_template_name",
+              "type": "string",
+              "default_value": "default-cert-template",
+              "description": "The name of the certificate template.",
+              "required": false
             },
             {
-              "key": "skip_kms_iam_authorization_policy"
+              "key": "skip_kms_iam_authorization_policy",
+              "type": "boolean",
+              "default_value": false,
+              "description": "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the `existing_kms_instance_crn` variable. If a value is specified for `ibmcloud_kms_api_key`, the policy is created in the KMS account.",
+              "required": false
             },
             {
-              "key": "existing_secrets_manager_kms_key_crn"
+              "key": "existing_secrets_manager_kms_key_crn",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The CRN of a Key Protect or Hyper Protect Crypto Services key to use for Secrets Manager. If not specified, a key ring and key are created.",
+              "required": false
             },
             {
-              "key": "existing_kms_instance_crn"
+              "key": "existing_kms_instance_crn",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Required only if `existing_secrets_manager_crn` or `existing_secrets_manager_kms_key_crn` is not specified. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`.",
+              "required": false
             },
             {
               "key": "kms_endpoint_type",
+              "type": "string",
+              "default_value": "private",
+              "description": "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified.",
+              "required": false,
               "options": [
                 {
                   "displayname": "Public",
@@ -185,16 +292,80 @@
               ]
             },
             {
-              "key": "kms_key_ring_name"
+              "key": "kms_key_ring_name",
+              "type": "string",
+              "default_value": "sm-cos-key-ring",
+              "description": "The name for the new key ring to store the key. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. If a prefix input variable is passed, it is added to the value in the `<prefix>-value` format. .",
+              "required": false
             },
             {
-              "key": "kms_key_name"
+              "key": "kms_key_name",
+              "type": "string",
+              "default_value": "sm-cos-key",
+              "description": "The name for the new root key. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. If a prefix input variable is passed, it is added to the value in the `<prefix>-value` format.",
+              "required": false
             },
             {
-              "key": "existing_event_notification_instance_crn"
+              "key": "existing_event_notification_instance_crn",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The CRN of the Event Notifications service used to enable lifecycle notifications for your Secrets Manager instance.",
+              "required": false
             },
             {
-              "key": "skip_event_notification_iam_authorization_policy"
+              "key": "skip_event_notification_iam_authorization_policy",
+              "type": "boolean",
+              "default_value": false,
+              "description": "If set to true, this skips the creation of a service to service authorization from Secrets Manager to Event Notifications. If false, the service to service authorization is created.",
+              "required": false
+            },
+            {
+              "key": "enable_event_notification",
+              "type": "boolean",
+              "default_value": false,
+              "description": "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_en_instance_crn` and `existing_sm_instance_crn` must be null.",
+              "required": false
+            },
+            {
+              "key": "existing_secrets_endpoint_type",
+              "type": "string",
+              "default_value": "private",
+              "description": "The endpoint type to use if existing_secrets_manager_crn is specified. Possible values: public, private.",
+              "required": false
+            },
+            {
+              "key": "existing_secrets_manager_crn",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The CRN of an existing Secrets Manager instance. If not supplied, a new instance is created.",
+              "required": false
+            },
+            {
+              "key": "ibmcloud_kms_api_key",
+              "type": "password",
+              "description": "The IBM Cloud API key that can create a root key and key ring in the key management service (KMS) instance. If not specified, the 'ibmcloud_api_key' variable is used. Specify this key if the instance in `existing_kms_instance_crn` is in an account that's different from the Secrets Manager instance. Leave this input empty if the same account owns both instances.",
+              "required": false
+            },
+            {
+              "key": "sm_en_email_list",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of email address to target out when Secrets Manager triggers an event",
+              "required": false
+            },
+            {
+              "key": "sm_en_from_email",
+              "type": "string",
+              "default_value": "compliancealert@ibm.com",
+              "description": "The email address in the used in the 'from' of any Secret Manager event coming from Event Notifications",
+              "required": false
+            },
+            {
+              "key": "sm_en_reply_to_email",
+              "type": "string",
+              "default_value": "no-reply@ibm.com",
+              "description": "The email address used in the 'reply_to' of any Secret Manager event coming from Event Notifications",
+              "required": false
             }
           ],
           "architecture": {
