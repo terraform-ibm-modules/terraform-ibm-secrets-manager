@@ -16,6 +16,7 @@ func TestRunBasicExample(t *testing.T) {
 		Testing:      t,
 		TerraformDir: "examples/basic",
 		Prefix:       "secrets-mgr-def",
+		Region:       validRegions[rand.Intn(len(validRegions))],
 	})
 
 	output, err := options.RunTestConsistency()
