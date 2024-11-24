@@ -200,7 +200,6 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"existing_secrets_manager_crn":             terraform.Output(t, existingTerraformOptions, "secrets_manager_instance_crn"),
 				"iam_engine_enabled":                       true,
 				"private_engine_enabled":                   true,
-				"existing_secrets_endpoint_type":           "public",
 			},
 		})
 
@@ -229,8 +228,6 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"service_plan":                             "trial",
 				"iam_engine_enabled":                       true,
 				"private_engine_enabled":                   true,
-				"existing_secrets_endpoint_type":           "public",
-				"allowed_network":                          "public-and-private",
 			},
 		})
 

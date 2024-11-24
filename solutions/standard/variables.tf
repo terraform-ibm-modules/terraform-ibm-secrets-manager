@@ -48,16 +48,6 @@ variable "existing_secrets_manager_crn" {
   default     = null
 }
 
-variable "existing_secrets_endpoint_type" {
-  type        = string
-  description = "The endpoint type to use if existing_secrets_manager_crn is specified. Possible values: public, private."
-  default     = "private"
-  validation {
-    condition     = contains(["public", "private"], var.existing_secrets_endpoint_type)
-    error_message = "Only \"public\" and \"private\" are allowed values for 'existing_secrets_endpoint_type'."
-  }
-}
-
 variable "service_plan" {
   type        = string
   description = "The pricing plan to use when provisioning a Secrets Manager instance. Possible values: `standard`, `trial`. Applies only if `provision_sm_instance` is set to `true`."
@@ -65,16 +55,6 @@ variable "service_plan" {
   validation {
     condition     = contains(["standard", "trial"], var.service_plan)
     error_message = "Only \"standard\" and \"trial\" are allowed values for sm_service_plan."
-  }
-}
-
-variable "allowed_network" {
-  type        = string
-  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values: `private-only`, `public-and-private`."
-  default     = "private-only"
-  validation {
-    condition     = contains(["private-only", "public-and-private"], var.allowed_network)
-    error_message = "The specified allowed_network is not a valid selection."
   }
 }
 
@@ -211,16 +191,6 @@ variable "existing_kms_instance_crn" {
   type        = string
   default     = null
   description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Required only if `existing_secrets_manager_crn` or `existing_secrets_manager_kms_key_crn` is not specified. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`."
-}
-
-variable "kms_endpoint_type" {
-  type        = string
-  description = "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
-  default     = "private"
-  validation {
-    condition     = can(regex("public|private", var.kms_endpoint_type))
-    error_message = "The kms_endpoint_type value must be 'public' or 'private'."
-  }
 }
 
 variable "kms_key_ring_name" {
