@@ -52,6 +52,27 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
   }
 }
 
+# Create IAM credentials engine using s2s auth
+resource "ibm_iam_authorization_policy" "iam_identity_policy" {
+  count                       = var.create_iam_engine ? 1 : 0
+  source_service_name         = "secrets-manager"
+  source_resource_instance_id = local.secrets_manager_guid
+  target_service_name         = "iam-identity"
+  roles                       = ["Operator"]
+  description                 = "Authorization Policy"
+  transaction_id              = "terraformAuthorizationPolicy"
+}
+
+resource "ibm_iam_authorization_policy" "iam_groups_policy" {
+  count                       = var.create_iam_engine ? 1 : 0
+  source_service_name         = "secrets-manager"
+  source_resource_instance_id = local.secrets_manager_guid
+  target_service_name         = "iam-groups"
+  roles                       = ["Groups Service Member Manage"]
+  description                 = "Authorization Policy"
+  transaction_id              = "terraformAuthorizationPolicy"
+}
+
 locals {
   # determine which service name to use for the policy
   kms_service_name = var.kms_encryption_enabled && var.kms_key_crn != null ? (
