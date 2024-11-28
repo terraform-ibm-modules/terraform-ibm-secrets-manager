@@ -2,7 +2,7 @@
   "products": [
     {
       "name": "testing-deploy-arch-ibm-secrets-manager",
-      "label": "[Add-ons Beta] Cloud automation for Secrets Manager",
+      "label": "Testing - Cloud automation for Secrets Manager",
       "product_kind": "solution",
       "tags": [
         "ibm_created",
@@ -65,7 +65,6 @@
             },
             {
               "key": "use_existing_resource_group",
-              "default_value": false,
               "required": false
             },
             {
@@ -74,7 +73,6 @@
             },
             {
               "key": "region",
-              "default_value": "us-south",
               "required": true,
               "custom_config": {
                 "type": "region",
@@ -91,12 +89,10 @@
             },
             {
               "key": "secrets_manager_instance_name",
-              "default_value": "base-security-services-sm",
               "required": false
             },
             {
               "key": "service_plan",
-              "default_value": "standard",
               "required": false,
               "options": [
                 {
@@ -111,7 +107,6 @@
             },
             {
               "key": "allowed_network",
-              "default_value": "private-only",
               "required": false,
               "options": [
                 {
@@ -126,27 +121,22 @@
             },
             {
               "key": "secret_manager_tags",
-              "default_value": "[]",
               "required": false
             },
             {
               "key": "iam_engine_enabled",
-              "default_value": false,
               "required": false
             },
             {
               "key": "iam_engine_name",
-              "default_value": "base-sm-iam-engine",
               "required": false
             },
             {
               "key": "public_engine_enabled",
-              "default_value": false,
               "required": false
             },
             {
               "key": "public_engine_name",
-              "default_value": "public-engine-sm",
               "required": false
             },
             {
@@ -155,12 +145,10 @@
             },
             {
               "key": "dns_provider_name",
-              "default_value": "certificate-dns",
               "required": false
             },
             {
               "key": "ca_name",
-              "default_value": "cert-auth",
               "required": false
             },
             {
@@ -169,42 +157,34 @@
             },
             {
               "key": "private_engine_enabled",
-              "default_value": false,
               "required": false
             },
             {
               "key": "private_engine_name",
-              "default_value": "private-engine-sm",
               "required": false
             },
             {
               "key": "root_ca_name",
-              "default_value": "root-ca",
               "required": false
             },
             {
               "key": "root_ca_common_name",
-              "default_value": "terraform-modules.ibm.com",
               "required": false
             },
             {
               "key": "root_ca_max_ttl",
-              "default_value": "87600h",
               "required": false
             },
             {
               "key": "intermediate_ca_name",
-              "default_value": "intermediate-ca",
               "required": false
             },
             {
               "key": "certificate_template_name",
-              "default_value": "default-cert-template",
               "required": false
             },
             {
               "key": "skip_kms_iam_authorization_policy",
-              "default_value": false,
               "required": false
             },
             {
@@ -217,7 +197,6 @@
             },
             {
               "key": "kms_endpoint_type",
-              "default_value": "private",
               "required": false,
               "options": [
                 {
@@ -232,12 +211,10 @@
             },
             {
               "key": "kms_key_ring_name",
-              "default_value": "sm-cos-key-ring",
               "required": false
             },
             {
               "key": "kms_key_name",
-              "default_value": "sm-cos-key",
               "required": false
             },
             {
@@ -246,17 +223,14 @@
             },
             {
               "key": "skip_event_notification_iam_authorization_policy",
-              "default_value": false,
               "required": false
             },
             {
               "key": "enable_event_notification",
-              "default_value": false,
               "required": false
             },
             {
               "key": "existing_secrets_endpoint_type",
-              "default_value": "private",
               "required": false
             },
             {
@@ -269,17 +243,14 @@
             },
             {
               "key": "sm_en_email_list",
-              "default_value": "[]",
               "required": false
             },
             {
               "key": "sm_en_from_email",
-              "default_value": "compliancealert@ibm.com",
               "required": false
             },
             {
               "key": "sm_en_reply_to_email",
-              "default_value": "no-reply@ibm.com",
               "required": false
             }
           ],
@@ -377,8 +348,7 @@
                 "instances"
               ],
               "id": "b773b1d4-69bb-48db-a657-2307015eb9c1",
-              "input_mapping": [
-              ],
+              "input_mapping": [],
               "optional": true,
               "on_by_default": false,
               "version": "^1.0.1"
