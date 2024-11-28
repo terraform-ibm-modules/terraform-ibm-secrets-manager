@@ -2,7 +2,7 @@
   "products": [
     {
       "name": "testing-deploy-arch-ibm-secrets-manager",
-      "label": "Testing - Cloud automation for Secrets Manager",
+      "label": "[Add-ons Beta] Cloud automation for Secrets Manager",
       "product_kind": "solution",
       "tags": [
         "ibm_created",
