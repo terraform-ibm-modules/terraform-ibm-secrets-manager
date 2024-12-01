@@ -9,7 +9,7 @@ require (
 	github.com/IBM/secrets-manager-go-sdk/v2 v2.0.8
 	github.com/gruntwork-io/terratest v0.47.2
 	github.com/stretchr/testify v1.10.0
-	github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper v1.42.2
+	github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper v1.42.3
 )
 
 require (
@@ -22,7 +22,7 @@ require (
 	github.com/IBM-Cloud/bluemix-go v0.0.0-20240719075425-078fcb3a55be // indirect
 	github.com/IBM-Cloud/power-go-client v1.8.3 // indirect
 	github.com/IBM/cloud-databases-go-sdk v0.7.1 // indirect
-	github.com/IBM/platform-services-go-sdk v0.71.1 // indirect
+	github.com/IBM/platform-services-go-sdk v0.72.0 // indirect
 	github.com/IBM/project-go-sdk v0.3.6 // indirect
 	github.com/IBM/schematics-go-sdk v0.4.0 // indirect
 	github.com/IBM/vpc-go-sdk v1.0.2 // indirect
