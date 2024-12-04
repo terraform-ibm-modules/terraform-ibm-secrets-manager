@@ -44,6 +44,7 @@ func TestFSCloudInSchematics(t *testing.T) {
 			"*.tf",
 			fscloudExampleTerraformDir + "/*.tf",
 			"modules/fscloud/*.tf",
+			"modules/secrets/*.tf",
 		},
 		// ResourceGroup:          resourceGroup,
 		TemplateFolder:         fscloudExampleTerraformDir,
