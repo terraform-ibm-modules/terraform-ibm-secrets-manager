@@ -59,4 +59,5 @@ module "secrets_manager" {
   secrets_manager_name = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
   sm_service_plan      = "trial"
   sm_tags              = var.resource_tags
+  create_iam_engine    = false
 }
