@@ -27,6 +27,12 @@ variable "sm_service_plan" {
   }
 }
 
+variable "create_iam_engine" {
+  type        = bool
+  description = "Whether to create an IAM credential engine using sserice to service (s2s) authentication."
+  default     = true
+}
+
 variable "sm_tags" {
   type        = list(string)
   description = "The list of resource tags that you want to associate with your Secrets Manager instance."
