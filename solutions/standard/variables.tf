@@ -17,7 +17,7 @@ variable "use_existing_resource_group" {
 variable "resource_group_name" {
   type        = string
   description = "The name of a new or existing resource group to provision resources to. If a prefix input variable is specified, it's added to the value in the `<prefix>-value` format. Optional if `existing_secrets_manager_crn` is not specified."
-  default     = null
+  default     = "secret-manager-rg"
 }
 
 variable "region" {
@@ -29,7 +29,7 @@ variable "region" {
 variable "prefix" {
   type        = string
   description = "The prefix to apply to all resources created by this solution."
-  default     = null
+  default     = ""
 }
 
 ########################################################################################################################

@@ -64,14 +64,6 @@
               "required": true
             },
             {
-              "key": "use_existing_resource_group",
-              "required": false
-            },
-            {
-              "key": "resource_group_name",
-              "required": true
-            },
-            {
               "key": "region",
               "required": true,
               "custom_config": {
@@ -85,6 +77,14 @@
             },
             {
               "key": "prefix",
+              "required": true
+            },
+            {
+              "key": "use_existing_resource_group",
+              "required": false
+            },
+            {
+              "key": "resource_group_name",
               "required": false
             },
             {
