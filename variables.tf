@@ -27,10 +27,10 @@ variable "sm_service_plan" {
   }
 }
 
-variable "create_iam_engine" {
+variable "skip_iam_authorization_policy" {
   type        = bool
-  description = "Whether to create an IAM credential engine using sserice to service (s2s) authentication."
-  default     = true
+  description = "Skip creating 2 auth policies, one between this Secrets Manager instance and the IAM Identity service and the other between this Secrets Manager instance and the IAM Groups service to enable creation of IAM credentials."
+  default     = false
 }
 
 variable "sm_tags" {
