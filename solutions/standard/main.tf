@@ -29,9 +29,11 @@ locals {
   existing_kms_guid                = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[7] : null
   create_cross_account_auth_policy = !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
 
-  kms_service_name = local.kms_key_crn != null ? (
-    can(regex(".*kms.*", local.kms_key_crn)) ? "kms" : can(regex(".*hs-crypto.*", local.kms_key_crn)) ? "hs-crypto" : null
-  ) : null
+  parsed_kms_key_crn = local.kms_key_crn != null ? split(":", local.kms_key_crn) : []
+  kms_service_name   = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[4] : null
+  kms_scope          = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[6] : null
+  kms_account_id     = length(local.parsed_kms_key_crn) > 0 ? split("/", local.kms_scope)[1] : null
+  kms_key_id         = length(local.parsed_kms_key_crn) > 0 ? local.parsed_kms_key_crn[9] : null
 }
 
 data "ibm_iam_account_settings" "iam_account_settings" {
@@ -39,15 +41,43 @@ data "ibm_iam_account_settings" "iam_account_settings" {
 }
 
 resource "ibm_iam_authorization_policy" "kms_policy" {
-  count                       = local.create_cross_account_auth_policy ? 1 : 0
-  provider                    = ibm.kms
-  source_service_account      = data.ibm_iam_account_settings.iam_account_settings[0].account_id
-  source_service_name         = "secrets-manager"
-  source_resource_group_id    = module.resource_group[0].resource_group_id
-  target_service_name         = local.kms_service_name
-  target_resource_instance_id = local.existing_kms_guid
-  roles                       = ["Reader"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} in the account ${data.ibm_iam_account_settings.iam_account_settings[0].account_id} to read from the ${local.kms_service_name} instance GUID ${local.existing_kms_guid}"
+  count                    = local.create_cross_account_auth_policy ? 1 : 0
+  provider                 = ibm.kms
+  source_service_account   = data.ibm_iam_account_settings.iam_account_settings[0].account_id
+  source_service_name      = "secrets-manager"
+  source_resource_group_id = module.resource_group[0].resource_group_id
+  roles                    = ["Reader"]
+  description              = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} in the account ${data.ibm_iam_account_settings.iam_account_settings[0].account_id} to read from the ${local.kms_service_name} instance GUID ${local.existing_kms_guid}"
+  resource_attributes {
+    name     = "serviceName"
+    operator = "stringEquals"
+    value    = local.kms_service_name
+  }
+  resource_attributes {
+    name     = "accountId"
+    operator = "stringEquals"
+    value    = local.kms_account_id
+  }
+  resource_attributes {
+    name     = "serviceInstance"
+    operator = "stringEquals"
+    value    = local.existing_kms_guid
+  }
+  resource_attributes {
+    name     = "resourceType"
+    operator = "stringEquals"
+    value    = "key"
+  }
+  resource_attributes {
+    name     = "resource"
+    operator = "stringEquals"
+    value    = local.kms_key_id
+  }
+  # Scope of policy now includes the key, so ensure to create new policy before
+  # destroying old one to prevent any disruption to every day services.
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
