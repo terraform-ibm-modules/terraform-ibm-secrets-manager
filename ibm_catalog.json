@@ -351,7 +351,17 @@
                 "instances"
               ],
               "id": "b773b1d4-69bb-48db-a657-2307015eb9c1",
-              "input_mapping": [],
+              "input_mapping": [
+                {
+                  "dependency_input": "crn",
+                  "version_input": "existing_event_notification_instance_crn"
+                },
+                {
+                  "dependency_input": "scc_region",
+                  "version_input": "region",
+                  "reference_version": true
+                }
+              ],
               "optional": true,
               "on_by_default": true,
               "version": "^1.0.1"
