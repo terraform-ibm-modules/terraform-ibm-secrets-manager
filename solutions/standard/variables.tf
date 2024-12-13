@@ -291,3 +291,8 @@ variable "sm_en_reply_to_email" {
   description = "The email address used in the 'reply_to' of any Secret Manager event coming from Event Notifications"
   default     = "no-reply@ibm.com"
 }
+variable "kms_encryption_enabled" {
+  type        = bool
+  description = "Set this to true to control the encryption keys used to encrypt the data that you store in Secrets Manager. If set to false, the data that you store is encrypted at rest by using envelope encryption. For more details, see https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-mng-data&interface=ui#about-encryption."
+  default     = true
+}
