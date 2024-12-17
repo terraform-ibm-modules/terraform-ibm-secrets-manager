@@ -29,7 +29,7 @@ variable "sm_service_plan" {
 
 variable "skip_iam_authorization_policy" {
   type        = bool
-  description = "Skip creating 2 auth policies, one between this Secrets Manager instance and the IAM Identity service and the other between this Secrets Manager instance and the IAM Groups service to enable creation of IAM credentials."
+  description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine. If set to false, a policies will be created that grants the Secrets Manager instance Operator access to the IAM identity service, and Groups Service Member Manage access to the IAM groups service."
   default     = false
 }
 
