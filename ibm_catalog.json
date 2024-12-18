@@ -87,17 +87,50 @@
               "required": true
             },
             {
-              "custom_config": {
-                "config_constraints": {
-                  "generationType": "2"
-                },
-                "grouping": "deployment",
-                "original_grouping": "deployment",
-                "type": "region"
-              },
               "key": "region",
               "required": true,
-              "type": "string"
+              "options": [
+                {
+                  "displayname": "Osaka",
+                  "value": "jp-osa"
+                },
+                {
+                  "displayname": "Sydney",
+                  "value": "au-syd"
+                },
+                {
+                  "displayname": "Tokyo",
+                  "value": "jp-tok"
+                },
+                {
+                  "displayname": "Frankfurt",
+                  "value": "eu-de"
+                },
+                {
+                  "displayname": "London",
+                  "value": "eu-gb"
+                },
+                {
+                  "displayname": "Mardrid",
+                  "value": "eu-es"
+                },
+                {
+                  "displayname": "Dallas",
+                  "value": "us-south"
+                },
+                {
+                  "displayname": "Toronto",
+                  "value": "ca-tor"
+                },
+                {
+                  "displayname": "Washington DC",
+                  "value": "us-east"
+                },
+                {
+                  "displayname": "Sao Paulo",
+                  "value": "br-sao"
+                }
+              ]
             },
             {
               "key": "prefix"
