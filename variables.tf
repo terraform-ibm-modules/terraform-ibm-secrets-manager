@@ -27,6 +27,12 @@ variable "sm_service_plan" {
   }
 }
 
+variable "skip_iam_authorization_policy" {
+  type        = bool
+  description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine. If set to false, a policies will be created that grants the Secrets Manager instance Operator access to the IAM identity service, and Groups Service Member Manage access to the IAM groups service."
+  default     = false
+}
+
 variable "sm_tags" {
   type        = list(string)
   description = "The list of resource tags that you want to associate with your Secrets Manager instance."
