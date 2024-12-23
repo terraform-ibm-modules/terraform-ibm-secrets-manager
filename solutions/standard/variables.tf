@@ -58,16 +58,6 @@ variable "existing_secrets_manager_crn" {
   default     = null
 }
 
-variable "existing_secrets_endpoint_type" {
-  type        = string
-  description = "The endpoint type to use if existing_secrets_manager_crn is specified. Possible values: public, private."
-  default     = "private"
-  validation {
-    condition     = contains(["public", "private"], var.existing_secrets_endpoint_type)
-    error_message = "Only \"public\" and \"private\" are allowed values for 'existing_secrets_endpoint_type'."
-  }
-}
-
 variable "service_plan" {
   type        = string
   description = "The pricing plan to use when provisioning a Secrets Manager instance. Possible values: `standard`, `trial`. Applies only if `provision_sm_instance` is set to `true`."
@@ -75,16 +65,6 @@ variable "service_plan" {
   validation {
     condition     = contains(["standard", "trial"], var.service_plan)
     error_message = "Only \"standard\" and \"trial\" are allowed values for sm_service_plan."
-  }
-}
-
-variable "allowed_network" {
-  type        = string
-  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values: `private-only`, `public-and-private`."
-  default     = "private-only"
-  validation {
-    condition     = contains(["private-only", "public-and-private"], var.allowed_network)
-    error_message = "The specified allowed_network is not a valid selection."
   }
 }
 
