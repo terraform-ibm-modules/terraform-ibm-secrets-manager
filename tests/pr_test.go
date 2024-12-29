@@ -188,7 +188,7 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 	} else {
 
 		// ------------------------------------------------------------------------------------
-		// Test passing an existing SM, RG, EN
+		// Test passing existing RG, EN, and KMS key
 		// ------------------------------------------------------------------------------------
 
 		options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
@@ -203,7 +203,9 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 				"use_existing_resource_group":              true,
 				"enable_event_notification":                true,
 				"existing_event_notification_instance_crn": terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"),
-				"existing_secrets_manager_crn":             terraform.Output(t, existingTerraformOptions, "secrets_manager_instance_crn"),
+				"existing_secrets_manager_kms_key_crn":     permanentResources["hpcs_south_root_key_crn"],
+				"existing_kms_instance_crn":                permanentResources["hpcs_south_crn"],
+				"service_plan":                             "trial",
 				"iam_engine_enabled":                       true,
 				"private_engine_enabled":                   true,
 				"provider_visibility":                      "public",
@@ -213,35 +215,6 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 		output, err := options.RunTestConsistency()
 		assert.Nil(t, err, "This should not have errored")
 		assert.NotNil(t, output, "Expected some output")
-
-		// ------------------------------------------------------------------------------------
-		// Test passing existing RG, EN, and KMS key
-		// ------------------------------------------------------------------------------------
-
-		options2 := testhelper.TestOptionsDefault(&testhelper.TestOptions{
-			Testing:      t,
-			TerraformDir: solutionsTerraformDir,
-			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
-			ImplicitRequired: false,
-			TerraformVars: map[string]interface{}{
-				"ibmcloud_api_key":                         os.Getenv("TF_VAR_ibmcloud_api_key"),
-				"region":                                   region,
-				"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
-				"use_existing_resource_group":              true,
-				"enable_event_notification":                true,
-				"existing_event_notification_instance_crn": terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"),
-				"existing_secrets_manager_kms_key_crn":     terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_key_crn"),
-				"existing_kms_instance_crn":                terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"),
-				"service_plan":                             "trial",
-				"iam_engine_enabled":                       true,
-				"private_engine_enabled":                   true,
-				"provider_visibility":                      "public",
-			},
-		})
-
-		output2, err := options2.RunTestConsistency()
-		assert.Nil(t, err, "This should not have errored")
-		assert.NotNil(t, output2, "Expected some output")
 
 	}
 
