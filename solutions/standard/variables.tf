@@ -291,3 +291,22 @@ variable "sm_en_reply_to_email" {
   description = "The email address used in the 'reply_to' of any Secret Manager event coming from Event Notifications"
   default     = "no-reply@ibm.com"
 }
+##############################################################
+# Context-based restriction (CBR)
+##############################################################
+
+variable "cbr_rules" {
+  type = list(object({
+    description = string
+    account_id  = string
+    rule_contexts = list(object({
+      attributes = optional(list(object({
+        name  = string
+        value = string
+    }))) }))
+    enforcement_mode = string
+  }))
+  description = "(Optional, list) List of CBR rules to create"
+  default     = []
+  # Validation happens in the rule module
+}
