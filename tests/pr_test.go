@@ -190,32 +190,38 @@ func TestRunExistingResourcesInstances(t *testing.T) {
 		// ------------------------------------------------------------------------------------
 		// Test passing existing RG, EN, and KMS key
 		// ------------------------------------------------------------------------------------
-
-		options := testhelper.TestOptionsDefault(&testhelper.TestOptions{
-			Testing:      t,
-			TerraformDir: solutionsTerraformDir,
-			// Do not hard fail the test if the implicit destroy steps fail to allow a full destroy of resource to occur
-			ImplicitRequired: false,
-			TerraformVars: map[string]interface{}{
-				"ibmcloud_api_key":                         os.Getenv("TF_VAR_ibmcloud_api_key"),
-				"region":                                   region,
-				"resource_group_name":                      terraform.Output(t, existingTerraformOptions, "resource_group_name"),
-				"use_existing_resource_group":              true,
-				"enable_event_notification":                true,
-				"existing_event_notification_instance_crn": terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"),
-				"existing_secrets_manager_kms_key_crn":     permanentResources["hpcs_south_root_key_crn"],
-				"existing_kms_instance_crn":                permanentResources["hpcs_south_crn"],
-				"service_plan":                             "trial",
-				"iam_engine_enabled":                       true,
-				"private_engine_enabled":                   true,
-				"provider_visibility":                      "public",
+		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+			Testing: t,
+			TarIncludePatterns: []string{
+				"*.tf",
+				fmt.Sprintf("%s/*.tf", solutionsTerraformDir),
+				fmt.Sprintf("%s/*.tf", "modules/secrets"),
+				fmt.Sprintf("%s/*.tf", "modules/fscloud"),
 			},
+			TemplateFolder:         solutionsTerraformDir,
+			ResourceGroup:          resourceGroup,
+			Tags:                   []string{"test-schematic"},
+			DeleteWorkspaceOnFail:  false,
+			WaitJobCompleteMinutes: 60,
 		})
 
-		output, err := options.RunTestConsistency()
-		assert.Nil(t, err, "This should not have errored")
-		assert.NotNil(t, output, "Expected some output")
+		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
+			{Name: "resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
+			{Name: "use_existing_resource_group", Value: true, DataType: "bool"},
+			{Name: "enable_event_notification", Value: true, DataType: "bool"},
+			{Name: "existing_event_notification_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"), DataType: "string"},
+			{Name: "existing_secrets_manager_kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
+			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+			{Name: "service_plan", Value: "trial", DataType: "string"},
+			{Name: "iam_engine_enabled", Value: true, DataType: "bool"},
+			{Name: "private_engine_enabled", Value: true, DataType: "bool"},
+			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+		}
 
+		err := options.RunSchematicTest()
+		assert.NoError(t, err, "Schematic Test had unexpected error")
 	}
 
 	// Check if "DO_NOT_DESTROY_ON_FAILURE" is set
