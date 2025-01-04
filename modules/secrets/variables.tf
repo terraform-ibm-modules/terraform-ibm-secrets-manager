@@ -39,6 +39,7 @@ variable "secrets" {
       service_credentials_ttl                 = optional(string, "7776000") # 90 days
       service_credentials_source_service_crn  = optional(string)
       service_credentials_source_service_role = optional(string)
+      service_credentials_source_service_hmac = optional(bool, false)
     })))
   }))
   description = "Secret Manager secrets configurations."
