@@ -47,16 +47,3 @@ module "key_protect" {
     }
   ]
 }
-
-##############################################################################
-# Secrets Manager
-##############################################################################
-
-module "secrets_manager" {
-  source               = "../.."
-  resource_group_id    = module.resource_group.resource_group_id
-  region               = var.region
-  secrets_manager_name = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
-  sm_service_plan      = "trial"
-  sm_tags              = var.resource_tags
-}
