@@ -26,6 +26,9 @@ The `cbr_rules` input variable allows you to provide a rule for the target servi
       - `enabled` - The restrictions are enforced and reported. This is the default.
       - `disabled` - The restrictions are disabled. Nothing is enforced or reported.
       - `report` - The restrictions are evaluated and reported, but not enforced.
+  - `operations` (optional): The operations this rule applies to
+    - `api_types`(required): (List) The API types this rule applies to.
+        - `api_type_id`(required):The API type ID
 
 
 ### Example Rule For Context-Based Restrictions Configuration
@@ -49,6 +52,11 @@ cbr_rules = [
      }
    ]
   enforcement_mode = "enabled"
+  operations = [{
+    api_types = [{
+     api_type_id = "crn:v1:bluemix:public:context-based-restrictions::::api-type:"
+      }]
+    }]
   }
 ]
 ```
