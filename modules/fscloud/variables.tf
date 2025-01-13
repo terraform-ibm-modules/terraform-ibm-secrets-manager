@@ -84,6 +84,11 @@ variable "cbr_rules" {
         value = string
     }))) }))
     enforcement_mode = string
+    operations = optional(list(object({
+      api_types = list(object({
+        api_type_id = string
+      }))
+    })))
   }))
   description = "(list) List of CBR rules to create"
   default     = []
