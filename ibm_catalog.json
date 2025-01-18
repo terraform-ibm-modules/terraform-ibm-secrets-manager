@@ -152,19 +152,6 @@
               ]
             },
             {
-              "key": "allowed_network",
-              "options": [
-                {
-                  "displayname": "Public and private",
-                  "value": "public-and-private"
-                },
-                {
-                  "displayname": "Private only",
-                  "value": "private-only"
-                }
-              ]
-            },
-            {
               "key": "secret_manager_tags"
             },
             {
@@ -214,6 +201,24 @@
             },
             {
               "key": "skip_kms_iam_authorization_policy"
+            },
+            {
+              "key": "enable_event_notification"
+            },
+            {
+              "key": "existing_secrets_manager_crn"
+            },
+            {
+              "key": "ibmcloud_kms_api_key"
+            },
+            {
+              "key": "sm_en_email_list"
+            },
+            {
+              "key": "sm_en_from_email"
+            },
+            {
+              "key": "sm_en_reply_to_email"
             },
             {
               "key": "existing_secrets_manager_kms_key_crn"
