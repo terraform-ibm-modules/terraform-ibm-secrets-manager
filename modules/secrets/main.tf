@@ -72,4 +72,5 @@ module "secrets" {
   service_credentials_ttl                 = each.value.service_credentials_ttl
   service_credentials_source_service_crn  = each.value.service_credentials_source_service_crn
   service_credentials_source_service_role = each.value.service_credentials_source_service_role
+  service_credentials_source_service_hmac = each.value.service_credentials_source_service_hmac
 }
