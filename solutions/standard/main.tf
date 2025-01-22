@@ -64,7 +64,7 @@ module "kms" {
   }
   count                       = var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.17.1"
+  version                     = "4.19.1"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_crn   = var.existing_kms_instance_crn
@@ -119,6 +119,7 @@ module "secrets_manager" {
   existing_en_instance_crn         = var.existing_event_notification_instance_crn
   skip_en_iam_authorization_policy = var.skip_event_notification_iam_authorization_policy
   endpoint_type                    = local.sm_endpoint_type
+  cbr_rules                        = var.cbr_rules
 }
 
 # Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.

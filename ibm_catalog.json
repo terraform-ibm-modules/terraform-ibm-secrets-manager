@@ -246,6 +246,9 @@
             },
             {
               "key": "skip_event_notification_iam_authorization_policy"
+            },
+            {
+              "key":"cbr_rules"
             }
           ],
           "architecture": {
