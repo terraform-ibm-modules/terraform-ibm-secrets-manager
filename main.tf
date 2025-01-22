@@ -17,23 +17,26 @@ locals {
   validate_endpoint = var.endpoint_type == "public" && var.allowed_network == "private-only" && var.existing_sm_instance_crn == null ? tobool("It is not allowed to have conflicting var.endpoint_type and var.allowed_network values.") : true
   # tflint-ignore: terraform_unused_declarations
   validate_region = var.existing_sm_instance_crn == null && var.region == null ? tobool("When existing_sm_instance_crn is null, a value must be passed for var.region") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_existing_instance = var.existing_sm_instance_crn != null && var.existing_sm_instance_guid != null ? tobool("Do not provide both an existing instance GUID and CRN. Either provider a GUID and region or a CRN.") : true
 }
 
 locals {
+  is_existing_sm_instance         = (var.existing_sm_instance_crn != null || var.existing_sm_instance_crn != null) ? true : false
   parsed_existing_sm_instance_crn = var.existing_sm_instance_crn != null ? split(":", var.existing_sm_instance_crn) : []
-  existing_sm_guid                = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[7] : null
-  existing_sm_region              = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[5] : null
+  existing_sm_guid                = var.existing_sm_instance_guid != null ? var.existing_sm_instance_guid : length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[7] : null
+  existing_sm_region              = var.existing_sm_instance_guid != null ? var.region : length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[5] : null
 }
 
 
 data "ibm_resource_instance" "sm_instance" {
-  count      = var.existing_sm_instance_crn == null ? 0 : 1
-  identifier = var.existing_sm_instance_crn
+  count      = local.is_existing_sm_instance ? 1 : 0
+  identifier = local.existing_sm_guid
 }
 
 # Create Secrets Manager Instance
 resource "ibm_resource_instance" "secrets_manager_instance" {
-  count             = var.existing_sm_instance_crn == null ? 1 : 0
+  count             = local.is_existing_sm_instance ? 0 : 1
   depends_on        = [time_sleep.wait_for_authorization_policy]
   name              = var.secrets_manager_name
   service           = "secrets-manager"
@@ -62,7 +65,7 @@ locals {
 }
 
 resource "ibm_iam_authorization_policy" "kms_policy" {
-  count                       = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy && var.existing_sm_instance_crn == null ? 1 : 0
+  count                       = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy && !local.is_existing_sm_instance ? 1 : 0
   source_service_name         = "secrets-manager"
   source_resource_group_id    = var.resource_group_id
   target_service_name         = local.kms_service_name
@@ -81,8 +84,8 @@ resource "time_sleep" "wait_for_authorization_policy" {
 
 
 locals {
-  secrets_manager_guid   = var.existing_sm_instance_crn != null ? local.existing_sm_guid : tolist(ibm_resource_instance.secrets_manager_instance[*].guid)[0]
-  secrets_manager_region = var.existing_sm_instance_crn != null ? local.existing_sm_region : var.region
+  secrets_manager_guid   = local.is_existing_sm_instance ? local.existing_sm_guid : tolist(ibm_resource_instance.secrets_manager_instance[*].guid)[0]
+  secrets_manager_region = local.is_existing_sm_instance ? local.existing_sm_region : var.region
 }
 
 ##############################################################################
@@ -128,7 +131,7 @@ module "cbr_rule" {
 # Create IAM Authorization Policies to allow SM to access event notification
 resource "ibm_iam_authorization_policy" "en_policy" {
   # if existing SM instance CRN is passed (!= null), then never create a policy
-  count                       = var.existing_sm_instance_crn != null || (var.enable_event_notification == false || var.skip_en_iam_authorization_policy) ? 0 : 1
+  count                       = local.is_existing_sm_instance || (var.enable_event_notification == false || var.skip_en_iam_authorization_policy) ? 0 : 1
   source_service_name         = "secrets-manager"
   source_resource_group_id    = var.resource_group_id
   target_service_name         = "event-notifications"
@@ -139,7 +142,7 @@ resource "ibm_iam_authorization_policy" "en_policy" {
 
 resource "ibm_sm_en_registration" "sm_en_registration" {
   # if existing SM instance CRN is passed (!= null), then never register EN
-  count                                  = var.existing_sm_instance_crn == null && var.enable_event_notification ? 1 : 0
+  count                                  = !local.is_existing_sm_instance && var.enable_event_notification ? 1 : 0
   depends_on                             = [time_sleep.wait_for_authorization_policy]
   instance_id                            = local.secrets_manager_guid
   region                                 = local.secrets_manager_region

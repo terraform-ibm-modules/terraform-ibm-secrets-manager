@@ -8,7 +8,7 @@ variable "resource_group_id" {
 
 variable "region" {
   type        = string
-  description = "The region where the resource will be provisioned.Its not required if passing a value for `existing_sm_instance_crn`."
+  description = "The region where the resource will be provisioned or the region matching the existing GUID provided. It is not required if passing a value for `existing_sm_instance_crn`."
   default     = null
 }
 
@@ -69,7 +69,13 @@ variable "kms_key_crn" {
 
 variable "existing_sm_instance_crn" {
   type        = string
-  description = "An existing Secrets Manager instance CRN. If not provided an new instance will be provisioned."
+  description = "An existing Secrets Manager instance CRN. If not providing a CRN or GUID, a new instance will be provisioned."
+  default     = null
+}
+
+variable "existing_sm_instance_guid" {
+  type        = string
+  description = "An existing Secrets Manager instance GUID. Make sure to also set the region. If not providing a CRN or GUID, a new instance will be provisioned."
   default     = null
 }
 
