@@ -12,7 +12,7 @@ module "resource_group" {
   count                        = var.existing_secrets_manager_crn == null ? 1 : 0
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.6"
-  resource_group_name          = var.use_existing_resource_group == false ? (var.prefix != null ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
+  resource_group_name          = var.use_existing_resource_group == false ? ((var.prefix != null && var.prefix != "") ? "${var.prefix}-${var.resource_group_name}" : var.resource_group_name) : null
   existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
 }
 
@@ -21,8 +21,8 @@ module "resource_group" {
 #######################################################################################################################
 locals {
   kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn) : var.existing_secrets_manager_kms_key_crn
-  kms_key_ring_name = var.prefix != null ? "${var.prefix}-${var.kms_key_ring_name}" : var.kms_key_ring_name
-  kms_key_name      = var.prefix != null ? "${var.prefix}-${var.kms_key_name}" : var.kms_key_name
+  kms_key_ring_name = (var.prefix != null && var.prefix != "") ? "${var.prefix}-${var.kms_key_ring_name}" : var.kms_key_ring_name
+  kms_key_name      = (var.prefix != null && var.prefix != "") ? "${var.prefix}-${var.kms_key_name}" : var.kms_key_name
 
   parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
@@ -105,7 +105,7 @@ module "secrets_manager" {
   existing_sm_instance_crn = var.existing_secrets_manager_crn
   resource_group_id        = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_id : data.ibm_resource_instance.existing_sm[0].resource_group_id
   region                   = var.region
-  secrets_manager_name     = var.prefix != null ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
+  secrets_manager_name     = (var.prefix != null && var.prefix != "") ? "${var.prefix}-${var.secrets_manager_instance_name}" : var.secrets_manager_instance_name
   sm_service_plan          = var.service_plan
   allowed_network          = var.allowed_network
   sm_tags                  = var.secret_manager_tags
@@ -128,7 +128,7 @@ module "iam_secrets_engine" {
   source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
   version              = "1.2.6"
   region               = local.secrets_manager_region
-  iam_engine_name      = var.prefix != null ? "${var.prefix}-${var.iam_engine_name}" : var.iam_engine_name
+  iam_engine_name      = (var.prefix != null && var.prefix != "") ? "${var.prefix}-${var.iam_engine_name}" : var.iam_engine_name
   secrets_manager_guid = local.secrets_manager_guid
   endpoint_type        = local.sm_endpoint_type
 }
