@@ -55,6 +55,14 @@ module "secrets_manager" {
         secret_name             = "${var.prefix}-kp-key-crn"
         secret_type             = "arbitrary"
         secret_payload_password = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
+        },
+        {
+          # Arbitrary service credential for source service event notifications, with role Event-Notification-Publisher
+          secret_name                                 = "${var.prefix}-service-credential"
+          secret_type                                 = "service_credentials" #checkov:skip=CKV_SECRET_6
+          secret_description                          = "Created by secrets-manager-module complete example"
+          service_credentials_source_service_crn      = module.event_notification.crn
+          service_credentials_source_service_role_crn = "crn:v1:bluemix:public:event-notifications::::serviceRole:Event-Notification-Publisher"
         }
       ]
     },
