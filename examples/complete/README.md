@@ -9,6 +9,7 @@ This examples handles the provisioning of a new Secrets Manager instance.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= v1.0.0 |
 | <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >=1.70.0 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | 0.12.1 |
 
 ### Modules
 
@@ -21,7 +22,10 @@ This examples handles the provisioning of a new Secrets Manager instance.
 
 ### Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [ibm_iam_authorization_policy.en_policy](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/iam_authorization_policy) | resource |
+| [time_sleep.wait_for_en_policy](https://registry.terraform.io/providers/hashicorp/time/0.12.1/docs/resources/sleep) | resource |
 
 ### Inputs
 
