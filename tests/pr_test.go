@@ -55,10 +55,11 @@ func TestMain(m *testing.M) {
 
 func setupOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-		Testing:      t,
-		TerraformDir: completeExampleTerraformDir,
-		Prefix:       prefix,
-		Region:       validRegions[rand.Intn(len(validRegions))],
+		Testing:                    t,
+		TerraformDir:               completeExampleTerraformDir,
+		Prefix:                     prefix,
+		Region:                     validRegions[rand.Intn(len(validRegions))],
+		CheckApplyResultForUpgrade: true,
 		/*
 		 Comment out the 'ResourceGroup' input to force this tests to create a unique resource group. This is because
 		 there is a restriction with the Event Notification service, which allows only one Lite plan instance per resource group.
