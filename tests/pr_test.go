@@ -109,7 +109,7 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
-		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_east_crn"], DataType: "string"},
+		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 		{Name: "iam_engine_enabled", Value: true, DataType: "bool"},
 		{Name: "public_engine_enabled", Value: true, DataType: "bool"},
 		{Name: "private_engine_enabled", Value: true, DataType: "bool"},
