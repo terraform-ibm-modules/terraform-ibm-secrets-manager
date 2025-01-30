@@ -36,7 +36,26 @@ module "event_notification" {
   region            = var.en_region
 }
 
+resource "ibm_iam_authorization_policy" "en_policy" {
+  source_service_name         = "secrets-manager"
+  roles                       = ["Key Manager"]
+  target_service_name         = "event-notifications"
+  target_resource_instance_id = module.event_notification.guid
+  description                 = "Allow the Secret manager Key Manager role access to event-notifications with guid ${module.event_notification.guid}."
+  # Scope of policy now includes the key, so ensure to create new policy before
+  # destroying old one to prevent any disruption to every day services.
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "time_sleep" "wait_for_en_policy" {
+  depends_on      = [ibm_iam_authorization_policy.en_policy]
+  create_duration = "30s"
+}
+
 module "secrets_manager" {
+  depends_on                 = [time_sleep.wait_for_en_policy]
   source                     = "../.."
   resource_group_id          = module.resource_group.resource_group_id
   region                     = var.region
