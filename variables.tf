@@ -87,6 +87,11 @@ variable "cbr_rules" {
         value = string
     }))) }))
     enforcement_mode = string
+    operations = optional(list(object({
+      api_types = list(object({
+        api_type_id = string
+      }))
+    })))
   }))
   description = "(Optional, list) List of CBR rules to create"
   default     = []
@@ -135,21 +140,21 @@ variable "secrets" {
     secret_group_description = optional(string)
     existing_secret_group    = optional(bool, false)
     secrets = optional(list(object({
-      secret_name                             = string
-      secret_description                      = optional(string)
-      secret_type                             = optional(string)
-      imported_cert_certificate               = optional(string)
-      imported_cert_private_key               = optional(string)
-      imported_cert_intermediate              = optional(string)
-      secret_username                         = optional(string)
-      secret_labels                           = optional(list(string), [])
-      secret_payload_password                 = optional(string, "")
-      secret_auto_rotation                    = optional(bool, true)
-      secret_auto_rotation_unit               = optional(string, "day")
-      secret_auto_rotation_interval           = optional(number, 89)
-      service_credentials_ttl                 = optional(string, "7776000") # 90 days
-      service_credentials_source_service_crn  = optional(string)
-      service_credentials_source_service_role = optional(string)
+      secret_name                                 = string
+      secret_description                          = optional(string)
+      secret_type                                 = optional(string)
+      imported_cert_certificate                   = optional(string)
+      imported_cert_private_key                   = optional(string)
+      imported_cert_intermediate                  = optional(string)
+      secret_username                             = optional(string)
+      secret_labels                               = optional(list(string), [])
+      secret_payload_password                     = optional(string, "")
+      secret_auto_rotation                        = optional(bool, true)
+      secret_auto_rotation_unit                   = optional(string, "day")
+      secret_auto_rotation_interval               = optional(number, 89)
+      service_credentials_ttl                     = optional(string, "7776000") # 90 days
+      service_credentials_source_service_crn      = optional(string)
+      service_credentials_source_service_role_crn = optional(string)
     })))
   }))
   description = "Secret Manager secrets configurations."

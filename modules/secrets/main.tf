@@ -50,27 +50,27 @@ locals {
 
 # create secret
 module "secrets" {
-  for_each                                = { for obj in local.secrets : obj.secret_name => obj }
-  source                                  = "terraform-ibm-modules/secrets-manager-secret/ibm"
-  version                                 = "1.4.0"
-  region                                  = var.existing_sm_instance_region
-  secrets_manager_guid                    = var.existing_sm_instance_guid
-  secret_group_id                         = each.value.secret_group_id
-  endpoint_type                           = var.endpoint_type
-  secret_name                             = each.value.secret_name
-  secret_description                      = each.value.secret_description
-  secret_type                             = each.value.secret_type
-  imported_cert_certificate               = each.value.imported_cert_certificate
-  imported_cert_private_key               = each.value.imported_cert_private_key
-  imported_cert_intermediate              = each.value.imported_cert_intermediate
-  secret_username                         = each.value.secret_username
-  secret_labels                           = each.value.secret_labels
-  secret_payload_password                 = each.value.secret_payload_password
-  secret_auto_rotation                    = each.value.secret_auto_rotation
-  secret_auto_rotation_unit               = each.value.secret_auto_rotation_unit
-  secret_auto_rotation_interval           = each.value.secret_auto_rotation_interval
-  service_credentials_ttl                 = each.value.service_credentials_ttl
-  service_credentials_source_service_crn  = each.value.service_credentials_source_service_crn
-  service_credentials_source_service_role = each.value.service_credentials_source_service_role
-  service_credentials_source_service_hmac = each.value.service_credentials_source_service_hmac
+  for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
+  source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
+  version                                     = "1.6.0"
+  region                                      = var.existing_sm_instance_region
+  secrets_manager_guid                        = var.existing_sm_instance_guid
+  secret_group_id                             = each.value.secret_group_id
+  endpoint_type                               = var.endpoint_type
+  secret_name                                 = each.value.secret_name
+  secret_description                          = each.value.secret_description
+  secret_type                                 = each.value.secret_type
+  imported_cert_certificate                   = each.value.imported_cert_certificate
+  imported_cert_private_key                   = each.value.imported_cert_private_key
+  imported_cert_intermediate                  = each.value.imported_cert_intermediate
+  secret_username                             = each.value.secret_username
+  secret_labels                               = each.value.secret_labels
+  secret_payload_password                     = each.value.secret_payload_password
+  secret_auto_rotation                        = each.value.secret_auto_rotation
+  secret_auto_rotation_unit                   = each.value.secret_auto_rotation_unit
+  secret_auto_rotation_interval               = each.value.secret_auto_rotation_interval
+  service_credentials_ttl                     = each.value.service_credentials_ttl
+  service_credentials_source_service_crn      = each.value.service_credentials_source_service_crn
+  service_credentials_source_service_role_crn = each.value.service_credentials_source_service_role_crn
+  service_credentials_source_service_hmac     = each.value.service_credentials_source_service_hmac
 }

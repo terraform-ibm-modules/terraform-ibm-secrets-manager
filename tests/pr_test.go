@@ -53,12 +53,13 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func setupOptions(t *testing.T, prefix string) *testhelper.TestOptions {
+func setupOptions(t *testing.T, prefix string, checkApplyResultForUpgrade bool) *testhelper.TestOptions {
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-		Testing:      t,
-		TerraformDir: completeExampleTerraformDir,
-		Prefix:       prefix,
-		Region:       validRegions[rand.Intn(len(validRegions))],
+		Testing:                    t,
+		TerraformDir:               completeExampleTerraformDir,
+		Prefix:                     prefix,
+		Region:                     validRegions[rand.Intn(len(validRegions))],
+		CheckApplyResultForUpgrade: checkApplyResultForUpgrade,
 		/*
 		 Comment out the 'ResourceGroup' input to force this tests to create a unique resource group. This is because
 		 there is a restriction with the Event Notification service, which allows only one Lite plan instance per resource group.
@@ -72,7 +73,7 @@ func setupOptions(t *testing.T, prefix string) *testhelper.TestOptions {
 func TestRunUpgradeExample(t *testing.T) {
 	t.Parallel()
 
-	options := setupOptions(t, "secrets-mgr-upg")
+	options := setupOptions(t, "secrets-mgr-upg", true)
 
 	output, err := options.RunTestUpgrade()
 	if !options.UpgradeTestSkipped {
@@ -114,7 +115,7 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
-		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_east_crn"], DataType: "string"},
+		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 		{Name: "iam_engine_enabled", Value: true, DataType: "bool"},
 		{Name: "public_engine_enabled", Value: true, DataType: "bool"},
 		{Name: "private_engine_enabled", Value: true, DataType: "bool"},
