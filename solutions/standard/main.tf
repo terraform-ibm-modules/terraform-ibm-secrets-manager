@@ -97,21 +97,18 @@ locals {
   secrets_manager_guid                = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[7] : null) : module.secrets_manager.secrets_manager_guid
   secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager.secrets_manager_crn
   secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager.secrets_manager_region
-  sm_endpoint_type                    = var.existing_secrets_manager_crn != null ? var.existing_secrets_endpoint_type : var.allowed_network == "private-only" ? "private" : "public"
 }
 
 module "secrets_manager" {
   depends_on               = [time_sleep.wait_for_authorization_policy]
-  source                   = "../.."
+  source                   = "../../modules/fscloud"
   existing_sm_instance_crn = var.existing_secrets_manager_crn
   resource_group_id        = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_id : data.ibm_resource_instance.existing_sm[0].resource_group_id
   region                   = var.region
   secrets_manager_name     = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
-  sm_service_plan          = var.service_plan
-  allowed_network          = var.allowed_network
+  service_plan             = var.service_plan
   sm_tags                  = var.secret_manager_tags
   # kms dependency
-  kms_encryption_enabled            = true
   existing_kms_instance_guid        = local.existing_kms_guid
   kms_key_crn                       = local.kms_key_crn
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || local.create_cross_account_auth_policy
@@ -119,7 +116,6 @@ module "secrets_manager" {
   enable_event_notification        = var.enable_event_notification
   existing_en_instance_crn         = var.existing_event_notification_instance_crn
   skip_en_iam_authorization_policy = var.skip_event_notification_iam_authorization_policy
-  endpoint_type                    = local.sm_endpoint_type
   cbr_rules                        = var.cbr_rules
 }
 
@@ -131,7 +127,7 @@ module "iam_secrets_engine" {
   region               = local.secrets_manager_region
   iam_engine_name      = try("${local.prefix}-${var.iam_engine_name}", var.iam_engine_name)
   secrets_manager_guid = local.secrets_manager_guid
-  endpoint_type        = local.sm_endpoint_type
+  endpoint_type        = "private"
 }
 
 locals {
@@ -157,7 +153,7 @@ module "secrets_manager_public_cert_engine" {
   dns_config_name              = var.dns_provider_name
   ca_config_name               = var.ca_name
   acme_letsencrypt_private_key = var.acme_letsencrypt_private_key
-  service_endpoints            = local.sm_endpoint_type
+  service_endpoints            = "private"
 }
 
 
@@ -173,7 +169,7 @@ module "private_secret_engine" {
   root_ca_max_ttl           = var.root_ca_max_ttl
   intermediate_ca_name      = var.intermediate_ca_name
   certificate_template_name = var.certificate_template_name
-  endpoint_type             = local.sm_endpoint_type
+  endpoint_type             = "private"
 }
 
 data "ibm_resource_instance" "existing_sm" {
