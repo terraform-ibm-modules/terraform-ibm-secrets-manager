@@ -2,6 +2,6 @@
   "ibmcloud_api_key": $VALIDATION_APIKEY,
   "resource_group_name": $PREFIX,
   "service_plan": "trial",
-  "existing_kms_instance_crn": $HPCS_US_EAST_CRN,
+  "existing_kms_instance_crn": $HPCS_US_SOUTH_CRN,
   "region": "ca-tor"
 }
