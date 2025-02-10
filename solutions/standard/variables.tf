@@ -95,7 +95,7 @@ variable "default_access_group_name" {
 variable "access_group_ids" {
   type        = list(string)
   description = "List of IBM IDs to add to the default access group for the new Secrets Manager instance."
-  default     = null
+  default     = []
 }
 
 ########################################################################################################################
