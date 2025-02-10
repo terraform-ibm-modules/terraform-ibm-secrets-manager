@@ -256,6 +256,15 @@
             },
             {
               "key":"cbr_rules"
+            },
+            {
+              "key":"default_secret_group_name"
+            },
+            {
+              "key":"default_access_group_name"
+            },
+            {
+              "key":"access_group_ids"
             }
           ],
           "architecture": {

@@ -119,6 +119,37 @@ module "secrets_manager" {
   cbr_rules                        = var.cbr_rules
 }
 
+module "secrets_group" {
+  count                    = var.existing_secrets_manager_crn == null ? 1 : 0
+  source                   = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
+  version                  = "1.2.2"
+  region                   = local.secrets_manager_region
+  secrets_manager_guid     = local.secrets_manager_guid
+  secret_group_name        = var.default_secret_group_name
+  secret_group_description = "Default secrets group"
+}
+
+module "iam_service_access_group" {
+  count             = var.existing_secrets_manager_crn == null ? 1 : 0
+  source            = "terraform-ibm-modules/iam-access-group/ibm"
+  version           = "1.4.4"
+  access_group_name = var.default_access_group_name
+  dynamic_rules     = {}
+  policies = {
+    sm_policy = {
+      roles = ["SecretsReader"],
+      tags  = [],
+      resources = [{
+        service       = "secrets-manager"
+        instance_id   = local.secrets_manager_guid,
+        resource_type = "secret-group",
+        resource      = module.secrets_manager.secret_groups["trust"].secret_group_id
+      }]
+    }
+  }
+  ibm_ids = var.access_group_ids
+}
+
 # Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.
 module "iam_secrets_engine" {
   count                = var.iam_engine_enabled ? 1 : 0

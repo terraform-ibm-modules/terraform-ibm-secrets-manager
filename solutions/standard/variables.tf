@@ -11,7 +11,7 @@ variable "ibmcloud_api_key" {
 variable "provider_visibility" {
   description = "Set the visibility value for the IBM terraform provider. Supported values are `public`, `private`, `public-and-private`. [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/guides/custom-service-endpoints)."
   type        = string
-  default     = "private"
+  default     = "public"
 
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.provider_visibility)
@@ -78,6 +78,24 @@ variable "public_engine_enabled" {
   type        = bool
   description = "Set this to true to configure a Secrets Manager public certificate engine for an existing Secrets Manager instance. If set to false, no public certificate engine will be configured for your instance."
   default     = false
+}
+
+variable "default_secret_group_name" {
+  type        = string
+  description = "Name to give the secrets group automatically created when provisioning a new Secrets Manager instance."
+  default     = "default"
+}
+
+variable "default_access_group_name" {
+  type        = string
+  description = "Name to give the access group automatically created when provisioning a new Secrets Manager instance."
+  default     = "secrets_manager_group"
+}
+
+variable "access_group_ids" {
+  type        = list(string)
+  description = "List of IBM IDs to add to the default access group for the new Secrets Manager instance."
+  default     = null
 }
 
 ########################################################################################################################
