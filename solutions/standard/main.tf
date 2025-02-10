@@ -143,7 +143,7 @@ module "iam_service_access_group" {
         service       = "secrets-manager"
         instance_id   = local.secrets_manager_guid,
         resource_type = "secret-group",
-        resource      = module.secrets_manager.secret_groups["trust"].secret_group_id
+        resource      = module.secrets_group[0].secret_group_id
       }]
     }
   }
