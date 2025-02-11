@@ -127,6 +127,7 @@ module "secrets_group" {
   secrets_manager_guid     = local.secrets_manager_guid
   secret_group_name        = var.default_secret_group_name
   secret_group_description = "Default secrets group"
+  endpoint_type            = "private"
 }
 
 module "iam_service_access_group" {
