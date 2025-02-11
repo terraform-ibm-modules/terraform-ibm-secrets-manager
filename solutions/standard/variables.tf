@@ -83,7 +83,7 @@ variable "public_engine_enabled" {
 variable "default_secret_group_name" {
   type        = string
   description = "Name to give the secrets group automatically created when provisioning a new Secrets Manager instance."
-  default     = "default"
+  default     = "default-group"
 }
 
 variable "default_access_group_name" {
