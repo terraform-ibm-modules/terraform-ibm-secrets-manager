@@ -297,8 +297,7 @@
               "optional": true,
               "on_by_default": true,
               "ignore_auto_referencing": [
-                "ibmcloud_kms_api_key",
-                "acme_letsencrypt_private_key"
+                "*"
               ],
               "input_mapping": [
                 {
@@ -326,6 +325,9 @@
               ],
               "optional": true,
               "on_by_default": true,
+              "ignore_auto_referencing": [
+                "*"
+              ],
               "version": "^1.11.6"
             },
             {
@@ -344,8 +346,7 @@
               "optional": true,
               "on_by_default": true,
               "ignore_auto_referencing": [
-                "ibmcloud_kms_api_key",
-                "service_plan"
+                "*"
               ],
               "version": "^1.0.1"
             },
@@ -369,6 +370,9 @@
               ],
               "optional": true,
               "on_by_default": true,
+              "ignore_auto_referencing": [
+                "*"
+              ],
               "version": "^1.0.1"
             },
             {
@@ -382,7 +386,7 @@
               "optional": true,
               "on_by_default": true,
               "ignore_auto_referencing": [
-                "ibmcloud_kms_api_key"
+                "*"
               ],
               "version": "^1.0.7"
             }
