@@ -296,6 +296,10 @@
               "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
               "optional": true,
               "on_by_default": true,
+              "ignore_auto_referencing": [
+                "ibmcloud_kms_api_key",
+                "acme_letsencrypt_private_key"
+              ],
               "input_mapping": [
                 {
                   "dependency_output": "kms_instance_crn",
@@ -340,7 +344,8 @@
               "optional": true,
               "on_by_default": true,
               "ignore_auto_referencing": [
-                "ibmcloud_kms_api_key", "service_plan"
+                "ibmcloud_kms_api_key",
+                "service_plan"
               ],
               "version": "^1.0.1"
             },
