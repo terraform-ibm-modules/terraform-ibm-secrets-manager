@@ -47,17 +47,12 @@ variable "skip_kms_iam_authorization_policy" {
 
 variable "existing_kms_instance_guid" {
   type        = string
-  description = "The GUID of the Hyper Protect Crypto Services instance in which the key specified in `kms_key_crn` is coming from."
+  description = "The GUID of the Key Management Service (KMS) instance in which the key specified in `kms_key_crn` is coming from."
 }
 
 variable "kms_key_crn" {
   type        = string
-  description = "The root key CRN of Hyper Protect Crypto Services (HPCS) that you want to use for encryption."
-
-  validation {
-    condition     = can(regex(".*hs-crypto.*", var.kms_key_crn))
-    error_message = "Variable 'kms_key_crn' must be a Hyper Protect Crypto Services (HPCS) key CRN."
-  }
+  description = "The root key CRN of Key Management Service (KMS) key that you want to use for encryption."
 }
 
 ##############################################################################
