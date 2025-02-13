@@ -53,11 +53,6 @@ variable "existing_kms_instance_guid" {
 variable "kms_key_crn" {
   type        = string
   description = "The root key CRN of Hyper Protect Crypto Services (HPCS) that you want to use for encryption."
-
-  validation {
-    condition     = can(regex(".*hs-crypto.*", var.kms_key_crn))
-    error_message = "Variable 'kms_key_crn' must be a Hyper Protect Crypto Services (HPCS) key CRN."
-  }
 }
 
 ##############################################################################
