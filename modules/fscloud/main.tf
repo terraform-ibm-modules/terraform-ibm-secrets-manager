@@ -2,7 +2,7 @@ module "secrets_manager" {
   source                            = "../.."
   resource_group_id                 = var.resource_group_id
   region                            = var.region
-  secrets_manager_name              = var.secrets_manager_name #tfsec:ignore:general-secrets-no-plaintext-exposure
+  secrets_manager_name              = var.secrets_manager_name #tfsec:ignore:general-secrets-no-plaintext-exposure #checkov:skip=CKV_SECRET_6
   existing_sm_instance_crn          = var.existing_sm_instance_crn
   sm_service_plan                   = var.service_plan
   sm_tags                           = var.sm_tags
