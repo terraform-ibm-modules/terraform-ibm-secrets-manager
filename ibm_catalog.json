@@ -264,7 +264,7 @@
               "key":"default_access_group_name"
             },
             {
-              "key":"access_group_ids"
+              "key":"access_group_user_ids"
             }
           ],
           "architecture": {

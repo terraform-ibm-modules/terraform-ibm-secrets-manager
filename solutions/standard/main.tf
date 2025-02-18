@@ -134,7 +134,7 @@ module "iam_service_access_group" {
   count             = var.existing_secrets_manager_crn == null ? 1 : 0
   source            = "terraform-ibm-modules/iam-access-group/ibm"
   version           = "1.4.4"
-  access_group_name = var.default_access_group_name
+  access_group_name = "${var.prefix}-${var.default_access_group_name}"
   dynamic_rules     = {}
   policies = {
     sm_policy = {
@@ -148,7 +148,7 @@ module "iam_service_access_group" {
       }]
     }
   }
-  ibm_ids = var.access_group_ids
+  ibm_ids = var.access_group_user_ids
 }
 
 # Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.

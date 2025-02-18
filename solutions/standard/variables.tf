@@ -11,7 +11,7 @@ variable "ibmcloud_api_key" {
 variable "provider_visibility" {
   description = "Set the visibility value for the IBM terraform provider. Supported values are `public`, `private`, `public-and-private`. [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/guides/custom-service-endpoints)."
   type        = string
-  default     = "public"
+  default     = "private"
 
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.provider_visibility)
@@ -89,10 +89,10 @@ variable "default_secret_group_name" {
 variable "default_access_group_name" {
   type        = string
   description = "Name to give the access group automatically created when provisioning a new Secrets Manager instance."
-  default     = "secrets_manager_group"
+  default     = "secrets_manager_secret_reader_access_group"
 }
 
-variable "access_group_ids" {
+variable "access_group_user_ids" {
   type        = list(string)
   description = "List of IBM IDs to add to the default access group for the new Secrets Manager instance."
   default     = []
