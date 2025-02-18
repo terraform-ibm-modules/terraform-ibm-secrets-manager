@@ -123,7 +123,7 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		{Name: "ca_name", Value: permanentResources["certificateAuthorityName"], DataType: "string"},
 		{Name: "dns_provider_name", Value: permanentResources["dnsProviderName"], DataType: "string"},
 		{Name: "acme_letsencrypt_private_key", Value: *acme_letsencrypt_private_key, DataType: "string"},
-		{Name: "access_group_ids", Value: []string{"GoldenEye.Development@ibm.com"}, DataType: "list(string)"},
+		{Name: "access_group_user_ids", Value: []string{"GoldenEye.Development@ibm.com"}, DataType: "list(string)"},
 	}
 
 	err := options.RunSchematicTest()
