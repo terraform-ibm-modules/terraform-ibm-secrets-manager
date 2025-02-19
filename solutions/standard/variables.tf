@@ -49,7 +49,7 @@ variable "prefix" {
 variable "secrets_manager_instance_name" {
   type        = string
   description = "The name to give the Secrets Manager instance provisioned by this solution. If a prefix input variable is specified, it is added to the value in the `<prefix>-value` format."
-  default     = "base-security-services-sm"
+  default     = "base-security-services-secrets-manager"
 }
 
 variable "existing_secrets_manager_crn" {
@@ -64,7 +64,7 @@ variable "service_plan" {
   default     = "standard"
   validation {
     condition     = contains(["standard", "trial"], var.service_plan)
-    error_message = "Only \"standard\" and \"trial\" are allowed values for sm_service_plan."
+    error_message = "Only \"standard\" and \"trial\" are allowed values for secrets_manager_service_plan."
   }
 }
 
@@ -87,7 +87,7 @@ variable "public_engine_enabled" {
 variable "public_engine_name" {
   type        = string
   description = "The name of the IAM engine used to configure a Secrets Manager public certificate engine for an existing instance."
-  default     = "public-engine-sm"
+  default     = "public-engine-secrets-manager"
 }
 
 variable "cis_id" {
@@ -128,7 +128,7 @@ variable "private_engine_enabled" {
 variable "private_engine_name" {
   type        = string
   description = "The name of the IAM Engine used to configure a Secrets Manager private certificate engine for an existing instance."
-  default     = "private-engine-sm"
+  default     = "private-engine-secrets-manager"
 }
 
 variable "root_ca_name" {
@@ -174,7 +174,7 @@ variable "iam_engine_enabled" {
 variable "iam_engine_name" {
   type        = string
   description = "The name of the IAM engine used to configure a Secrets Manager IAM credentials engine. If the prefix input variable is passed it is attached before the value in the format of '<prefix>-value'."
-  default     = "base-sm-iam-engine"
+  default     = "base-secrets-manager-iam-engine"
 }
 
 ########################################################################################################################
@@ -215,13 +215,13 @@ variable "kms_endpoint_type" {
 
 variable "kms_key_ring_name" {
   type        = string
-  default     = "sm-cos-key-ring"
+  default     = "secrets-manager-cos-key-ring"
   description = "The name for the new key ring to store the key. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. If a prefix input variable is passed, it is added to the value in the `<prefix>-value` format. ."
 }
 
 variable "kms_key_name" {
   type        = string
-  default     = "sm-cos-key"
+  default     = "secrets-manager-cos-key"
   description = "The name for the new root key. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. If a prefix input variable is passed, it is added to the value in the `<prefix>-value` format."
 }
 
