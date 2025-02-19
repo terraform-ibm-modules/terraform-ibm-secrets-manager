@@ -239,7 +239,7 @@ variable "ibmcloud_kms_api_key" {
 variable "enable_event_notification" {
   type        = bool
   default     = false
-  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_event_notification_instance_crn` and `existing_secrets_manager_crn` must be null."
+  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_event_notification_instance_crn`"
 }
 
 variable "existing_event_notification_instance_crn" {
