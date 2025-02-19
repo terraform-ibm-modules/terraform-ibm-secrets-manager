@@ -219,7 +219,7 @@ resource "ibm_en_topic" "en_topic" {
 
 resource "ibm_en_subscription_email" "email_subscription" {
   # if existing SM instance CRN is passed (!= null), then never create EN email subscription
-  count          = var.existing_secrets_manager_crn == null && var.enable_event_notification && length(var.sm_en_email_list) > 0 ? 1 : 0
+  count          = var.existing_secrets_manager_crn == null && var.enable_event_notification && length(var.secrets_manager_email_list_in_event_notification) > 0 ? 1 : 0
   instance_guid  = local.existing_en_guid
   name           = "Email for Secrets Manager Subscription"
   description    = "Subscription for Secret Manager Events"
@@ -227,9 +227,9 @@ resource "ibm_en_subscription_email" "email_subscription" {
   topic_id       = ibm_en_topic.en_topic[count.index].topic_id
   attributes {
     add_notification_payload = true
-    reply_to_mail            = var.sm_en_reply_to_email
+    reply_to_mail            = var.secrets_manager_reply_to_email_in_event_notification
     reply_to_name            = "Secret Manager Event Notifications Bot"
-    from_name                = var.sm_en_from_email
-    invited                  = var.sm_en_email_list
+    from_name                = var.secrets_manager_from_email_in_event_notification
+    invited                  = var.secrets_manager_email_list_in_event_notification
   }
 }

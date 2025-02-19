@@ -80,7 +80,8 @@
               ]
             },
             {
-              "key": "use_existing_resource_group"
+              "key": "use_existing_resource_group",
+              "required": true
             },
             {
               "key": "resource_group_name",
@@ -202,31 +203,36 @@
               "key": "certificate_template_name"
             },
             {
-              "key": "skip_kms_iam_authorization_policy"
+              "key": "enable_event_notification"
             },
             {
-              "key": "enable_event_notification"
+              "key": "existing_event_notification_instance_crn"
             },
             {
               "key": "existing_secrets_manager_crn"
             },
             {
-              "key": "ibmcloud_kms_api_key"
+              "key": "secrets_manager_email_list_in_event_notification"
             },
             {
-              "key": "sm_en_email_list"
+              "key": "secrets_manager_from_email_in_event_notification"
             },
             {
-              "key": "sm_en_from_email"
-            },
-            {
-              "key": "sm_en_reply_to_email"
+              "key": "secrets_manager_reply_to_email_in_event_notification"
             },
             {
               "key": "existing_secrets_manager_kms_key_crn"
             },
             {
+              "key": "skip_kms_iam_authorization_policy",
+              "required": true
+            },
+            {
               "key": "existing_kms_instance_crn",
+              "required": true
+            },
+            {
+              "key": "ibmcloud_kms_api_key",
               "required": true
             },
             {
@@ -247,9 +253,6 @@
             },
             {
               "key": "kms_key_name"
-            },
-            {
-              "key": "existing_event_notification_instance_crn"
             },
             {
               "key": "skip_event_notification_iam_authorization_policy"

@@ -60,7 +60,7 @@ variable "existing_secrets_manager_crn" {
 
 variable "service_plan" {
   type        = string
-  description = "The pricing plan to use when provisioning a Secrets Manager instance. Possible values: `standard`, `trial`. Applies only if `provision_sm_instance` is set to `true`."
+  description = "The pricing plan to use when provisioning a Secrets Manager instance. Possible values: `standard`, `trial`."
   default     = "standard"
   validation {
     condition     = contains(["standard", "trial"], var.service_plan)
@@ -239,7 +239,7 @@ variable "ibmcloud_kms_api_key" {
 variable "enable_event_notification" {
   type        = bool
   default     = false
-  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_en_instance_crn` and `existing_sm_instance_crn` must be null."
+  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_event_notification_instance_crn` and `existing_secrets_manager_crn` must be null."
 }
 
 variable "existing_event_notification_instance_crn" {
@@ -254,23 +254,24 @@ variable "skip_event_notification_iam_authorization_policy" {
   default     = false
 }
 
-variable "sm_en_email_list" {
+variable "secrets_manager_email_list_in_event_notification" {
   type        = list(string)
   description = "The list of email address to target out when Secrets Manager triggers an event"
   default     = []
 }
 
-variable "sm_en_from_email" {
+variable "secrets_manager_from_email_in_event_notification" {
   type        = string
-  description = "The email address in the used in the 'from' of any Secret Manager event coming from Event Notifications"
+  description = "The email address used to send any Secrets Manager event coming via Event Notifications"
   default     = "compliancealert@ibm.com"
 }
 
-variable "sm_en_reply_to_email" {
+variable "secrets_manager_reply_to_email_in_event_notification" {
   type        = string
-  description = "The email address used in the 'reply_to' of any Secret Manager event coming from Event Notifications"
+  description = "The email address specified in the 'reply_to' section for any Secret Manager event coming via Event Notifications"
   default     = "no-reply@ibm.com"
 }
+
 ##############################################################
 # Context-based restriction (CBR)
 ##############################################################
