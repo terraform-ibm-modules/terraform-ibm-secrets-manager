@@ -216,7 +216,7 @@
               "key": "secrets_manager_event_notifications_email_list"
             },
             {
-              "key": "secrets_manager_event_notification_from_email"
+              "key": "secrets_manager_event_notifications_from_email"
             },
             {
               "key": "secrets_manager_event_notifications_reply_to_email"

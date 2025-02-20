@@ -223,7 +223,7 @@ resource "ibm_en_subscription_email" "email_subscription" {
     add_notification_payload = true
     reply_to_mail            = var.secrets_manager_event_notifications_reply_to_email
     reply_to_name            = "Secret Manager Event Notifications Bot"
-    from_name                = var.secrets_manager_event_notification_from_email
+    from_name                = var.secrets_manager_event_notifications_from_email
     invited                  = var.secrets_manager_event_notifications_email_list
   }
 }

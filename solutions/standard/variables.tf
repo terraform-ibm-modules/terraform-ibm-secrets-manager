@@ -245,7 +245,7 @@ variable "secrets_manager_event_notifications_email_list" {
   default     = []
 }
 
-variable "secrets_manager_event_notification_from_email" {
+variable "secrets_manager_event_notifications_from_email" {
   type        = string
   description = "The email address used to send any Secrets Manager event coming via Event Notifications"
   default     = "compliancealert@ibm.com"
