@@ -67,43 +67,43 @@
               "required": true,
               "options": [
                 {
-                  "displayname": "Osaka(jp-osa)",
+                  "displayname": "Osaka (jp-osa)",
                   "value": "jp-osa"
                 },
                 {
-                  "displayname": "Sydney(au-syd)",
+                  "displayname": "Sydney (au-syd)",
                   "value": "au-syd"
                 },
                 {
-                  "displayname": "Tokyo(jp-tok)",
+                  "displayname": "Tokyo (jp-tok)",
                   "value": "jp-tok"
                 },
                 {
-                  "displayname": "Frankfurt(eu-de)",
+                  "displayname": "Frankfurt (eu-de)",
                   "value": "eu-de"
                 },
                 {
-                  "displayname": "London(eu-gb)",
+                  "displayname": "London (eu-gb)",
                   "value": "eu-gb"
                 },
                 {
-                  "displayname": "Madrid(eu-es)",
+                  "displayname": "Madrid (eu-es)",
                   "value": "eu-es"
                 },
                 {
-                  "displayname": "Dallas(us-south)",
+                  "displayname": "Dallas (us-south)",
                   "value": "us-south"
                 },
                 {
-                  "displayname": "Toronto(ca-tor)",
+                  "displayname": "Toronto (ca-tor)",
                   "value": "ca-tor"
                 },
                 {
-                  "displayname": "Washington DC(us-east)",
+                  "displayname": "Washington DC (us-east)",
                   "value": "us-east"
                 },
                 {
-                  "displayname": "Sao Paulo(br-sao)",
+                  "displayname": "Sao Paulo (br-sao)",
                   "value": "br-sao"
                 }
               ]
