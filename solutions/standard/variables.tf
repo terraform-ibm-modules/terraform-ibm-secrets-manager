@@ -18,6 +18,7 @@ variable "provider_visibility" {
     error_message = "Invalid visibility option. Allowed values are 'public', 'private', or 'public-and-private'."
   }
 }
+
 variable "use_existing_resource_group" {
   type        = bool
   description = "Whether to use an existing resource group."
@@ -49,7 +50,7 @@ variable "prefix" {
 variable "secrets_manager_instance_name" {
   type        = string
   description = "The name to give the Secrets Manager instance provisioned by this solution. If a prefix input variable is specified, it is added to the value in the `<prefix>-value` format."
-  default     = "base-security-services-secrets-manager"
+  default     = "secrets-manager"
 }
 
 variable "existing_secrets_manager_crn" {
@@ -64,7 +65,7 @@ variable "service_plan" {
   default     = "standard"
   validation {
     condition     = contains(["standard", "trial"], var.service_plan)
-    error_message = "Only \"standard\" and \"trial\" are allowed values for secrets_manager_service_plan."
+    error_message = "Only \"standard\" and \"trial\" are allowed values for secrets_manager_service_plan.Applies only if not providing a value for the `existing_secrets_manager_crn` input."
   }
 }
 
@@ -74,20 +75,10 @@ variable "secret_manager_tags" {
   default     = []
 }
 
-variable "public_engine_enabled" {
+variable "public_cert_engine_enabled" {
   type        = bool
   description = "Set this to true to configure a Secrets Manager public certificate engine for an existing Secrets Manager instance. If set to false, no public certificate engine will be configured for your instance."
   default     = false
-}
-
-########################################################################################################################
-# Public cert engine config
-########################################################################################################################
-
-variable "public_engine_name" {
-  type        = string
-  description = "The name of the IAM engine used to configure a Secrets Manager public certificate engine for an existing instance."
-  default     = "public-engine-secrets-manager"
 }
 
 variable "cis_id" {
@@ -119,16 +110,10 @@ variable "acme_letsencrypt_private_key" {
 # Private cert engine config
 ########################################################################################################################
 
-variable "private_engine_enabled" {
+variable "private_cert_engine_enabled" {
   type        = bool
   description = "Set this to true to configure a Secrets Manager private certificate engine for an existing instance. If set to false, no private certificate engine will be configured for your instance."
   default     = false
-}
-
-variable "private_engine_name" {
-  type        = string
-  description = "The name of the IAM Engine used to configure a Secrets Manager private certificate engine for an existing instance."
-  default     = "private-engine-secrets-manager"
 }
 
 variable "root_ca_name" {
@@ -174,7 +159,7 @@ variable "iam_engine_enabled" {
 variable "iam_engine_name" {
   type        = string
   description = "The name of the IAM engine used to configure a Secrets Manager IAM credentials engine. If the prefix input variable is passed it is attached before the value in the format of '<prefix>-value'."
-  default     = "base-secrets-manager-iam-engine"
+  default     = "iam-engine"
 }
 
 ########################################################################################################################
@@ -215,13 +200,13 @@ variable "kms_endpoint_type" {
 
 variable "kms_key_ring_name" {
   type        = string
-  default     = "secrets-manager-cos-key-ring"
+  default     = "secrets-manager-key-ring"
   description = "The name for the new key ring to store the key. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. If a prefix input variable is passed, it is added to the value in the `<prefix>-value` format. ."
 }
 
 variable "kms_key_name" {
   type        = string
-  default     = "secrets-manager-cos-key"
+  default     = "secrets-manager-key"
   description = "The name for the new root key. Applies only if `existing_secrets_manager_kms_key_crn` is not specified. If a prefix input variable is passed, it is added to the value in the `<prefix>-value` format."
 }
 
@@ -236,13 +221,13 @@ variable "ibmcloud_kms_api_key" {
 # Event Notifications
 ########################################################################################################################
 
-variable "enable_event_notification" {
+variable "enable_event_notifications" {
   type        = bool
   default     = false
   description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_event_notification_instance_crn`"
 }
 
-variable "existing_event_notification_instance_crn" {
+variable "existing_event_notifications_instance_crn" {
   type        = string
   description = "The CRN of the Event Notifications service used to enable lifecycle notifications for your Secrets Manager instance."
   default     = null
@@ -254,19 +239,19 @@ variable "skip_event_notification_iam_authorization_policy" {
   default     = false
 }
 
-variable "secrets_manager_email_list_in_event_notification" {
+variable "secrets_manager_event_notifications_email_list" {
   type        = list(string)
   description = "The list of email address to target out when Secrets Manager triggers an event"
   default     = []
 }
 
-variable "secrets_manager_from_email_in_event_notification" {
+variable "secrets_manager_event_notification_from_email" {
   type        = string
   description = "The email address used to send any Secrets Manager event coming via Event Notifications"
   default     = "compliancealert@ibm.com"
 }
 
-variable "secrets_manager_reply_to_email_in_event_notification" {
+variable "secrets_manager_event_notifications_reply_to_email" {
   type        = string
   description = "The email address specified in the 'reply_to' section for any Secret Manager event coming via Event Notifications"
   default     = "no-reply@ibm.com"

@@ -63,6 +63,69 @@
               "key": "ibmcloud_api_key"
             },
             {
+              "key": "region",
+              "required": true,
+              "options": [
+                {
+                  "displayname": "Osaka(jp-osa)",
+                  "value": "jp-osa"
+                },
+                {
+                  "displayname": "Sydney(au-syd)",
+                  "value": "au-syd"
+                },
+                {
+                  "displayname": "Tokyo(jp-tok)",
+                  "value": "jp-tok"
+                },
+                {
+                  "displayname": "Frankfurt(eu-de)",
+                  "value": "eu-de"
+                },
+                {
+                  "displayname": "London(eu-gb)",
+                  "value": "eu-gb"
+                },
+                {
+                  "displayname": "Madrid(eu-es)",
+                  "value": "eu-es"
+                },
+                {
+                  "displayname": "Dallas(us-south)",
+                  "value": "us-south"
+                },
+                {
+                  "displayname": "Toronto(ca-tor)",
+                  "value": "ca-tor"
+                },
+                {
+                  "displayname": "Washington DC(us-east)",
+                  "value": "us-east"
+                },
+                {
+                  "displayname": "Sao Paulo(br-sao)",
+                  "value": "br-sao"
+                }
+              ]
+            },
+            {
+              "key": "prefix",
+              "required": true,
+              "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
+            },
+            {
+              "key": "use_existing_resource_group",
+              "required": true
+            },
+            {
+              "key": "resource_group_name",
+              "required": true
+            },
+            {
+              "key": "existing_kms_instance_crn",
+              "required": true
+            },
+            {
               "key": "provider_visibility",
               "options": [
                 {
@@ -78,65 +141,6 @@
                   "value": "public-and-private"
                 }
               ]
-            },
-            {
-              "key": "use_existing_resource_group",
-              "required": true
-            },
-            {
-              "key": "resource_group_name",
-              "required": true
-            },
-            {
-              "key": "region",
-              "required": true,
-              "options": [
-                {
-                  "displayname": "Osaka",
-                  "value": "jp-osa"
-                },
-                {
-                  "displayname": "Sydney",
-                  "value": "au-syd"
-                },
-                {
-                  "displayname": "Tokyo",
-                  "value": "jp-tok"
-                },
-                {
-                  "displayname": "Frankfurt",
-                  "value": "eu-de"
-                },
-                {
-                  "displayname": "London",
-                  "value": "eu-gb"
-                },
-                {
-                  "displayname": "Mardrid",
-                  "value": "eu-es"
-                },
-                {
-                  "displayname": "Dallas",
-                  "value": "us-south"
-                },
-                {
-                  "displayname": "Toronto",
-                  "value": "ca-tor"
-                },
-                {
-                  "displayname": "Washington DC",
-                  "value": "us-east"
-                },
-                {
-                  "displayname": "Sao Paulo",
-                  "value": "br-sao"
-                }
-              ]
-            },
-            {
-              "key": "prefix",
-              "required": true,
-              "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
             },
             {
               "key": "secrets_manager_instance_name"
@@ -164,10 +168,7 @@
               "key": "iam_engine_name"
             },
             {
-              "key": "public_engine_enabled"
-            },
-            {
-              "key": "public_engine_name"
+              "key": "public_cert_engine_enabled"
             },
             {
               "key": "cis_id"
@@ -182,10 +183,7 @@
               "key": "acme_letsencrypt_private_key"
             },
             {
-              "key": "private_engine_enabled"
-            },
-            {
-              "key": "private_engine_name"
+              "key": "private_cert_engine_enabled"
             },
             {
               "key": "root_ca_name"
@@ -203,37 +201,28 @@
               "key": "certificate_template_name"
             },
             {
-              "key": "enable_event_notification"
+              "key": "skip_kms_iam_authorization_policy"
             },
             {
-              "key": "existing_event_notification_instance_crn"
+              "key": "enable_event_notifications"
             },
             {
               "key": "existing_secrets_manager_crn"
             },
             {
-              "key": "secrets_manager_email_list_in_event_notification"
+              "key": "ibmcloud_kms_api_key"
             },
             {
-              "key": "secrets_manager_from_email_in_event_notification"
+              "key": "secrets_manager_event_notifications_email_list"
             },
             {
-              "key": "secrets_manager_reply_to_email_in_event_notification"
+              "key": "secrets_manager_event_notification_from_email"
+            },
+            {
+              "key": "secrets_manager_event_notifications_reply_to_email"
             },
             {
               "key": "existing_secrets_manager_kms_key_crn"
-            },
-            {
-              "key": "skip_kms_iam_authorization_policy",
-              "required": true
-            },
-            {
-              "key": "existing_kms_instance_crn",
-              "required": true
-            },
-            {
-              "key": "ibmcloud_kms_api_key",
-              "required": true
             },
             {
               "key": "kms_endpoint_type",
@@ -253,6 +242,9 @@
             },
             {
               "key": "kms_key_name"
+            },
+            {
+              "key": "existing_event_notifications_instance_crn"
             },
             {
               "key": "skip_event_notification_iam_authorization_policy"
