@@ -60,10 +60,12 @@
           },
           "configuration": [
             {
-              "key": "ibmcloud_api_key"
+              "key": "ibmcloud_api_key",
+              "displayname": "API KEY"
             },
             {
               "key": "region",
+              "displayname": "Region",
               "required": true,
               "options": [
                 {
@@ -110,23 +112,28 @@
             },
             {
               "key": "prefix",
+              "displayname": "Prefix",
               "required": true,
               "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
             },
             {
               "key": "use_existing_resource_group",
+              "displayname": "Use Existing Resource Group",
               "required": true
             },
             {
               "key": "resource_group_name",
+              "displayname": "Resource Group Name",
               "required": true
             },
             {
               "key": "existing_kms_instance_crn",
+              "displayname": "KMS Instance CRN",
               "required": true
             },
             {
               "key": "provider_visibility",
+              "displayname": "Provider Visibility",
               "options": [
                 {
                   "displayname": "private",
@@ -143,10 +150,20 @@
               ]
             },
             {
-              "key": "secrets_manager_instance_name"
+              "key": "secrets_manager_instance_name",
+              "displayname": "Secrets Manager Instance Name"
+            },
+            {
+              "key": "existing_secrets_manager_crn",
+              "displayname": "Existing Secrets Manager CRN"
+            },
+            {
+              "key": "secrets_manager_tags",
+              "displayname": "Secrets Manager Instance Tags"
             },
             {
               "key": "service_plan",
+              "displayname": "Plan",
               "options": [
                 {
                   "displayname": "Standard",
@@ -159,73 +176,72 @@
               ]
             },
             {
-              "key": "secret_manager_tags"
+              "key": "iam_engine_enabled",
+              "displayname": "IAM Engine Enabled"
             },
             {
-              "key": "iam_engine_enabled"
+              "key": "iam_engine_name",
+              "displayname": "IAM Engine Name"
             },
             {
-              "key": "iam_engine_name"
+              "key": "public_cert_engine_enabled",
+              "displayname": "Public Cert Engine Enabled"
             },
             {
-              "key": "public_cert_engine_enabled"
+              "key": "public_cert_engine_internet_services_crn",
+              "displayname": "Public Cert Engine Internet Services CRN"
             },
             {
-              "key": "cis_id"
+              "key": "public_cert_engine_dns_provider_config_name",
+              "displayname": "Public Cert Engine Dns Provider Config Name"
             },
             {
-              "key": "dns_provider_name"
+              "key": "public_cert_engine_lets_encrypt_config_ca_name",
+              "displayname": "Public Cert Engine LetsEncrypt Config Ca Name"
             },
             {
-              "key": "ca_name"
+              "key": "acme_letsencrypt_private_key",
+              "displayname": "LetsEncrypt Private Key"
             },
             {
-              "key": "acme_letsencrypt_private_key"
+              "key": "private_cert_engine_enabled",
+              "displayname": "Private Cert Engine Enabled"
             },
             {
-              "key": "private_cert_engine_enabled"
+              "key": "private_cert_engine_config_root_ca_name",
+              "displayname": "Private Cert Engine Config Root CA Name"
             },
             {
-              "key": "root_ca_name"
+              "key": "private_cert_engine_config_root_ca_common_name",
+              "displayname": "Private Cert Engine Config Root CA Common Name"
             },
             {
-              "key": "root_ca_common_name"
+              "key": "private_cert_engine_config_root_ca_max_ttl",
+              "displayname": "Private Cert Engine Config Root CA Max TTL"
             },
             {
-              "key": "root_ca_max_ttl"
+              "key": "private_cert_engine_config_intermediate_ca_name",
+              "displayname": "Private Cert Engine Config Intermediate CA Name"
             },
             {
-              "key": "intermediate_ca_name"
+              "key": "private_cert_engine_config_template_name",
+              "displayname": "Private Cert Engine Config Template Name"
             },
             {
-              "key": "certificate_template_name"
+              "key": "existing_secrets_manager_kms_key_crn",
+              "displayname": "Existing Secerts Manager KMS Key CRN"
             },
             {
-              "key": "skip_kms_iam_authorization_policy"
+              "key": "skip_kms_iam_authorization_policy",
+              "displayname": "Skip KMS IAM Auth Policy"
             },
             {
-              "key": "enable_event_notifications"
-            },
-            {
-              "key": "existing_secrets_manager_crn"
-            },
-            {
-              "key": "ibmcloud_kms_api_key"
-            },
-            {
-              "key": "secrets_manager_event_notifications_email_list"
-            },
-            {
-              "key": "secrets_manager_event_notifications_from_email"
-            },
-            {
-              "key": "secrets_manager_event_notifications_reply_to_email"
-            },
-            {
-              "key": "existing_secrets_manager_kms_key_crn"
+              "key": "ibmcloud_kms_api_key",
+              "displayname": "KMS API KEY"
             },
             {
               "key": "kms_endpoint_type",
+              "displayname": "KMS Endpoint Type",
               "options": [
                 {
                   "displayname": "Public",
@@ -238,19 +254,40 @@
               ]
             },
             {
-              "key": "kms_key_ring_name"
+              "key": "kms_key_ring_name",
+              "displayname": "KMS Key Ring Name"
             },
             {
-              "key": "kms_key_name"
+              "key": "kms_key_name",
+              "displayname": "KMS Key Name"
             },
             {
-              "key": "existing_event_notifications_instance_crn"
+              "key": "enable_event_notifications",
+              "displayname": "Enable Event Notifications"
             },
             {
-              "key": "skip_event_notification_iam_authorization_policy"
+              "key": "event_notifications_email_list",
+              "displayname": "Event Notifications Email List"
             },
             {
-              "key":"cbr_rules"
+              "key": "event_notifications_from_email",
+              "displayname": "Event Notification Sender Email Address"
+            },
+            {
+              "key": "event_notifications_reply_to_email",
+              "displayname": "Event Notifications ReplyToEmail Address"
+            },
+            {
+              "key": "existing_event_notifications_instance_crn",
+              "displayname": "Event Notifications CRN"
+            },
+            {
+              "key": "skip_event_notifications_iam_authorization_policy",
+              "displayname": "Skip Event Notifications IAM Auth Policy"
+            },
+            {
+              "key":"cbr_rules",
+              "displayname": "CBR Rules"
             }
           ],
           "architecture": {

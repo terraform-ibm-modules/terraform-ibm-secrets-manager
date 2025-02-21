@@ -107,7 +107,7 @@ module "secrets_manager" {
   region                   = var.region
   secrets_manager_name     = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
   service_plan             = var.service_plan
-  sm_tags                  = var.secret_manager_tags
+  sm_tags                  = var.secrets_manager_tags
   # kms dependency
   existing_kms_instance_guid        = local.existing_kms_guid
   kms_key_crn                       = local.kms_key_crn
@@ -115,7 +115,7 @@ module "secrets_manager" {
   # event notifications dependency
   enable_event_notification        = var.enable_event_notifications
   existing_en_instance_crn         = var.existing_event_notifications_instance_crn
-  skip_en_iam_authorization_policy = var.skip_event_notification_iam_authorization_policy
+  skip_en_iam_authorization_policy = var.skip_event_notifications_iam_authorization_policy
   cbr_rules                        = var.cbr_rules
 }
 
@@ -142,10 +142,10 @@ module "secrets_manager_public_cert_engine" {
   }
   secrets_manager_guid         = local.secrets_manager_guid
   region                       = local.secrets_manager_region
-  internet_services_crn        = var.cis_id
+  internet_services_crn        = var.public_cert_engine_internet_services_crn
   ibmcloud_cis_api_key         = var.ibmcloud_api_key
-  dns_config_name              = var.dns_provider_name
-  ca_config_name               = var.ca_name
+  dns_config_name              = var.public_cert_engine_dns_provider_config_name
+  ca_config_name               = var.public_cert_engine_lets_encrypt_config_ca_name
   acme_letsencrypt_private_key = var.acme_letsencrypt_private_key
   service_endpoints            = "private"
 }
@@ -158,11 +158,11 @@ module "private_secret_engine" {
   version                   = "1.3.5"
   secrets_manager_guid      = local.secrets_manager_guid
   region                    = var.region
-  root_ca_name              = var.root_ca_name
-  root_ca_common_name       = var.root_ca_common_name
-  root_ca_max_ttl           = var.root_ca_max_ttl
-  intermediate_ca_name      = var.intermediate_ca_name
-  certificate_template_name = var.certificate_template_name
+  root_ca_name              = var.private_cert_engine_config_root_ca_name
+  root_ca_common_name       = var.private_cert_engine_config_root_ca_common_name
+  root_ca_max_ttl           = var.private_cert_engine_config_root_ca_max_ttl
+  intermediate_ca_name      = var.private_cert_engine_config_intermediate_ca_name
+  certificate_template_name = var.private_cert_engine_config_template_name
   endpoint_type             = "private"
 }
 
@@ -213,7 +213,7 @@ resource "ibm_en_topic" "en_topic" {
 
 resource "ibm_en_subscription_email" "email_subscription" {
   # if existing SM instance CRN is passed (!= null), then never create EN email subscription
-  count          = var.existing_secrets_manager_crn == null && var.enable_event_notifications && length(var.secrets_manager_event_notifications_email_list) > 0 ? 1 : 0
+  count          = var.existing_secrets_manager_crn == null && var.enable_event_notifications && length(var.event_notifications_email_list) > 0 ? 1 : 0
   instance_guid  = local.existing_en_guid
   name           = "Email for Secrets Manager Subscription"
   description    = "Subscription for Secret Manager Events"
@@ -221,9 +221,9 @@ resource "ibm_en_subscription_email" "email_subscription" {
   topic_id       = ibm_en_topic.en_topic[count.index].topic_id
   attributes {
     add_notification_payload = true
-    reply_to_mail            = var.secrets_manager_event_notifications_reply_to_email
+    reply_to_mail            = var.event_notifications_reply_to_email
     reply_to_name            = "Secret Manager Event Notifications Bot"
-    from_name                = var.secrets_manager_event_notifications_from_email
-    invited                  = var.secrets_manager_event_notifications_email_list
+    from_name                = var.event_notifications_from_email
+    invited                  = var.event_notifications_email_list
   }
 }

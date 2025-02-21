@@ -69,7 +69,7 @@ variable "service_plan" {
   }
 }
 
-variable "secret_manager_tags" {
+variable "secrets_manager_tags" {
   type        = list(any)
   description = "The list of resource tags you want to associate with your Secrets Manager instance."
   default     = []
@@ -81,19 +81,19 @@ variable "public_cert_engine_enabled" {
   default     = false
 }
 
-variable "cis_id" {
+variable "public_cert_engine_internet_services_crn" {
   type        = string
   description = "Cloud Internet Service ID."
   default     = null
 }
 
-variable "dns_provider_name" {
+variable "public_cert_engine_dns_provider_config_name" {
   type        = string
   description = "The name of the DNS provider for the public certificate secrets engine configuration."
   default     = "certificate-dns"
 }
 
-variable "ca_name" {
+variable "public_cert_engine_lets_encrypt_config_ca_name" {
   type        = string
   description = "The name of the certificate authority for Secrets Manager."
   default     = "cert-auth"
@@ -116,31 +116,31 @@ variable "private_cert_engine_enabled" {
   default     = false
 }
 
-variable "root_ca_name" {
+variable "private_cert_engine_config_root_ca_name" {
   type        = string
   description = "The name of the root certificate authority associated with the private_cert secret engine."
   default     = "root-ca"
 }
 
-variable "root_ca_common_name" {
+variable "private_cert_engine_config_root_ca_common_name" {
   type        = string
   description = "The fully qualified domain name or host domain name for the certificate that will be created."
   default     = "terraform-modules.ibm.com"
 }
 
-variable "root_ca_max_ttl" {
+variable "private_cert_engine_config_root_ca_max_ttl" {
   type        = string
   description = "The maximum time-to-live value for the root certificate authority."
   default     = "87600h"
 }
 
-variable "intermediate_ca_name" {
+variable "private_cert_engine_config_intermediate_ca_name" {
   type        = string
   description = "A human-readable unique name to assign to the intermediate certificate authority configuration."
   default     = "intermediate-ca"
 }
 
-variable "certificate_template_name" {
+variable "private_cert_engine_config_template_name" {
   type        = string
   description = "The name of the certificate template."
   default     = "default-cert-template"
@@ -233,25 +233,25 @@ variable "existing_event_notifications_instance_crn" {
   default     = null
 }
 
-variable "skip_event_notification_iam_authorization_policy" {
+variable "skip_event_notifications_iam_authorization_policy" {
   type        = bool
   description = "If set to true, this skips the creation of a service to service authorization from Secrets Manager to Event Notifications. If false, the service to service authorization is created."
   default     = false
 }
 
-variable "secrets_manager_event_notifications_email_list" {
+variable "event_notifications_email_list" {
   type        = list(string)
   description = "The list of email address to target out when Secrets Manager triggers an event"
   default     = []
 }
 
-variable "secrets_manager_event_notifications_from_email" {
+variable "event_notifications_from_email" {
   type        = string
   description = "The email address used to send any Secrets Manager event coming via Event Notifications"
   default     = "compliancealert@ibm.com"
 }
 
-variable "secrets_manager_event_notifications_reply_to_email" {
+variable "event_notifications_reply_to_email" {
   type        = string
   description = "The email address specified in the 'reply_to' section for any Secret Manager event coming via Event Notifications"
   default     = "no-reply@ibm.com"
