@@ -80,6 +80,24 @@ variable "public_engine_enabled" {
   default     = false
 }
 
+variable "default_secret_group_name" {
+  type        = string
+  description = "Name to give the secrets group automatically created when provisioning a new Secrets Manager instance."
+  default     = "default-group"
+}
+
+variable "default_access_group_name" {
+  type        = string
+  description = "Name to give the access group automatically created when provisioning a new Secrets Manager instance."
+  default     = "secrets_manager_secret_reader_access_group"
+}
+
+variable "access_group_user_ids" {
+  type        = list(string)
+  description = "List of IBM IDs to add to the default access group for the new Secrets Manager instance."
+  default     = []
+}
+
 ########################################################################################################################
 # Public cert engine config
 ########################################################################################################################

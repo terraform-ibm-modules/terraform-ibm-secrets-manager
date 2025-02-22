@@ -7,7 +7,7 @@ variable "ibmcloud_api_key" {
 variable "prefix" {
   type        = string
   description = "Prefix for sm instance"
-  default     = "sm-bas"
+  default     = "sm-bas-alex"
 }
 
 variable "region" {
