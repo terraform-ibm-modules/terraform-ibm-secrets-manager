@@ -75,6 +75,10 @@ variable "secrets_manager_tags" {
   default     = []
 }
 
+########################################################################################################################
+# Public cert engine config
+########################################################################################################################
+
 variable "public_cert_engine_enabled" {
   type        = bool
   description = "Set this to true to configure a Secrets Manager public certificate engine for an existing Secrets Manager instance. If set to false, no public certificate engine will be configured for your instance."
