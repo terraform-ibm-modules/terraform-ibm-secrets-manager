@@ -6,10 +6,10 @@ toolchain go1.24.0
 
 require (
 	github.com/IBM/go-sdk-core/v5 v5.18.5
-	github.com/IBM/secrets-manager-go-sdk/v2 v2.0.9
+	github.com/IBM/secrets-manager-go-sdk/v2 v2.0.10
 	github.com/gruntwork-io/terratest v0.48.2
 	github.com/stretchr/testify v1.10.0
-	github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper v1.46.1
+	github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper v1.46.2
 )
 
 require (
