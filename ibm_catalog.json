@@ -61,11 +61,9 @@
           "configuration": [
             {
               "key": "ibmcloud_api_key",
-              "display_name": "API key"
             },
             {
               "key": "region",
-              "display_name": "Region",
               "required": true,
               "options": [
                 {
@@ -112,28 +110,23 @@
             },
             {
               "key": "prefix",
-              "display_name": "Prefix",
               "required": true,
               "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
             },
             {
               "key": "use_existing_resource_group",
-              "display_name": "Use existing resource group?",
               "required": true
             },
             {
               "key": "resource_group_name",
-              "display_name": "Resource group name",
               "required": true
             },
             {
               "key": "existing_kms_instance_crn",
-              "display_name": "KMS instance CRN",
               "required": true
             },
             {
               "key": "provider_visibility",
-              "display_name": "Provider visibility",
               "options": [
                 {
                   "displayname": "private",
@@ -151,19 +144,15 @@
             },
             {
               "key": "secrets_manager_instance_name",
-              "display_name": "Secrets Manager instance name"
             },
             {
               "key": "existing_secrets_manager_crn",
-              "display_name": "Existing Secrets Manager CRN"
             },
             {
               "key": "secrets_manager_tags",
-              "display_name": "Secrets Manager instance tags"
             },
             {
               "key": "service_plan",
-              "display_name": "Secrets Manager plan",
               "options": [
                 {
                   "displayname": "Standard",
@@ -177,71 +166,54 @@
             },
             {
               "key": "iam_engine_enabled",
-              "display_name": "Enable IAM credentials engine?"
             },
             {
               "key": "iam_engine_name",
-              "display_name": "IAM credentials engine name"
             },
             {
               "key": "public_cert_engine_enabled",
-              "display_name": "Enable public certificates engine?"
             },
             {
               "key": "public_cert_engine_internet_services_crn",
-              "display_name": "Public certificates engine internet services (CIS) CRN"
             },
             {
               "key": "public_cert_engine_dns_provider_config_name",
-              "display_name": "Public certificates engine DNS provider config name"
             },
             {
               "key": "public_cert_engine_lets_encrypt_config_ca_name",
-              "display_name": "Public certificates engine Let’s Encrypt config CA name"
             },
             {
               "key": "acme_letsencrypt_private_key",
-              "display_name": "ACME Let’s Encrypt private key"
             },
             {
               "key": "private_cert_engine_enabled",
-              "display_name": "Enable private certificates engine?"
             },
             {
               "key": "private_cert_engine_config_root_ca_name",
-              "display_name": "Private certificates engine config root CA name"
             },
             {
               "key": "private_cert_engine_config_root_ca_common_name",
-              "display_name": "Private certificates engine config root CA common name"
             },
             {
               "key": "private_cert_engine_config_root_ca_max_ttl",
-              "display_name": "Private certificates engine config root CA max TTL"
             },
             {
               "key": "private_cert_engine_config_intermediate_ca_name",
-              "display_name": "Private certificates engine config intermediate CA name"
             },
             {
               "key": "private_cert_engine_config_template_name",
-              "display_name": "Private certificates engine config template name"
             },
             {
               "key": "existing_secrets_manager_kms_key_crn",
-              "display_name": "Existing KMS key CRN"
             },
             {
               "key": "skip_kms_iam_authorization_policy",
-              "display_name": "Skip KMS IAM auth policy creation?"
             },
             {
               "key": "ibmcloud_kms_api_key",
-              "display_name": "KMS account API key"
             },
             {
               "key": "kms_endpoint_type",
-              "display_name": "KMS endpoint type",
               "options": [
                 {
                   "displayname": "Public",
@@ -255,39 +227,30 @@
             },
             {
               "key": "kms_key_ring_name",
-              "display_name": "KMS key ring name"
             },
             {
               "key": "kms_key_name",
-              "display_name": "KMS key name"
             },
             {
               "key": "enable_event_notifications",
-              "display_name": "Enable Event Notifications?"
             },
             {
               "key": "event_notifications_email_list",
-              "display_name": "Event Notifications email list"
             },
             {
               "key": "event_notifications_from_email",
-              "display_name": "Event Notifications sender email address"
             },
             {
               "key": "event_notifications_reply_to_email",
-              "display_name": "Event Notifications email reply-to address"
             },
             {
               "key": "existing_event_notifications_instance_crn",
-              "display_name": "Event Notifications CRN"
             },
             {
               "key": "skip_event_notifications_iam_authorization_policy",
-              "display_name": "Skip Event Notifications IAM auth policy creation?"
             },
             {
               "key":"cbr_rules",
-              "display_name": "Secrets Manager CBR rules"
             }
           ],
           "architecture": {
