@@ -60,7 +60,7 @@
           },
           "configuration": [
             {
-              "key": "ibmcloud_api_key",
+              "key": "ibmcloud_api_key"
             },
             {
               "key": "region",
@@ -143,13 +143,20 @@
               ]
             },
             {
-              "key": "secrets_manager_instance_name",
+              "key": "secrets_manager_instance_name"
             },
             {
-              "key": "existing_secrets_manager_crn",
+              "key": "existing_secrets_manager_crn"
             },
             {
               "key": "secrets_manager_tags",
+              "custom_config": {
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                    "type": "string"
+                }
+            }
             },
             {
               "key": "service_plan",
@@ -165,52 +172,52 @@
               ]
             },
             {
-              "key": "iam_engine_enabled",
+              "key": "iam_engine_enabled"
             },
             {
-              "key": "iam_engine_name",
+              "key": "iam_engine_name"
             },
             {
-              "key": "public_cert_engine_enabled",
+              "key": "public_cert_engine_enabled"
             },
             {
-              "key": "public_cert_engine_internet_services_crn",
+              "key": "public_cert_engine_internet_services_crn"
             },
             {
-              "key": "public_cert_engine_dns_provider_config_name",
+              "key": "public_cert_engine_dns_provider_config_name"
             },
             {
-              "key": "public_cert_engine_lets_encrypt_config_ca_name",
+              "key": "public_cert_engine_lets_encrypt_config_ca_name"
             },
             {
-              "key": "acme_letsencrypt_private_key",
+              "key": "acme_letsencrypt_private_key"
             },
             {
-              "key": "private_cert_engine_enabled",
+              "key": "private_cert_engine_enabled"
             },
             {
-              "key": "private_cert_engine_config_root_ca_name",
+              "key": "private_cert_engine_config_root_ca_name"
             },
             {
-              "key": "private_cert_engine_config_root_ca_common_name",
+              "key": "private_cert_engine_config_root_ca_common_name"
             },
             {
-              "key": "private_cert_engine_config_root_ca_max_ttl",
+              "key": "private_cert_engine_config_root_ca_max_ttl"
             },
             {
-              "key": "private_cert_engine_config_intermediate_ca_name",
+              "key": "private_cert_engine_config_intermediate_ca_name"
             },
             {
-              "key": "private_cert_engine_config_template_name",
+              "key": "private_cert_engine_config_template_name"
             },
             {
-              "key": "existing_secrets_manager_kms_key_crn",
+              "key": "existing_secrets_manager_kms_key_crn"
             },
             {
-              "key": "skip_kms_iam_authorization_policy",
+              "key": "skip_kms_iam_authorization_policy"
             },
             {
-              "key": "ibmcloud_kms_api_key",
+              "key": "ibmcloud_kms_api_key"
             },
             {
               "key": "kms_endpoint_type",
@@ -226,31 +233,31 @@
               ]
             },
             {
-              "key": "kms_key_ring_name",
+              "key": "kms_key_ring_name"
             },
             {
-              "key": "kms_key_name",
+              "key": "kms_key_name"
             },
             {
-              "key": "enable_event_notifications",
+              "key": "enable_event_notifications"
             },
             {
-              "key": "event_notifications_email_list",
+              "key": "event_notifications_email_list"
             },
             {
-              "key": "event_notifications_from_email",
+              "key": "event_notifications_from_email"
             },
             {
-              "key": "event_notifications_reply_to_email",
+              "key": "event_notifications_reply_to_email"
             },
             {
-              "key": "existing_event_notifications_instance_crn",
+              "key": "existing_event_notifications_instance_crn"
             },
             {
-              "key": "skip_event_notifications_iam_authorization_policy",
+              "key": "skip_event_notifications_iam_authorization_policy"
             },
             {
-              "key":"cbr_rules",
+              "key":"cbr_rules"
             }
           ],
           "architecture": {
