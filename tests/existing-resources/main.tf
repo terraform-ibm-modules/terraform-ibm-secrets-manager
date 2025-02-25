@@ -16,12 +16,12 @@ module "resource_group" {
 
 module "event_notifications" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "1.15.9"
+  version           = "1.18.5"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en"
   tags              = var.resource_tags
   plan              = "lite"
-  service_endpoints = "public"
+  service_endpoints = "public-and-private"
   region            = var.region
 }
 
@@ -31,7 +31,7 @@ module "event_notifications" {
 
 module "key_protect" {
   source                    = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                   = "4.19.1"
+  version                   = "4.19.8"
   key_protect_instance_name = "${var.prefix}-key-protect"
   resource_group_id         = module.resource_group.resource_group_id
   region                    = var.region
@@ -46,18 +46,4 @@ module "key_protect" {
       ]
     }
   ]
-}
-
-##############################################################################
-# Secrets Manager
-##############################################################################
-
-module "secrets_manager" {
-  source                        = "../.."
-  resource_group_id             = module.resource_group.resource_group_id
-  region                        = var.region
-  secrets_manager_name          = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
-  sm_service_plan               = "trial"
-  sm_tags                       = var.resource_tags
-  skip_iam_authorization_policy = true
 }

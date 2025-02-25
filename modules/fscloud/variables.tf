@@ -29,23 +29,30 @@ variable "sm_tags" {
   default     = []
 }
 
+variable "existing_sm_instance_crn" {
+  type        = string
+  description = "The CRN of an existing Secrets Manager instance. If not supplied, a new instance is created."
+  default     = null
+}
+
+variable "skip_kms_iam_authorization_policy" {
+  type        = bool
+  description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the `existing_kms_instance_crn` variable. If a value is specified for `ibmcloud_kms_api_key`, the policy is created in the KMS account."
+  default     = false
+}
+
 ##############################################################################
 # Key Management Service (KMS)
 ##############################################################################
 
 variable "existing_kms_instance_guid" {
   type        = string
-  description = "The GUID of the Hyper Protect Crypto Services instance in which the key specified in `kms_key_crn` is coming from."
+  description = "The GUID of the Key Management Service (KMS) instance in which the key specified in `kms_key_crn` is coming from."
 }
 
 variable "kms_key_crn" {
   type        = string
-  description = "The root key CRN of Hyper Protect Crypto Services (HPCS) that you want to use for encryption."
-
-  validation {
-    condition     = can(regex(".*hs-crypto.*", var.kms_key_crn))
-    error_message = "Variable 'kms_key_crn' must be a Hyper Protect Crypto Services (HPCS) key CRN."
-  }
+  description = "The root key CRN of Key Management Service (KMS) key that you want to use for encryption."
 }
 
 ##############################################################################
@@ -105,21 +112,21 @@ variable "secrets" {
     secret_group_description = optional(string)
     existing_secret_group    = optional(bool, false)
     secrets = optional(list(object({
-      secret_name                             = string
-      secret_description                      = optional(string)
-      secret_type                             = optional(string)
-      imported_cert_certificate               = optional(string)
-      imported_cert_private_key               = optional(string)
-      imported_cert_intermediate              = optional(string)
-      secret_username                         = optional(string)
-      secret_labels                           = optional(list(string), [])
-      secret_payload_password                 = optional(string, "")
-      secret_auto_rotation                    = optional(bool, true)
-      secret_auto_rotation_unit               = optional(string, "day")
-      secret_auto_rotation_interval           = optional(number, 89)
-      service_credentials_ttl                 = optional(string, "7776000") # 90 days
-      service_credentials_source_service_crn  = optional(string)
-      service_credentials_source_service_role = optional(string)
+      secret_name                                 = string
+      secret_description                          = optional(string)
+      secret_type                                 = optional(string)
+      imported_cert_certificate                   = optional(string)
+      imported_cert_private_key                   = optional(string)
+      imported_cert_intermediate                  = optional(string)
+      secret_username                             = optional(string)
+      secret_labels                               = optional(list(string), [])
+      secret_payload_password                     = optional(string, "")
+      secret_auto_rotation                        = optional(bool, true)
+      secret_auto_rotation_unit                   = optional(string, "day")
+      secret_auto_rotation_interval               = optional(number, 89)
+      service_credentials_ttl                     = optional(string, "7776000") # 90 days
+      service_credentials_source_service_crn      = optional(string)
+      service_credentials_source_service_role_crn = optional(string)
     })))
   }))
   description = "Secret Manager secrets configurations."

@@ -8,7 +8,7 @@ module "resource_group" {
 
 module "key_protect" {
   source                    = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                   = "4.19.1"
+  version                   = "4.19.8"
   key_protect_instance_name = "${var.prefix}-key-protect"
   resource_group_id         = module.resource_group.resource_group_id
   region                    = var.region
@@ -27,7 +27,7 @@ module "key_protect" {
 
 module "event_notification" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "1.15.9"
+  version           = "1.18.5"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en"
   tags              = var.resource_tags
@@ -36,7 +36,26 @@ module "event_notification" {
   region            = var.en_region
 }
 
+resource "ibm_iam_authorization_policy" "en_policy" {
+  source_service_name         = "secrets-manager"
+  roles                       = ["Key Manager"]
+  target_service_name         = "event-notifications"
+  target_resource_instance_id = module.event_notification.guid
+  description                 = "Allow the Secret manager Key Manager role access to event-notifications with guid ${module.event_notification.guid}."
+  # Scope of policy now includes the key, so ensure to create new policy before
+  # destroying old one to prevent any disruption to every day services.
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "time_sleep" "wait_for_en_policy" {
+  depends_on      = [ibm_iam_authorization_policy.en_policy]
+  create_duration = "30s"
+}
+
 module "secrets_manager" {
+  depends_on                 = [time_sleep.wait_for_en_policy]
   source                     = "../.."
   resource_group_id          = module.resource_group.resource_group_id
   region                     = var.region
@@ -55,6 +74,14 @@ module "secrets_manager" {
         secret_name             = "${var.prefix}-kp-key-crn"
         secret_type             = "arbitrary"
         secret_payload_password = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
+        },
+        {
+          # Arbitrary service credential for source service event notifications, with role Event-Notification-Publisher
+          secret_name                                 = "${var.prefix}-service-credential"
+          secret_type                                 = "service_credentials" #checkov:skip=CKV_SECRET_6
+          secret_description                          = "Created by secrets-manager-module complete example"
+          service_credentials_source_service_crn      = module.event_notification.crn
+          service_credentials_source_service_role_crn = "crn:v1:bluemix:public:event-notifications::::serviceRole:Event-Notification-Publisher"
         }
       ]
     },

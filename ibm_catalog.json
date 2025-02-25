@@ -63,6 +63,69 @@
               "key": "ibmcloud_api_key"
             },
             {
+              "key": "region",
+              "required": true,
+              "options": [
+                {
+                  "displayname": "Osaka (jp-osa)",
+                  "value": "jp-osa"
+                },
+                {
+                  "displayname": "Sydney (au-syd)",
+                  "value": "au-syd"
+                },
+                {
+                  "displayname": "Tokyo (jp-tok)",
+                  "value": "jp-tok"
+                },
+                {
+                  "displayname": "Frankfurt (eu-de)",
+                  "value": "eu-de"
+                },
+                {
+                  "displayname": "London (eu-gb)",
+                  "value": "eu-gb"
+                },
+                {
+                  "displayname": "Madrid (eu-es)",
+                  "value": "eu-es"
+                },
+                {
+                  "displayname": "Dallas (us-south)",
+                  "value": "us-south"
+                },
+                {
+                  "displayname": "Toronto (ca-tor)",
+                  "value": "ca-tor"
+                },
+                {
+                  "displayname": "Washington DC (us-east)",
+                  "value": "us-east"
+                },
+                {
+                  "displayname": "Sao Paulo (br-sao)",
+                  "value": "br-sao"
+                }
+              ]
+            },
+            {
+              "key": "prefix",
+              "required": true,
+              "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
+            },
+            {
+              "key": "use_existing_resource_group",
+              "required": true
+            },
+            {
+              "key": "resource_group_name",
+              "required": true
+            },
+            {
+              "key": "existing_kms_instance_crn",
+              "required": true
+            },
+            {
               "key": "provider_visibility",
               "options": [
                 {
@@ -80,63 +143,20 @@
               ]
             },
             {
-              "key": "use_existing_resource_group"
-            },
-            {
-              "key": "resource_group_name",
-              "required": true
-            },
-            {
-              "key": "region",
-              "required": true,
-              "options": [
-                {
-                  "displayname": "Osaka",
-                  "value": "jp-osa"
-                },
-                {
-                  "displayname": "Sydney",
-                  "value": "au-syd"
-                },
-                {
-                  "displayname": "Tokyo",
-                  "value": "jp-tok"
-                },
-                {
-                  "displayname": "Frankfurt",
-                  "value": "eu-de"
-                },
-                {
-                  "displayname": "London",
-                  "value": "eu-gb"
-                },
-                {
-                  "displayname": "Mardrid",
-                  "value": "eu-es"
-                },
-                {
-                  "displayname": "Dallas",
-                  "value": "us-south"
-                },
-                {
-                  "displayname": "Toronto",
-                  "value": "ca-tor"
-                },
-                {
-                  "displayname": "Washington DC",
-                  "value": "us-east"
-                },
-                {
-                  "displayname": "Sao Paulo",
-                  "value": "br-sao"
-                }
-              ]
-            },
-            {
-              "key": "prefix"
-            },
-            {
               "key": "secrets_manager_instance_name"
+            },
+            {
+              "key": "existing_secrets_manager_crn"
+            },
+            {
+              "key": "secrets_manager_tags",
+              "custom_config": {
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "type": "string"
+                }
+            }
             },
             {
               "key": "service_plan",
@@ -152,75 +172,52 @@
               ]
             },
             {
-              "key": "allowed_network",
-              "options": [
-                {
-                  "displayname": "Public and private",
-                  "value": "public-and-private"
-                },
-                {
-                  "displayname": "Private only",
-                  "value": "private-only"
-                }
-              ]
-            },
-            {
-              "key": "secret_manager_tags"
-            },
-            {
               "key": "iam_engine_enabled"
             },
             {
               "key": "iam_engine_name"
             },
             {
-              "key": "public_engine_enabled"
+              "key": "public_cert_engine_enabled"
             },
             {
-              "key": "public_engine_name"
+              "key": "public_cert_engine_internet_services_crn"
             },
             {
-              "key": "cis_id"
+              "key": "public_cert_engine_dns_provider_config_name"
             },
             {
-              "key": "dns_provider_name"
-            },
-            {
-              "key": "ca_name"
+              "key": "public_cert_engine_lets_encrypt_config_ca_name"
             },
             {
               "key": "acme_letsencrypt_private_key"
             },
             {
-              "key": "private_engine_enabled"
+              "key": "private_cert_engine_enabled"
             },
             {
-              "key": "private_engine_name"
+              "key": "private_cert_engine_config_root_ca_name"
             },
             {
-              "key": "root_ca_name"
+              "key": "private_cert_engine_config_root_ca_common_name"
             },
             {
-              "key": "root_ca_common_name"
+              "key": "private_cert_engine_config_root_ca_max_ttl"
             },
             {
-              "key": "root_ca_max_ttl"
+              "key": "private_cert_engine_config_intermediate_ca_name"
             },
             {
-              "key": "intermediate_ca_name"
-            },
-            {
-              "key": "certificate_template_name"
-            },
-            {
-              "key": "skip_kms_iam_authorization_policy"
+              "key": "private_cert_engine_config_template_name"
             },
             {
               "key": "existing_secrets_manager_kms_key_crn"
             },
             {
-              "key": "existing_kms_instance_crn",
-              "required": true
+              "key": "skip_kms_iam_authorization_policy"
+            },
+            {
+              "key": "ibmcloud_kms_api_key"
             },
             {
               "key": "kms_endpoint_type",
@@ -242,10 +239,22 @@
               "key": "kms_key_name"
             },
             {
-              "key": "existing_event_notification_instance_crn"
+              "key": "enable_event_notifications"
             },
             {
-              "key": "skip_event_notification_iam_authorization_policy"
+              "key": "event_notifications_email_list"
+            },
+            {
+              "key": "event_notifications_from_email"
+            },
+            {
+              "key": "event_notifications_reply_to_email"
+            },
+            {
+              "key": "existing_event_notifications_instance_crn"
+            },
+            {
+              "key": "skip_event_notifications_iam_authorization_policy"
             },
             {
               "key":"cbr_rules"
