@@ -52,6 +52,25 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
   }
 }
 
+# Create IAM credentials engine using s2s auth
+resource "ibm_iam_authorization_policy" "iam_identity_policy" {
+  count                       = var.skip_iam_authorization_policy ? 0 : 1
+  source_service_name         = "secrets-manager"
+  source_resource_instance_id = local.secrets_manager_guid
+  target_service_name         = "iam-identity"
+  roles                       = ["Operator"]
+  description                 = "Allows Secrets Manager instance ${local.secrets_manager_guid} `Operator` access to the IAM Identity service to enable creating IAM credentials."
+}
+
+resource "ibm_iam_authorization_policy" "iam_groups_policy" {
+  count                       = var.skip_iam_authorization_policy ? 0 : 1
+  source_service_name         = "secrets-manager"
+  source_resource_instance_id = local.secrets_manager_guid
+  target_service_name         = "iam-groups"
+  roles                       = ["Groups Service Member Manage"]
+  description                 = "Allows Secrets Manager instance ${local.secrets_manager_guid} `Groups Service Member Manage` access to the IAM Groups service to enable creating IAM credentials."
+}
+
 locals {
   # determine which service name to use for the policy
   kms_service_name = var.kms_encryption_enabled && var.kms_key_crn != null ? (
