@@ -11,7 +11,7 @@ variable "ibmcloud_api_key" {
 variable "provider_visibility" {
   description = "Set the visibility value for the IBM terraform provider. Supported values are `public`, `private`, `public-and-private`. [Learn more](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/guides/custom-service-endpoints)."
   type        = string
-  default     = "private"
+  default     = "public"
 
   validation {
     condition     = contains(["public", "private", "public-and-private"], var.provider_visibility)
@@ -28,7 +28,7 @@ variable "use_existing_resource_group" {
 variable "resource_group_name" {
   type        = string
   description = "The name of a new or existing resource group to provision resources to. If a prefix input variable is specified, it's added to the value in the `<prefix>-value` format. Optional if `existing_secrets_manager_crn` is not specified."
-  default     = null
+  default     = "aryrg"
 }
 
 variable "region" {
@@ -188,14 +188,14 @@ variable "existing_secrets_manager_kms_key_crn" {
 
 variable "existing_kms_instance_crn" {
   type        = string
-  default     = null
+  default     = "crn:v1:bluemix:public:hs-crypto:us-south:a/abac0df06b644a9cabc6e44f55b3880e:e6dce284-e80f-46e1-a3c1-830f7adff7a9::"
   description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Required only if `existing_secrets_manager_crn` or `existing_secrets_manager_kms_key_crn` is not specified. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`."
 }
 
 variable "kms_endpoint_type" {
   type        = string
   description = "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
-  default     = "private"
+  default     = "public"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
     error_message = "The kms_endpoint_type value must be 'public' or 'private'."
@@ -284,4 +284,12 @@ variable "cbr_rules" {
   description = "(Optional, list) List of CBR rules to create. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/solutions/standard/DA-cbr_rules.md)"
   default     = []
   # Validation happens in the rule module
+}
+variable "kms_encryption_enabled" {
+  type        = bool
+  description = "Set this to true to control the encryption keys used to encrypt the data that you store in Secrets Manager. If set to false, the data that you store is encrypted at rest by using envelope encryption. For more details, see https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-mng-data&interface=ui#about-encryption."
+  default     = true
+}
+output "kms_account_id" {
+  value = local.kms_account_id
 }

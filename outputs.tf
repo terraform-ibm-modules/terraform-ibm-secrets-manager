@@ -37,5 +37,7 @@ output "secrets" {
   value       = module.secrets.secrets
   description = "List of secret mananger secret config data"
 }
-
+# output "kms_account_id" {
+#   value = local.kms_account_id
+# }
 ##############################################################################
