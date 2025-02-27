@@ -34,7 +34,7 @@ data "ibm_resource_instance" "sm_instance" {
 # Create Secrets Manager Instance
 resource "ibm_resource_instance" "secrets_manager_instance" {
   count             = var.existing_sm_instance_crn == null ? 1 : 0
-  depends_on        = [time_sleep.wait_for_authorization_policy]
+  depends_on        = [time_sleep.wait_for_authorization_policy_1, time_sleep.wait_for_authorization_policy_2]
   name              = var.secrets_manager_name
   service           = "secrets-manager"
   plan              = var.sm_service_plan
@@ -54,30 +54,87 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
 
 locals {
   # determine which service name to use for the policy
-  kms_service_name = var.kms_encryption_enabled && var.kms_key_crn != null ? (
-    can(regex(".*kms.*", var.kms_key_crn)) ? "kms" : (
-      can(regex(".*hs-crypto.*", var.kms_key_crn)) ? "hs-crypto" : null
-    )
+  create_auth_policy = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy && var.existing_sm_instance_crn == null
+  kms_service_name = var.kms_key_crn != null ? (
+    can(regex(".*kms.*", var.kms_key_crn)) ? "kms" : can(regex(".*hs-crypto.*", var.kms_key_crn)) ? "hs-crypto" : null
   ) : null
+  kms_account_id   = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_crn_parser[0].account_id : null
+  kms_key_id       = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_crn_parser[0].resource : null
+  instance         = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_crn_parser[0].service_instance : null
+  create_auth      = local.create_auth_policy && local.kms_service_name == "hs-crypto" ? 1 : 0
+  #instance         = (var.kms_encryption_enabled && var.kms_key_crn != null && length(module.kms_crn_parser) > 0) ? module.kms_crn_parser[0].service_instance : null
 }
 
-resource "ibm_iam_authorization_policy" "kms_policy" {
-  count                       = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy && var.existing_sm_instance_crn == null ? 1 : 0
+module "kms_crn_parser" {
+  count   = var.kms_key_crn != null ? 1 : 0
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.1.0"
+  crn     = var.kms_key_crn
+}
+
+resource "ibm_iam_authorization_policy" "kms_policy_1" {
+  count                    = local.create_auth_policy ? 1 : 0
+  source_service_name      = "secrets-manager"
+  source_resource_group_id = var.resource_group_id
+  roles                    = ["Reader"]
+  #description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
+  resource_attributes {
+    name     = "serviceName"
+    operator = "stringEquals"
+    value    = local.kms_service_name
+  }
+  resource_attributes {
+    name     = "accountId"
+    operator = "stringEquals"
+    value    = local.kms_account_id
+  }
+  resource_attributes {
+    name     = "serviceInstance"
+    operator = "stringEquals"
+    value    = local.instance
+  }
+  resource_attributes {
+    name     = "resourceType"
+    operator = "stringEquals"
+    value    = "key"
+  }
+  resource_attributes {
+    name     = "resource"
+    operator = "stringEquals"
+    value    = local.kms_key_id
+  }
+  # Scope of policy now includes the key, so ensure to create new policy before
+  # destroying old one to prevent any disruption to every day services.
+  lifecycle {
+    create_before_destroy = true
+  }
+
+}
+resource "time_sleep" "wait_for_authorization_policy_1" {
+  count      = var.existing_sm_instance_crn == null ? 1 : 0
+  depends_on = [ibm_iam_authorization_policy.kms_policy_1, ibm_iam_authorization_policy.en_policy]
+
+  create_duration = "30s"
+}
+
+
+resource "ibm_iam_authorization_policy" "kms_policy_2" {
+  count                       = local.create_auth
   source_service_name         = "secrets-manager"
   source_resource_group_id    = var.resource_group_id
   target_service_name         = local.kms_service_name
   target_resource_instance_id = var.existing_kms_instance_guid
-  roles                       = ["Reader"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
+  roles                       = ["Viewer"]
+  #description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
 }
 
-# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
-resource "time_sleep" "wait_for_authorization_policy" {
-  count      = var.existing_sm_instance_crn == null ? 1 : 0
-  depends_on = [ibm_iam_authorization_policy.kms_policy, ibm_iam_authorization_policy.en_policy]
+resource "time_sleep" "wait_for_authorization_policy_2" {
+  count      = local.create_auth
+  depends_on = [ibm_iam_authorization_policy.kms_policy_2]
 
   create_duration = "30s"
 }
+# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
 
 
 locals {
@@ -140,7 +197,7 @@ resource "ibm_iam_authorization_policy" "en_policy" {
 resource "ibm_sm_en_registration" "sm_en_registration" {
   # if existing SM instance CRN is passed (!= null), then never register EN
   count                                  = var.existing_sm_instance_crn == null && var.enable_event_notification ? 1 : 0
-  depends_on                             = [time_sleep.wait_for_authorization_policy]
+  depends_on                             = [time_sleep.wait_for_authorization_policy_1]
   instance_id                            = local.secrets_manager_guid
   region                                 = local.secrets_manager_region
   event_notifications_instance_crn       = var.existing_en_instance_crn
