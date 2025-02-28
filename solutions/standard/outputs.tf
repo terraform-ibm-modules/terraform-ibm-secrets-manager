@@ -32,3 +32,7 @@ output "secrets_manager_region" {
   value       = local.secrets_manager_region
   description = "Region of the Secrets Manager instance"
 }
+output "kms_key_crn" {
+  value       = local.kms_key_crn
+  description = "List of secret mananger secret config data"
+}

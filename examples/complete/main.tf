@@ -63,6 +63,7 @@ module "secrets_manager" {
   sm_service_plan            = var.sm_service_plan
   sm_tags                    = var.resource_tags
   kms_encryption_enabled     = true
+  is_hpcs                    = false
   existing_kms_instance_guid = module.key_protect.kms_guid
   kms_key_crn                = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
   enable_event_notification  = true

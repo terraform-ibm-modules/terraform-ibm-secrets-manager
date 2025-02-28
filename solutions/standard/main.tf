@@ -21,7 +21,7 @@ module "resource_group" {
 # KMS Key
 #######################################################################################################################
 locals {
-  kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : var.existing_kms_instance_crn) : var.existing_secrets_manager_kms_key_crn
+  kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn) : var.existing_secrets_manager_kms_key_crn
   kms_key_ring_name = try("${local.prefix}-${var.kms_key_ring_name}", var.kms_key_ring_name)
   kms_key_name      = try("${local.prefix}-${var.kms_key_name}", var.kms_key_name)
 
@@ -34,7 +34,7 @@ locals {
   kms_key_id       = var.kms_encryption_enabled ? var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].resource : module.kms_instance_crn_parser[0].resource : null
   instance         = var.kms_encryption_enabled ? var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_instance : module.kms_instance_crn_parser[0].service_instance : null
   kms_account_id   = var.kms_encryption_enabled ? var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].account_id : module.kms_instance_crn_parser[0].account_id : null
-  create_auth      = local.create_cross_account_auth_policy == true && local.kms_service_name == "hs-crypto" ? 1 : 0
+  create_auth      = local.create_cross_account_auth_policy == true && var.is_hpcs ? 1 : 0
   account_id       = length(data.ibm_iam_account_settings.iam_account_settings) > 0 ? data.ibm_iam_account_settings.iam_account_settings[0].account_id : null
 }
 

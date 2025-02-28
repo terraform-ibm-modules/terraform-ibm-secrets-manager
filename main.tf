@@ -55,18 +55,15 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
 locals {
   # determine which service name to use for the policy
   create_auth_policy = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy && var.existing_sm_instance_crn == null
-  kms_service_name = var.kms_key_crn != null ? (
-    can(regex(".*kms.*", var.kms_key_crn)) ? "kms" : can(regex(".*hs-crypto.*", var.kms_key_crn)) ? "hs-crypto" : null
-  ) : null
+  kms_service_name = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_crn_parser[0].service_name : null
   kms_account_id   = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_crn_parser[0].account_id : null
   kms_key_id       = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_crn_parser[0].resource : null
   instance         = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_crn_parser[0].service_instance : null
-  create_auth      = local.create_auth_policy && local.kms_service_name == "hs-crypto" ? 1 : 0
-  #instance         = (var.kms_encryption_enabled && var.kms_key_crn != null && length(module.kms_crn_parser) > 0) ? module.kms_crn_parser[0].service_instance : null
+  create_auth      = local.create_auth_policy && var.is_hpcs ? 1 : 0
 }
 
-module "kms_crn_parser" {
-  count   = var.kms_key_crn != null ? 1 : 0
+module "kms_key_crn_parser" {
+  count   = local.create_auth_policy ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
   version = "1.1.0"
   crn     = var.kms_key_crn
@@ -77,7 +74,7 @@ resource "ibm_iam_authorization_policy" "kms_policy_1" {
   source_service_name      = "secrets-manager"
   source_resource_group_id = var.resource_group_id
   roles                    = ["Reader"]
-  #description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${local.instance}"
   resource_attributes {
     name     = "serviceName"
     operator = "stringEquals"
@@ -123,9 +120,9 @@ resource "ibm_iam_authorization_policy" "kms_policy_2" {
   source_service_name         = "secrets-manager"
   source_resource_group_id    = var.resource_group_id
   target_service_name         = local.kms_service_name
-  target_resource_instance_id = var.existing_kms_instance_guid
+  target_resource_instance_id = local.instance
   roles                       = ["Viewer"]
-  #description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${var.existing_kms_instance_guid}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${local.instance}"
 }
 
 resource "time_sleep" "wait_for_authorization_policy_2" {
