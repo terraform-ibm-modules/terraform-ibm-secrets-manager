@@ -285,3 +285,12 @@ variable "cbr_rules" {
   default     = []
   # Validation happens in the rule module
 }
+variable "kms_encryption_enabled" {
+  type        = bool
+  description = "Set this to true to control the encryption keys used to encrypt the data that you store in Secrets Manager. If set to false, the data that you store is encrypted at rest by using envelope encryption. For more details, see https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-mng-data&interface=ui#about-encryption."
+  default     = true
+}
+variable "is_hpcs"{
+  type = bool
+  default = true
+}
