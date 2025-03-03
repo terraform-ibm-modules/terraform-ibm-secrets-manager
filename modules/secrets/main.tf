@@ -29,6 +29,40 @@ module "secret_groups" {
   endpoint_type            = var.endpoint_type
 }
 
+locals {
+  access_groups = flatten([
+    for secret_group in var.secrets :
+    secret_group.access_group_configuration == null ? [] : [{
+      access_group_name             = secret_group.access_group_configuration.access_group_name
+      access_group_ibm_ids          = secret_group.access_group_configuration.access_group_ibm_ids
+      access_group_policies         = secret_group.access_group_configuration.access_group_policies
+      access_group_dynamic_rules    = secret_group.access_group_configuration.access_group_dynamic_rules
+      secrets_manager_instance_guid = var.existing_sm_instance_guid
+      secrets_manager_group_guid    = module.secret_groups[secret_group.secret_group_name].secret_group_id
+    }]
+  ])
+}
+module "iam_access_groups" {
+  for_each          = { for obj in local.access_groups : obj.access_group_name => obj }
+  source            = "terraform-ibm-modules/iam-access-group/ibm"
+  version           = "1.4.6"
+  access_group_name = each.value.access_group_name
+  dynamic_rules     = each.value.access_group_dynamic_rules
+  policies = {
+    sm_policy = {
+      roles = ["SecretsReader"],
+      tags  = [],
+      resources = [{
+        service       = "secrets-manager"
+        instance_id   = each.value.secrets_manager_instance_guid
+        resource_type = "secret-group"
+        resource      = each.value.secrets_manager_group_guid
+      }]
+    }
+  }
+  ibm_ids = each.value.access_group_ibm_ids
+}
+
 ##############################################################################
 # Secrets
 ##############################################################################

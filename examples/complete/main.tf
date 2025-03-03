@@ -84,6 +84,22 @@ module "secrets_manager" {
           service_credentials_source_service_role_crn = "crn:v1:bluemix:public:event-notifications::::serviceRole:Event-Notification-Publisher"
         }
       ]
+      access_group_configuration = {
+        access_group_name          = "${var.prefix}-secret-group-access-group"
+        access_group_dynamic_rules = {}
+        access_group_policies = {
+          sm_policy = {
+            roles = ["SecretsReader"],
+            tags  = [],
+            resources = [{
+              service     = "secrets-manager"
+              instance_id = module.secrets_manager.secrets_manager_id
+              # how do I get the secret group ID if this is being passed at creation
+            }]
+          }
+        }
+        access_group_ibm_ids = ["GoldenEye.Development@ibm.com"]
+      }
     },
     {
       secret_group_name     = "default"
