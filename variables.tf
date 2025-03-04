@@ -160,7 +160,3 @@ variable "secrets" {
   description = "Secret Manager secrets configurations."
   default     = []
 }
-variable "is_hpcs"{
-  type = bool
-  default = true
-}
