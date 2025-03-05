@@ -24,7 +24,7 @@ import (
 
 const completeExampleTerraformDir = "examples/complete"
 const fscloudExampleTerraformDir = "examples/fscloud"
-const solutionsTerraformDir = "solutions/standard"
+const solutionsTerraformDir = "solutions/Security-enforced"
 
 const resourceGroup = "geretain-test-scc-module"
 
