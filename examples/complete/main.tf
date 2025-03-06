@@ -85,20 +85,7 @@ module "secrets_manager" {
         }
       ]
       access_group_configuration = {
-        access_group_name          = "${var.prefix}-secret-group-access-group"
-        access_group_dynamic_rules = {}
-        access_group_policies = {
-          sm_policy = {
-            roles = ["SecretsReader"],
-            tags  = [],
-            resources = [{
-              service     = "secrets-manager"
-              instance_id = module.secrets_manager.secrets_manager_id
-              # how do I get the secret group ID if this is being passed at creation
-            }]
-          }
-        }
-        access_group_ibm_ids = ["GoldenEye.Development@ibm.com"]
+        roles = ["SecretsReader"]
       }
     },
     {
@@ -110,6 +97,9 @@ module "secrets_manager" {
         secret_payload_password = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].key_id
         }
       ]
+      access_group_configuration = {
+        roles = ["SecretsReader"]
+      }
     }
   ]
 }

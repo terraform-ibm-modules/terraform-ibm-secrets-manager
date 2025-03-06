@@ -42,36 +42,9 @@ variable "secrets" {
       service_credentials_source_service_hmac     = optional(bool, false)
     })))
     access_group_configuration = optional(object({
-      access_group_name = string
-      access_group_dynamic_rules = map(object({
-        expiration        = number
-        identity_provider = string
-        conditions = list(object({
-          claim    = string
-          operator = string
-          value    = string
-        }))
-      }))
-      access_group_policies = map(object({
-        roles              = list(string)
-        account_management = optional(bool)
-        tags               = set(string)
-        resources = optional(list(object({
-          region               = optional(string)
-          attributes           = optional(map(string))
-          service              = optional(string)
-          resource_instance_id = optional(string)
-          resource_type        = optional(string)
-          resource             = optional(string)
-          resource_group_id    = optional(string)
-        })))
-        resource_attributes = optional(list(object({
-          name     = string
-          value    = string
-          operator = optional(string)
-        })))
-      }))
-      access_group_ibm_ids = optional(list(string), [])
+      name  = optional(string)
+      roles = list(string)
+      tags  = optional(set(string), [])
     }))
   }))
   description = "Secret Manager secrets configurations."
@@ -88,6 +61,13 @@ variable "secrets" {
     condition = length([
       for secret in var.secrets :
       true if(secret.secret_group_name == "default" && secret.existing_secret_group == false)
+    ]) == 0
+  }
+  validation {
+    error_message = "Invalid role set for the access group, all roles must be one of: Reader, Writer, Manager, SecretsReader, Viewer, Operator, Editor, Administrator, Service Configuration Reader, Key Manager"
+    condition = length([
+      for secret in var.secrets :
+      true if((secret.access_group_configuration != null) && (length(setintersection(secret.access_group_configuration.roles, ["Reader", "Writer", "Manager", "SecretsReader", "Viewer", "Operator", "Editor", "Administrator", "Service Configuration Reader", "Key Manager"])) == 0))
     ]) == 0
   }
 }

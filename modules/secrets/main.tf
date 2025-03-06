@@ -33,12 +33,10 @@ locals {
   access_groups = flatten([
     for secret_group in var.secrets :
     secret_group.access_group_configuration == null ? [] : [{
-      access_group_name             = secret_group.access_group_configuration.access_group_name
-      access_group_ibm_ids          = secret_group.access_group_configuration.access_group_ibm_ids
-      access_group_policies         = secret_group.access_group_configuration.access_group_policies
-      access_group_dynamic_rules    = secret_group.access_group_configuration.access_group_dynamic_rules
-      secrets_manager_instance_guid = var.existing_sm_instance_guid
-      secrets_manager_group_guid    = module.secret_groups[secret_group.secret_group_name].secret_group_id
+      access_group_name          = coalesce(secret_group.access_group_configuration.name, "${secret_group.secret_group_name}-access-group")
+      access_group_roles         = secret_group.access_group_configuration.roles
+      access_group_tags          = secret_group.access_group_configuration.tags
+      secrets_manager_group_guid = module.secret_groups[secret_group.secret_group_name].secret_group_id
     }]
   ])
 }
@@ -47,20 +45,19 @@ module "iam_access_groups" {
   source            = "terraform-ibm-modules/iam-access-group/ibm"
   version           = "1.4.6"
   access_group_name = each.value.access_group_name
-  dynamic_rules     = each.value.access_group_dynamic_rules
+  dynamic_rules     = {}
   policies = {
     sm_policy = {
-      roles = ["SecretsReader"],
-      tags  = [],
+      roles = each.value.access_group_roles
+      tags  = each.value.access_group_tags
       resources = [{
         service       = "secrets-manager"
-        instance_id   = each.value.secrets_manager_instance_guid
+        instance_id   = var.existing_sm_instance_guid
         resource_type = "secret-group"
         resource      = each.value.secrets_manager_group_guid
       }]
     }
   }
-  ibm_ids = each.value.access_group_ibm_ids
 }
 
 ##############################################################################

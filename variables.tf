@@ -157,36 +157,9 @@ variable "secrets" {
       service_credentials_source_service_role_crn = optional(string)
     })))
     access_group_configuration = optional(object({
-      access_group_name = string
-      access_group_dynamic_rules = map(object({
-        expiration        = number
-        identity_provider = string
-        conditions = list(object({
-          claim    = string
-          operator = string
-          value    = string
-        }))
-      }))
-      access_group_policies = map(object({
-        roles              = list(string)
-        account_management = optional(bool)
-        tags               = set(string)
-        resources = optional(list(object({
-          region               = optional(string)
-          attributes           = optional(map(string))
-          service              = optional(string)
-          resource_instance_id = optional(string)
-          resource_type        = optional(string)
-          resource             = optional(string)
-          resource_group_id    = optional(string)
-        })))
-        resource_attributes = optional(list(object({
-          name     = string
-          value    = string
-          operator = optional(string)
-        })))
-      }))
-      access_group_ibm_ids = optional(list(string), [])
+      name  = optional(string)
+      roles = list(string)
+      tags  = optional(set(string), [])
     }))
   }))
   description = "Secret Manager secrets configurations."
