@@ -154,16 +154,10 @@ variable "private_cert_engine_config_template_name" {
 # IAM engine config
 ########################################################################################################################
 
-variable "iam_engine_enabled" {
+variable "skip_iam_authorization_policy" {
   type        = bool
-  description = "Set this to true to to configure a Secrets Manager IAM credentials engine. If set to false, no IAM engine will be configured for your instance."
-  default     = false
-}
-
-variable "iam_engine_name" {
-  type        = string
-  description = "The name of the IAM engine used to configure a Secrets Manager IAM credentials engine. If the prefix input variable is passed it is attached before the value in the format of '<prefix>-value'."
-  default     = "iam-engine"
+  description = "Set this to false to enable a Secrets Manager IAM credentials engine. If set to true, no IAM engine will be configured for your instance."
+  default     = true
 }
 
 ########################################################################################################################
