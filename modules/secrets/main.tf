@@ -36,7 +36,7 @@ locals {
       access_group_name          = coalesce(secret_group.access_group_configuration.name, "${secret_group.secret_group_name}-access-group")
       access_group_roles         = secret_group.access_group_configuration.roles
       access_group_tags          = secret_group.access_group_configuration.tags
-      secrets_manager_group_guid = module.secret_groups[secret_group.secret_group_name].secret_group_id
+      secrets_manager_group_guid = secret_group.existing_secret_group ? data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id : module.secret_groups[secret_group.secret_group_name].secret_group_id
     }]
   ])
 }
@@ -46,6 +46,7 @@ module "iam_access_groups" {
   version           = "1.4.6"
   access_group_name = each.value.access_group_name
   dynamic_rules     = {}
+  add_members       = false
   policies = {
     sm_policy = {
       roles = each.value.access_group_roles
