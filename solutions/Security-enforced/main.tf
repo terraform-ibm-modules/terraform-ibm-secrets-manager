@@ -3,8 +3,6 @@
 ########################################################################################################################
 locals {
   # tflint-ignore: terraform_unused_declarations
-  validate_resource_group = (var.existing_secrets_manager_crn == null && var.resource_group_name == null) ? tobool("Resource group name can not be null if existing secrets manager CRN is not set.") : true
-  # tflint-ignore: terraform_unused_declarations
   validate_event_notifications = (var.existing_event_notifications_instance_crn == null && var.enable_event_notifications) ? tobool("To enable event notifications, an existing event notifications CRN must be set.") : true
   prefix                       = var.prefix != null ? (var.prefix != "" ? var.prefix : null) : null
 }
@@ -13,8 +11,7 @@ module "resource_group" {
   count                        = var.existing_secrets_manager_crn == null ? 1 : 0
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.6"
-  resource_group_name          = var.use_existing_resource_group == false ? try("${local.prefix}-${var.resource_group_name}", var.resource_group_name) : null
-  existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
+  existing_resource_group_name = var.existing_resource_group_name
 }
 
 #######################################################################################################################
