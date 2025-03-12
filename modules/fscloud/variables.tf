@@ -37,7 +37,7 @@ variable "existing_sm_instance_crn" {
 
 variable "skip_iam_authorization_policy" {
   type        = bool
-  description = "Set this to true to skip the creation of a Secrets Manager IAM credentials engine. If set to false, an IAM engine will be configured for your instance."
+  description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine. If set to false, policies will be created that grants the Secrets Manager instance 'Operator' access to the IAM identity service, and 'Groups Service Member Manage' access to the IAM groups service."
   default     = false
 }
 
