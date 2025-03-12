@@ -21,7 +21,7 @@
       ],
       "short_description": "Creates and configures a Secrets Manager instance.",
       "long_description": "This solution is used to provision and configure an IBM Cloud Secrets Manager instance.",
-      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/solutions/Security-enforced/README.md",
+      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/solutions/security-enforced/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/images/secrets_manager.svg",
       "provider_name": "IBM",
       "features": [
@@ -46,9 +46,9 @@
       "flavors": [
         {
           "label": "Security-enforced",
-          "name": "Security-enforced",
+          "name": "security-enforced",
           "install_type": "fullstack",
-          "working_directory": "solutions/Security-enforced",
+          "working_directory": "solutions/security-enforced",
           "compliance": {
             "authority": "scc-v3",
             "profiles": [
@@ -149,7 +149,7 @@
               "key": "existing_secrets_manager_crn"
             },
             {
-              "key": "secrets_manager_tags",
+              "key": "secrets_manager_resource_tags",
               "custom_config": {
                 "grouping": "deployment",
                 "original_grouping": "deployment",
@@ -162,8 +162,8 @@
               "key": "service_plan",
               "options": [
                 {
-                  "displayname": "Security-enforced",
-                  "value": "Security-enforced"
+                  "displayname": "Standard",
+                  "value": "standard"
                 },
                 {
                   "displayname": "Trial",

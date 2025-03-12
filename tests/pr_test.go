@@ -24,7 +24,7 @@ import (
 
 const completeExampleTerraformDir = "examples/complete"
 const fscloudExampleTerraformDir = "examples/fscloud"
-const solutionsTerraformDir = "solutions/Security-enforced"
+const fullyConfigurableTerraformDir = "solutions/fully-configurable"
 
 const resourceGroup = "geretain-test-scc-module"
 
@@ -82,7 +82,7 @@ func TestRunUpgradeExample(t *testing.T) {
 	}
 }
 
-func TestRunDASolutionSchematics(t *testing.T) {
+func TestRunFullyConfigurableSchematics(t *testing.T) {
 	t.Parallel()
 
 	acme_letsencrypt_private_key := GetSecretsManagerKey( // pragma: allowlist secret
@@ -96,14 +96,14 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		Testing: t,
 		TarIncludePatterns: []string{
 			"*.tf",
-			fmt.Sprintf("%s/*.tf", solutionsTerraformDir),
+			fmt.Sprintf("%s/*.tf", fullyConfigurableTerraformDir),
 			fmt.Sprintf("%s/*.tf", fscloudExampleTerraformDir),
 			fmt.Sprintf("%s/*.tf", "modules/secrets"),
 			fmt.Sprintf("%s/*.tf", "modules/fscloud"),
 		},
-		TemplateFolder:         solutionsTerraformDir,
+		TemplateFolder:         fullyConfigurableTerraformDir,
 		ResourceGroup:          resourceGroup,
-		Prefix:                 "sm-da",
+		Prefix:                 "sm-fc",
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
@@ -113,10 +113,9 @@ func TestRunDASolutionSchematics(t *testing.T) {
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
 		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
-		{Name: "resource_group_name", Value: options.Prefix, DataType: "string"},
+		{Name: "existing_resource_group_name", Value: "geretain-test-secrets-manager", DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
 		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
-		{Name: "iam_engine_enabled", Value: true, DataType: "bool"},
 		{Name: "public_engine_enabled", Value: true, DataType: "bool"},
 		{Name: "private_engine_enabled", Value: true, DataType: "bool"},
 		{Name: "cis_id", Value: permanentResources["cisInstanceId"], DataType: "string"},
@@ -151,7 +150,7 @@ func GetSecretsManagerKey(sm_id string, sm_region string, sm_key_id string) *str
 	return secret.(*secretsmanagerv2.ArbitrarySecret).Payload
 }
 
-// A test to pass existing resources to the SM DA
+//A test to pass existing resources to the SM DA
 func TestRunExistingResourcesInstances(t *testing.T) {
 	t.Parallel()
 
