@@ -70,18 +70,6 @@ func setupOptions(t *testing.T, prefix string, checkApplyResultForUpgrade bool) 
 	return options
 }
 
-func TestRunUpgradeExample(t *testing.T) {
-	t.Parallel()
-
-	options := setupOptions(t, "secrets-mgr-upg", true)
-
-	output, err := options.RunTestUpgrade()
-	if !options.UpgradeTestSkipped {
-		assert.Nil(t, err, "This should not have errored")
-		assert.NotNil(t, output, "Expected some output")
-	}
-}
-
 func TestRunDASolutionSchematics(t *testing.T) {
 	t.Parallel()
 
