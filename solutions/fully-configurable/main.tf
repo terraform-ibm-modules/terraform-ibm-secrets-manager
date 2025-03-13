@@ -2,7 +2,7 @@
 # Resource Group
 ########################################################################################################################
 locals {
-  prefix                       = var.prefix != null ? (var.prefix != "" ? var.prefix : null) : null
+  prefix = var.prefix != null ? (var.prefix != "" ? var.prefix : null) : null
 }
 
 module "resource_group" {
@@ -100,7 +100,7 @@ module "secrets_manager" {
   resource_group_id        = module.resource_group.resource_group_id
   region                   = var.region
   secrets_manager_name     = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
-  sm_service_plan             = var.service_plan
+  sm_service_plan          = var.service_plan
   sm_tags                  = var.secrets_manager_resource_tags
   # kms dependency
   kms_encryption_enabled            = var.key_management_service_encryption_enabled
@@ -112,43 +112,8 @@ module "secrets_manager" {
   existing_en_instance_crn         = var.existing_event_notifications_instance_crn
   skip_en_iam_authorization_policy = var.skip_event_notifications_iam_authorization_policy
   cbr_rules                        = var.cbr_rules
-  endpoint_type = var.service_endpoints
-  allowed_network = var.allowed_network
-}
-
-# Configure an IBM Secrets Manager public certificate engine for an existing IBM Secrets Manager instance.
-module "secrets_manager_public_cert_engine" {
-  count   = var.public_cert_engine_enabled ? 1 : 0
-  source  = "terraform-ibm-modules/secrets-manager-public-cert-engine/ibm"
-  version = "1.0.2"
-  providers = {
-    ibm              = ibm
-    ibm.secret-store = ibm
-  }
-  secrets_manager_guid         = local.secrets_manager_guid
-  region                       = local.secrets_manager_region
-  internet_services_crn        = var.public_cert_engine_internet_services_crn
-  ibmcloud_cis_api_key         = var.ibmcloud_api_key
-  dns_config_name              = var.public_cert_engine_dns_provider_config_name
-  ca_config_name               = var.public_cert_engine_lets_encrypt_config_ca_name
-  acme_letsencrypt_private_key = var.acme_letsencrypt_private_key
-  service_endpoints            = "private"
-}
-
-
-# Configure an IBM Secrets Manager private certificate engine for an existing IBM Secrets Manager instance.
-module "private_secret_engine" {
-  count                     = var.private_cert_engine_enabled ? 1 : 0
-  source                    = "terraform-ibm-modules/secrets-manager-private-cert-engine/ibm"
-  version                   = "1.3.5"
-  secrets_manager_guid      = local.secrets_manager_guid
-  region                    = var.region
-  root_ca_name              = var.private_cert_engine_config_root_ca_name
-  root_ca_common_name       = var.private_cert_engine_config_root_ca_common_name
-  root_ca_max_ttl           = var.private_cert_engine_config_root_ca_max_ttl
-  intermediate_ca_name      = var.private_cert_engine_config_intermediate_ca_name
-  certificate_template_name = var.private_cert_engine_config_template_name
-  endpoint_type             = "private"
+  endpoint_type                    = var.service_endpoints
+  allowed_network                  = var.allowed_network
 }
 
 data "ibm_resource_instance" "existing_sm" {
