@@ -2,19 +2,13 @@
 # Resource Group
 ########################################################################################################################
 locals {
-  # tflint-ignore: terraform_unused_declarations
-  validate_resource_group = (var.existing_secrets_manager_crn == null && var.resource_group_name == null) ? tobool("Resource group name can not be null if existing secrets manager CRN is not set.") : true
-  # tflint-ignore: terraform_unused_declarations
-  validate_event_notifications = (var.existing_event_notifications_instance_crn == null && var.enable_event_notifications) ? tobool("To enable event notifications, an existing event notifications CRN must be set.") : true
-  prefix                       = var.prefix != null ? (var.prefix != "" ? var.prefix : null) : null
+  prefix = var.prefix != null ? (var.prefix != "" ? var.prefix : null) : null
 }
 
 module "resource_group" {
-  count                        = var.existing_secrets_manager_crn == null ? 1 : 0
   source                       = "terraform-ibm-modules/resource-group/ibm"
   version                      = "1.1.6"
-  resource_group_name          = var.use_existing_resource_group == false ? try("${local.prefix}-${var.resource_group_name}", var.resource_group_name) : null
-  existing_resource_group_name = var.use_existing_resource_group == true ? var.resource_group_name : null
+  existing_resource_group_name = var.existing_resource_group_name
 }
 
 #######################################################################################################################
@@ -28,7 +22,7 @@ locals {
   parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
   existing_kms_guid                = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[7] : null
-  create_cross_account_auth_policy = !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
+  create_cross_account_auth_policy = var.existing_secrets_manager_crn == null && !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
 
   kms_service_name = local.kms_key_crn != null ? (
     can(regex(".*kms.*", local.kms_key_crn)) ? "kms" : can(regex(".*hs-crypto.*", local.kms_key_crn)) ? "hs-crypto" : null
@@ -48,7 +42,7 @@ resource "ibm_iam_authorization_policy" "kms_policy" {
   target_service_name         = local.kms_service_name
   target_resource_instance_id = local.existing_kms_guid
   roles                       = ["Reader"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} in the account ${data.ibm_iam_account_settings.iam_account_settings[0].account_id} to read from the ${local.kms_service_name} instance GUID ${local.existing_kms_guid}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group.resource_group_id} in the account ${data.ibm_iam_account_settings.iam_account_settings[0].account_id} to read from the ${local.kms_service_name} instance GUID ${local.existing_kms_guid}"
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
@@ -63,7 +57,7 @@ module "kms" {
   providers = {
     ibm = ibm.kms
   }
-  count                       = var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
+  count                       = (var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null) ? 0 : (var.key_management_service_encryption_enabled == false ? 0 : 1) # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
   version                     = "4.20.0"
   create_key_protect_instance = false
@@ -101,14 +95,15 @@ locals {
 
 module "secrets_manager" {
   depends_on               = [time_sleep.wait_for_authorization_policy]
-  source                   = "../../modules/fscloud"
+  source                   = "../.."
   existing_sm_instance_crn = var.existing_secrets_manager_crn
-  resource_group_id        = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_id : data.ibm_resource_instance.existing_sm[0].resource_group_id
+  resource_group_id        = module.resource_group.resource_group_id
   region                   = var.region
   secrets_manager_name     = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
-  service_plan             = var.service_plan
-  sm_tags                  = var.secrets_manager_tags
+  sm_service_plan          = var.service_plan
+  sm_tags                  = var.secrets_manager_resource_tags
   # kms dependency
+  kms_encryption_enabled            = var.key_management_service_encryption_enabled
   existing_kms_instance_guid        = local.existing_kms_guid
   kms_key_crn                       = local.kms_key_crn
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || local.create_cross_account_auth_policy
@@ -117,53 +112,8 @@ module "secrets_manager" {
   existing_en_instance_crn         = var.existing_event_notifications_instance_crn
   skip_en_iam_authorization_policy = var.skip_event_notifications_iam_authorization_policy
   cbr_rules                        = var.cbr_rules
-}
-
-# Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.
-module "iam_secrets_engine" {
-  count                = var.iam_engine_enabled ? 1 : 0
-  source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
-  version              = "1.2.8"
-  region               = local.secrets_manager_region
-  iam_engine_name      = try("${local.prefix}-${var.iam_engine_name}", var.iam_engine_name)
-  secrets_manager_guid = local.secrets_manager_guid
-  endpoint_type        = "private"
-}
-
-
-# Configure an IBM Secrets Manager public certificate engine for an existing IBM Secrets Manager instance.
-module "secrets_manager_public_cert_engine" {
-  count   = var.public_cert_engine_enabled ? 1 : 0
-  source  = "terraform-ibm-modules/secrets-manager-public-cert-engine/ibm"
-  version = "1.0.2"
-  providers = {
-    ibm              = ibm
-    ibm.secret-store = ibm
-  }
-  secrets_manager_guid         = local.secrets_manager_guid
-  region                       = local.secrets_manager_region
-  internet_services_crn        = var.public_cert_engine_internet_services_crn
-  ibmcloud_cis_api_key         = var.ibmcloud_api_key
-  dns_config_name              = var.public_cert_engine_dns_provider_config_name
-  ca_config_name               = var.public_cert_engine_lets_encrypt_config_ca_name
-  acme_letsencrypt_private_key = var.acme_letsencrypt_private_key
-  service_endpoints            = "private"
-}
-
-
-# Configure an IBM Secrets Manager private certificate engine for an existing IBM Secrets Manager instance.
-module "private_secret_engine" {
-  count                     = var.private_cert_engine_enabled ? 1 : 0
-  source                    = "terraform-ibm-modules/secrets-manager-private-cert-engine/ibm"
-  version                   = "1.3.5"
-  secrets_manager_guid      = local.secrets_manager_guid
-  region                    = var.region
-  root_ca_name              = var.private_cert_engine_config_root_ca_name
-  root_ca_common_name       = var.private_cert_engine_config_root_ca_common_name
-  root_ca_max_ttl           = var.private_cert_engine_config_root_ca_max_ttl
-  intermediate_ca_name      = var.private_cert_engine_config_intermediate_ca_name
-  certificate_template_name = var.private_cert_engine_config_template_name
-  endpoint_type             = "private"
+  endpoint_type                    = var.service_endpoints
+  allowed_network                  = var.allowed_network
 }
 
 data "ibm_resource_instance" "existing_sm" {
