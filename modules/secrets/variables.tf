@@ -41,6 +41,11 @@ variable "secrets" {
       service_credentials_source_service_role_crn = optional(string)
       service_credentials_source_service_hmac     = optional(bool, false)
     })))
+    access_group_configuration = optional(object({
+      name  = optional(string)
+      roles = list(string)
+      tags  = optional(set(string), [])
+    }))
   }))
   description = "Secret Manager secrets configurations."
   default     = []
@@ -56,6 +61,13 @@ variable "secrets" {
     condition = length([
       for secret in var.secrets :
       true if(secret.secret_group_name == "default" && secret.existing_secret_group == false)
+    ]) == 0
+  }
+  validation {
+    error_message = "Invalid role set for the access group, all roles must be one of: Reader, Writer, Manager, SecretsReader, Viewer, Operator, Editor, Administrator, Service Configuration Reader, Key Manager"
+    condition = length([
+      for secret in var.secrets :
+      true if((secret.access_group_configuration != null) && (length(setintersection(secret.access_group_configuration.roles, ["Reader", "Writer", "Manager", "SecretsReader", "Viewer", "Operator", "Editor", "Administrator", "Service Configuration Reader", "Key Manager"])) == 0))
     ]) == 0
   }
 }
