@@ -156,7 +156,7 @@
                 "config_constraints": {
                   "type": "string"
                 }
-            }
+              }
             },
             {
               "key": "service_plan",
@@ -172,10 +172,7 @@
               ]
             },
             {
-              "key": "iam_engine_enabled"
-            },
-            {
-              "key": "iam_engine_name"
+              "key": "skip_iam_authorization_policy"
             },
             {
               "key": "public_cert_engine_enabled"
@@ -257,7 +254,7 @@
               "key": "skip_event_notifications_iam_authorization_policy"
             },
             {
-              "key":"cbr_rules"
+              "key": "cbr_rules"
             }
           ],
           "architecture": {
