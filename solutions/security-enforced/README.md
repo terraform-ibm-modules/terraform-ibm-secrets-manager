@@ -1,4 +1,4 @@
-# Secrets Manager fully-configurable solution
+# Secrets Manager security-enforced solution
 
 This solution supports the following:
 - Taking in an existing resource group.

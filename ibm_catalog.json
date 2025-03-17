@@ -276,6 +276,183 @@
               }
             ]
           }
+        },
+        {
+          "label": "Security-enforced",
+          "name": "security-enforced",
+          "install_type": "fullstack",
+          "working_directory": "solutions/security-enforced",
+          "compliance": {
+            "authority": "scc-v3",
+            "profiles": [
+              {
+                "profile_name": "IBM Cloud Framework for Financial Services",
+                "profile_version": "1.7.0"
+              }
+            ]
+          },
+          "configuration": [
+            {
+              "key": "ibmcloud_api_key"
+            },
+            {
+              "key": "region",
+              "required": true,
+              "options": [
+                {
+                  "displayname": "Osaka (jp-osa)",
+                  "value": "jp-osa"
+                },
+                {
+                  "displayname": "Sydney (au-syd)",
+                  "value": "au-syd"
+                },
+                {
+                  "displayname": "Tokyo (jp-tok)",
+                  "value": "jp-tok"
+                },
+                {
+                  "displayname": "Frankfurt (eu-de)",
+                  "value": "eu-de"
+                },
+                {
+                  "displayname": "London (eu-gb)",
+                  "value": "eu-gb"
+                },
+                {
+                  "displayname": "Madrid (eu-es)",
+                  "value": "eu-es"
+                },
+                {
+                  "displayname": "Dallas (us-south)",
+                  "value": "us-south"
+                },
+                {
+                  "displayname": "Toronto (ca-tor)",
+                  "value": "ca-tor"
+                },
+                {
+                  "displayname": "Washington DC (us-east)",
+                  "value": "us-east"
+                },
+                {
+                  "displayname": "Sao Paulo (br-sao)",
+                  "value": "br-sao"
+                }
+              ]
+            },
+            {
+              "key": "prefix",
+              "required": true,
+              "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
+            },
+            {
+              "key": "existing_kms_instance_crn",
+              "required": true
+            },
+            {
+              "key": "secrets_manager_instance_name"
+            },
+            {
+              "key": "existing_secrets_manager_crn"
+            },
+            {
+              "key": "secrets_manager_resource_tags",
+              "custom_config": {
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "type": "string"
+                }
+            }
+            },
+            {
+              "key": "service_plan",
+              "options": [
+                {
+                  "displayname": "Standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "Trial",
+                  "value": "trial"
+                }
+              ]
+            },
+            {
+              "key": "existing_resource_group_name"
+            },
+            {
+              "key": "key_management_service_encryption_enabled"
+            },
+            {
+              "key": "existing_secrets_manager_kms_key_crn"
+            },
+            {
+              "key": "skip_kms_iam_authorization_policy"
+            },
+            {
+              "key": "ibmcloud_kms_api_key"
+            },
+            {
+              "key": "kms_key_ring_name"
+            },
+            {
+              "key": "kms_key_name"
+            },
+            {
+              "key": "enable_event_notifications"
+            },
+            {
+              "key": "event_notifications_email_list"
+            },
+            {
+              "key": "event_notifications_from_email"
+            },
+            {
+              "key": "event_notifications_reply_to_email"
+            },
+            {
+              "key": "existing_event_notifications_instance_crn"
+            },
+            {
+              "key": "skip_event_notifications_iam_authorization_policy"
+            },
+            {
+              "key":"cbr_rules"
+            }
+          ],
+          "architecture": {
+            "descriptions": "This architecture supports creating and configuring a Secrets Manager instance.",
+            "features": [
+              {
+                "title": "Creates a Secrets Manager instance.",
+                "description": "Creates and configures an IBM Secrets Manager instance."
+              },
+              {
+                "title": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance.",
+                "description": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance."
+              },
+              {
+                "title": "Sets up authorization policy.",
+                "description": "Sets up IBM IAM authorization policy between IBM Secrets Manager instance and IBM Key Management Service (KMS) instance. It also supports Event Notification authorization policy."
+              },
+              {
+                "title": "Configures lifecycle notifications for the Secrets Manager instance.",
+                "description": "Configures lifecycle notifications for the IBM Secrets Manager instance by connecting an IBM Event Notifications service. The DA supports optionally creating a KMS key ring and key, or using an already existing one to encrypt data."
+              }
+            ],
+            "diagrams": [
+              {
+                "diagram": {
+                  "caption": "Secrets Manager",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architecture/secrets_manager.svg",
+                  "type": "image/svg+xml"
+                },
+                "description": "This architecture supports creating and configuring IBM Secrets Manager instance."
+              }
+            ]
+          }
         }
       ]
     }

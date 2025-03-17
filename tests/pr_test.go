@@ -19,6 +19,7 @@ import (
 const completeExampleTerraformDir = "examples/complete"
 const fscloudExampleTerraformDir = "examples/fscloud"
 const fullyConfigurableTerraformDir = "solutions/fully-configurable"
+const securityEnforcedTerraformDir = "solutions/security-enforced"
 
 const resourceGroup = "geretain-test-scc-module"
 
@@ -159,13 +160,107 @@ func TestRunSecretsManagerFullyConfigurableUpgradeSchematic(t *testing.T) {
 		TarIncludePatterns: []string{
 			"*.tf",
 			fmt.Sprintf("%s/*.tf", fullyConfigurableTerraformDir),
-			fmt.Sprintf("%s/*.tf", fullyConfigurableTerraformDir),
 			fmt.Sprintf("%s/*.tf", "modules/secrets"),
 			fmt.Sprintf("%s/*.tf", "modules/fscloud"),
 		},
 		TemplateFolder:         fullyConfigurableTerraformDir,
 		ResourceGroup:          resourceGroup,
 		Prefix:                 "sm-fc-ug",
+		Tags:                   []string{"test-schematic"},
+		DeleteWorkspaceOnFail:  false,
+		WaitJobCompleteMinutes: 60,
+	})
+
+	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+		{Name: "prefix", Value: options.Prefix, DataType: "string"},
+		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
+		{Name: "existing_resource_group_name", Value: "geretain-test-secrets-manager", DataType: "string"},
+		{Name: "service_plan", Value: "trial", DataType: "string"},
+		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+		{Name: "public_engine_enabled", Value: true, DataType: "bool"},
+		{Name: "private_engine_enabled", Value: true, DataType: "bool"},
+		{Name: "cis_id", Value: permanentResources["cisInstanceId"], DataType: "string"},
+		{Name: "ca_name", Value: permanentResources["certificateAuthorityName"], DataType: "string"},
+		{Name: "dns_provider_name", Value: permanentResources["dnsProviderName"], DataType: "string"},
+		{Name: "acme_letsencrypt_private_key", Value: *acme_letsencrypt_private_key, DataType: "string"},
+	}
+
+	err := options.RunSchematicUpgradeTest()
+	if !options.UpgradeTestSkipped {
+		assert.Nil(t, err, "This should not have errored")
+	}
+}
+
+func TestRunSecurityEnforcedSchematics(t *testing.T) {
+	t.Parallel()
+
+	acme_letsencrypt_private_key := GetSecretsManagerKey( // pragma: allowlist secret
+		permanentResources["acme_letsencrypt_private_key_sm_id"].(string),
+		permanentResources["acme_letsencrypt_private_key_sm_region"].(string),
+		permanentResources["acme_letsencrypt_private_key_secret_id"].(string),
+	)
+
+	// Set up a schematics test
+	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+		Testing: t,
+		TarIncludePatterns: []string{
+			"*.tf",
+			fmt.Sprintf("%s/*.tf", securityEnforcedTerraformDir),
+			fmt.Sprintf("%s/*.tf", fullyConfigurableTerraformDir),
+			fmt.Sprintf("%s/*.tf", fscloudExampleTerraformDir),
+			fmt.Sprintf("%s/*.tf", "modules/secrets"),
+			fmt.Sprintf("%s/*.tf", "modules/fscloud"),
+		},
+		TemplateFolder:         securityEnforcedTerraformDir,
+		ResourceGroup:          resourceGroup,
+		Prefix:                 "sm-se",
+		Tags:                   []string{"test-schematic"},
+		DeleteWorkspaceOnFail:  false,
+		WaitJobCompleteMinutes: 60,
+	})
+
+	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+		{Name: "prefix", Value: options.Prefix, DataType: "string"},
+		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
+		{Name: "existing_resource_group_name", Value: "geretain-test-secrets-manager", DataType: "string"},
+		{Name: "service_plan", Value: "trial", DataType: "string"},
+		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+		{Name: "public_engine_enabled", Value: true, DataType: "bool"},
+		{Name: "private_engine_enabled", Value: true, DataType: "bool"},
+		{Name: "cis_id", Value: permanentResources["cisInstanceId"], DataType: "string"},
+		{Name: "ca_name", Value: permanentResources["certificateAuthorityName"], DataType: "string"},
+		{Name: "dns_provider_name", Value: permanentResources["dnsProviderName"], DataType: "string"},
+		{Name: "acme_letsencrypt_private_key", Value: *acme_letsencrypt_private_key, DataType: "string"},
+	}
+
+	err := options.RunSchematicTest()
+	assert.NoError(t, err, "Schematic Test had unexpected error")
+}
+
+func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
+	t.Parallel()
+
+	acme_letsencrypt_private_key := GetSecretsManagerKey( // pragma: allowlist secret
+		permanentResources["acme_letsencrypt_private_key_sm_id"].(string),
+		permanentResources["acme_letsencrypt_private_key_sm_region"].(string),
+		permanentResources["acme_letsencrypt_private_key_secret_id"].(string),
+	)
+
+	// Set up a schematics test
+	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+		Testing: t,
+		TarIncludePatterns: []string{
+			"*.tf",
+			fmt.Sprintf("%s/*.tf", securityEnforcedTerraformDir),
+			fmt.Sprintf("%s/*.tf", fullyConfigurableTerraformDir),
+			fmt.Sprintf("%s/*.tf", "modules/secrets"),
+			fmt.Sprintf("%s/*.tf", "modules/fscloud"),
+		},
+		TemplateFolder:         securityEnforcedTerraformDir,
+		ResourceGroup:          resourceGroup,
+		Prefix:                 "sm-se-ug",
 		Tags:                   []string{"test-schematic"},
 		DeleteWorkspaceOnFail:  false,
 		WaitJobCompleteMinutes: 60,
