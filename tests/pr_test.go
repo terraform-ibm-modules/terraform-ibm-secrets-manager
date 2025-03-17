@@ -193,7 +193,6 @@ func TestRunSecretsManagerFullyConfigurableUpgradeSchematic(t *testing.T) {
 }
 
 func TestRunSecurityEnforcedSchematics(t *testing.T) {
-	t.Parallel()
 
 	acme_letsencrypt_private_key := GetSecretsManagerKey( // pragma: allowlist secret
 		permanentResources["acme_letsencrypt_private_key_sm_id"].(string),
@@ -240,7 +239,6 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 }
 
 func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
-	t.Parallel()
 
 	acme_letsencrypt_private_key := GetSecretsManagerKey( // pragma: allowlist secret
 		permanentResources["acme_letsencrypt_private_key_sm_id"].(string),
