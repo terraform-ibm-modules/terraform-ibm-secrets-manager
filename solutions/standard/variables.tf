@@ -186,12 +186,6 @@ variable "existing_secrets_manager_kms_key_crn" {
 # KMS properties required when creating an encryption key, rather than passing an existing key CRN.
 ########################################################################################################################
 
-variable "kms_encryption_enabled" {
-  type        = bool
-  description = "Set this to true to control the encryption keys used to encrypt the data that you store in Secrets Manager. If set to false, the data that you store is encrypted at rest by using envelope encryption. For more details, see https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-mng-data&interface=ui#about-encryption."
-  default     = true
-}
-
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
