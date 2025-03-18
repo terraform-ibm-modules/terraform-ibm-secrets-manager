@@ -94,7 +94,7 @@ module "kms_key_crn_parser" {
 }
 
 # Create auth policy (scoped to exact KMS key)
-resource "ibm_iam_authorization_policy" "secrets_manager_kms_policy" {
+resource "ibm_iam_authorization_policy" "kms_policy" {
   count                    = local.create_kms_auth_policy ? 1 : 0
   source_service_name      = "secrets-manager"
   source_resource_group_id = var.resource_group_id
@@ -136,7 +136,7 @@ resource "ibm_iam_authorization_policy" "secrets_manager_kms_policy" {
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
 resource "time_sleep" "wait_for_sm_kms_authorization_policy" {
   count      = var.existing_sm_instance_crn == null ? 1 : 0
-  depends_on = [ibm_iam_authorization_policy.secrets_manager_kms_policy, ibm_iam_authorization_policy.en_policy]
+  depends_on = [ibm_iam_authorization_policy.kms_policy, ibm_iam_authorization_policy.en_policy]
 
   create_duration = "30s"
 }
@@ -149,7 +149,7 @@ resource "ibm_iam_authorization_policy" "secrets_manager_hpcs_policy" {
   target_service_name         = local.kms_service_name
   target_resource_instance_id = local.kms_instance_guid
   roles                       = ["Viewer"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} to read from the ${local.kms_service_name} instance GUID ${local.kms_instance_guid}."
+  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} viewer access to the ${local.kms_service_name} instance GUID ${local.kms_instance_guid}."
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
