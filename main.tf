@@ -52,9 +52,25 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
   }
 }
 
-#######################################################################################################################
-# KMS Key
-#######################################################################################################################
+# Create IAM credentials engine using s2s auth
+resource "ibm_iam_authorization_policy" "iam_identity_policy" {
+  count                       = var.skip_iam_authorization_policy ? 0 : 1
+  source_service_name         = "secrets-manager"
+  source_resource_instance_id = local.secrets_manager_guid
+  target_service_name         = "iam-identity"
+  roles                       = ["Operator"]
+  description                 = "Allows Secrets Manager instance ${local.secrets_manager_guid} `Operator` access to the IAM Identity service to enable creating IAM credentials."
+}
+
+resource "ibm_iam_authorization_policy" "iam_groups_policy" {
+  count                       = var.skip_iam_authorization_policy ? 0 : 1
+  source_service_name         = "secrets-manager"
+  source_resource_instance_id = local.secrets_manager_guid
+  target_service_name         = "iam-groups"
+  roles                       = ["Groups Service Member Manage"]
+  description                 = "Allows Secrets Manager instance ${local.secrets_manager_guid} `Groups Service Member Manage` access to the IAM Groups service to enable creating IAM credentials."
+}
+
 locals {
   create_kms_auth_policy  = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy && var.existing_sm_instance_crn == null
   create_hpcs_auth_policy = local.create_kms_auth_policy == true && local.kms_service_name == "hs-crypto" ? 1 : 0
