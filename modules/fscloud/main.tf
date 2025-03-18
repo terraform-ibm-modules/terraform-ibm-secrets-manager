@@ -9,7 +9,6 @@ module "secrets_manager" {
   allowed_network                   = "private-only"
   endpoint_type                     = "private"
   kms_encryption_enabled            = true
-  existing_kms_instance_guid        = var.existing_kms_instance_guid
   enable_event_notification         = var.enable_event_notification
   existing_en_instance_crn          = var.existing_en_instance_crn
   skip_en_iam_authorization_policy  = var.skip_en_iam_authorization_policy

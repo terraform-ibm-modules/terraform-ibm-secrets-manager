@@ -6,11 +6,9 @@
 locals {
   # Validation (approach based on https://github.com/hashicorp/terraform/issues/25609#issuecomment-1057614400)
   # tflint-ignore: terraform_unused_declarations
-  validate_kms_values = (!var.kms_encryption_enabled && var.kms_key_crn != null && var.existing_sm_instance_crn == null) ? tobool("When passing values for var.kms_key_crn, you must set 'kms_encryption_enabled' to true. Otherwise set 'kms_encryption_enabled' to false to use default encryption") : (!var.kms_encryption_enabled && var.existing_kms_instance_guid != null) ? tobool("When passing values for var.existing_kms_instance_guid, you must set var.kms_encryption_enabled to true. Otherwise unset them to use default encryption") : true
-  # tflint-ignore: terraform_unused_declarations
   validate_kms_vars = var.kms_encryption_enabled && var.kms_key_crn == null && var.existing_sm_instance_crn == null ? tobool("When setting var.kms_encryption_enabled to true, a value must be passed for var.kms_key_crn") : true
   # tflint-ignore: terraform_unused_declarations
-  validate_auth_policy = var.kms_encryption_enabled && var.skip_kms_iam_authorization_policy == false && var.existing_kms_instance_guid == null && var.existing_sm_instance_crn == null ? tobool("When var.skip_kms_iam_authorization_policy is set to false, and var.kms_encryption_enabled to true, a value must be passed for var.existing_kms_instance_guid in order to create the auth policy.") : true
+  validate_auth_policy = var.kms_encryption_enabled && var.skip_kms_iam_authorization_policy == false && var.kms_key_crn == null && var.existing_sm_instance_crn == null ? tobool("When var.skip_kms_iam_authorization_policy is set to false, and var.kms_encryption_enabled to true, a value must be passed for var.kms_key_crn in order to create the auth policy.") : true
   # tflint-ignore: terraform_unused_declarations
   validate_event_notification = var.enable_event_notification && var.existing_en_instance_crn == null ? tobool("When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn") : true
   # tflint-ignore: terraform_unused_declarations
@@ -43,7 +41,7 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
   tags              = var.sm_tags
   parameters = {
     "allowed_network" = var.allowed_network
-    "kms_instance"    = var.existing_kms_instance_guid
+    "kms_instance"    = var.kms_instance_guid
     "kms_key"         = var.kms_key_crn
   }
 
@@ -71,6 +69,9 @@ resource "ibm_iam_authorization_policy" "iam_groups_policy" {
   description                 = "Allows Secrets Manager instance ${local.secrets_manager_guid} `Groups Service Member Manage` access to the IAM Groups service to enable creating IAM credentials."
 }
 
+#######################################################################################################################
+# KMS Key
+#######################################################################################################################
 locals {
   create_kms_auth_policy  = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy && var.existing_sm_instance_crn == null
   create_hpcs_auth_policy = local.create_kms_auth_policy == true && local.kms_service_name == "hs-crypto" ? 1 : 0
