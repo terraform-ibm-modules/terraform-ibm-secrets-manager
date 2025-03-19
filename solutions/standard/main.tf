@@ -100,15 +100,14 @@ locals {
 }
 
 module "secrets_manager" {
-  depends_on                    = [time_sleep.wait_for_authorization_policy]
-  source                        = "../../modules/fscloud"
-  existing_sm_instance_crn      = var.existing_secrets_manager_crn
-  resource_group_id             = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_id : data.ibm_resource_instance.existing_sm[0].resource_group_id
-  region                        = var.region
-  secrets_manager_name          = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
-  service_plan                  = var.service_plan
-  sm_tags                       = var.secrets_manager_tags
-  skip_iam_authorization_policy = var.skip_iam_authorization_policy
+  depends_on               = [time_sleep.wait_for_authorization_policy]
+  source                   = "../../modules/fscloud"
+  existing_sm_instance_crn = var.existing_secrets_manager_crn
+  resource_group_id        = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_id : data.ibm_resource_instance.existing_sm[0].resource_group_id
+  region                   = var.region
+  secrets_manager_name     = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
+  service_plan             = var.service_plan
+  sm_tags                  = var.secrets_manager_tags
   # kms dependency
   existing_kms_instance_guid        = local.existing_kms_guid
   kms_key_crn                       = local.kms_key_crn
@@ -119,6 +118,18 @@ module "secrets_manager" {
   skip_en_iam_authorization_policy = var.skip_event_notifications_iam_authorization_policy
   cbr_rules                        = var.cbr_rules
 }
+
+# Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.
+module "iam_secrets_engine" {
+  count                = var.iam_engine_enabled ? 1 : 0
+  source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
+  version              = "1.2.8"
+  region               = local.secrets_manager_region
+  iam_engine_name      = try("${local.prefix}-${var.iam_engine_name}", var.iam_engine_name)
+  secrets_manager_guid = local.secrets_manager_guid
+  endpoint_type        = "private"
+}
+
 
 # Configure an IBM Secrets Manager public certificate engine for an existing IBM Secrets Manager instance.
 module "secrets_manager_public_cert_engine" {
