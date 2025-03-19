@@ -8,13 +8,15 @@ module "secrets_manager" {
   secrets_manager_instance_name                     = var.secrets_manager_instance_name
   existing_secrets_manager_crn                      = var.existing_secrets_manager_crn
   service_plan                                      = var.service_plan
+  skip_iam_authorization_policy                     = var.skip_iam_authorization_policy
   secrets_manager_resource_tags                     = var.secrets_manager_resource_tags
-  service_endpoints                                 = "private"
+  secrets_manager_endpoint_type                     = "private"
   allowed_network                                   = "private-only"
   skip_kms_iam_authorization_policy                 = var.skip_kms_iam_authorization_policy
   existing_secrets_manager_kms_key_crn              = var.existing_secrets_manager_kms_key_crn
-  key_management_service_encryption_enabled         = var.key_management_service_encryption_enabled
+  kms_encryption_enabled                            = true
   existing_kms_instance_crn                         = var.existing_kms_instance_crn
+  force_delete_kms_key                              = var.force_delete_kms_key
   kms_endpoint_type                                 = "private"
   kms_key_ring_name                                 = var.kms_key_ring_name
   kms_key_name                                      = var.kms_key_name
@@ -25,5 +27,5 @@ module "secrets_manager" {
   event_notifications_email_list                    = var.event_notifications_email_list
   event_notifications_from_email                    = var.event_notifications_from_email
   event_notifications_reply_to_email                = var.event_notifications_reply_to_email
-  cbr_rules                                         = var.cbr_rules
+  secrets_manager_cbr_rules                         = var.secrets_manager_cbr_rules
 }

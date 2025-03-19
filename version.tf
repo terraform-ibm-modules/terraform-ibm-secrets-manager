@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= v1.9.0"
+  required_version = ">= v1.0.0"
   required_providers {
     # Use "greater than or equal to" range in modules
     ibm = {

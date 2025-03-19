@@ -4,7 +4,7 @@
 
 variable "ibmcloud_api_key" {
   type        = string
-  description = "The API Key to use for IBM Cloud."
+  description = "The IBM Cloud API key used to provision resources."
   sensitive   = true
 }
 
@@ -21,7 +21,7 @@ variable "provider_visibility" {
 
 variable "existing_resource_group_name" {
   type        = string
-  description = "Name of the existing resource group."
+  description = "The name of an existing resource group to provision resource in."
 }
 
 variable "region" {
@@ -41,7 +41,7 @@ variable "prefix" {
 
 variable "secrets_manager_instance_name" {
   type        = string
-  description = "The name to give the Secrets Manager instance provisioned by this solution. If a prefix input variable is specified, it is added to the value in the `<prefix>-value` format."
+  description = "The name to give the Secrets Manager instance provisioned by this solution. If a prefix input variable is specified, it is added to the value in the `<prefix>-value` format. Applies only if `existing_secrets_manager_crn` is not provided."
   default     = "secrets-manager"
 }
 
@@ -61,18 +61,24 @@ variable "service_plan" {
   }
 }
 
+variable "skip_iam_authorization_policy" {
+  type        = bool
+  description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine. If set to false, policies will be created that grants the Secrets Manager instance 'Operator' access to the IAM identity service, and 'Groups Service Member Manage' access to the IAM groups service."
+  default     = false
+}
+
 variable "secrets_manager_resource_tags" {
   type        = list(any)
-  description = "The list of resource tags you want to associate with your Secrets Manager instance."
+  description = "The list of resource tags you want to associate with your Secrets Manager instance. Applies only if `existing_secrets_manager_crn` is not provided."
   default     = []
 }
 
-variable "service_endpoints" {
+variable "secrets_manager_endpoint_type" {
   type        = string
   description = "The type of endpoint (public or private) to connect to the Secrets Manager API. The Terraform provider uses this endpoint type to interact with the Secrets Manager API and configure Event Notifications."
   default     = "private"
   validation {
-    condition     = contains(["public", "private"], var.service_endpoints)
+    condition     = contains(["public", "private"], var.secrets_manager_endpoint_type)
     error_message = "The specified service endpoint is not a valid selection!"
   }
 }
@@ -80,7 +86,7 @@ variable "service_endpoints" {
 variable "allowed_network" {
   type        = string
   description = "The types of service endpoints to set on the Secrets Manager instance. Possible values are `private-only` or `public-and-private`."
-  default     = "public-and-private"
+  default     = "private-only"
   validation {
     condition     = contains(["private-only", "public-and-private"], var.allowed_network)
     error_message = "The specified allowed_network is not a valid selection!"
@@ -107,10 +113,30 @@ variable "existing_secrets_manager_kms_key_crn" {
 # KMS properties required when creating an encryption key, rather than passing an existing key CRN.
 ########################################################################################################################
 
-variable "key_management_service_encryption_enabled" {
+variable "kms_encryption_enabled" {
   type        = bool
-  description = "Set to true to enable Secrets Manager Secrets Encryption."
-  default     = true
+  description = "Set to true to enable Secrets Manager Secrets Encryption using customer managed keys. When set to true, a value must be passed for `existing_kms_instance_crn`. Cannot be set to true if passing a value for `existing_secrets_manager_crn` or `existing_secrets_manager_kms_key_crn`."
+  default     = false
+
+  validation {
+    condition     = var.kms_encryption_enabled ? var.existing_secrets_manager_crn == null : true
+    error_message = "'kms_encryption_enabled' should be false if passing a value for 'existing_secrets_manager_crn'."
+  }
+
+  validation {
+    condition     = var.kms_encryption_enabled ? var.existing_secrets_manager_kms_key_crn == null : true
+    error_message = "'kms_encryption_enabled' should be false if passing a value for 'existing_secrets_manager_kms_key_crn'."
+  }
+
+  validation {
+    condition     = var.existing_kms_instance_crn != null ? var.kms_encryption_enabled : true
+    error_message = "If passing a value for 'existing_kms_instance_crn', you should set 'kms_encryption_enabled' to true."
+  }
+
+  validation {
+    condition     = var.kms_encryption_enabled ? (var.existing_kms_instance_crn != null ? true : false) : true
+    error_message = "An 'existing_kms_instance_crn' is required if 'kms_encryption_enabled_bucket' is set to true."
+  }
 }
 
 variable "existing_kms_instance_crn" {
@@ -119,9 +145,15 @@ variable "existing_kms_instance_crn" {
   description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Required only if `existing_secrets_manager_crn` or `existing_secrets_manager_kms_key_crn` is not specified. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`."
 }
 
+variable "force_delete_kms_key" {
+  type        = bool
+  default     = false
+  description = "If creating a new KMS key, toggle whether it should be force deleted or not on undeploy."
+}
+
 variable "kms_endpoint_type" {
   type        = string
-  description = "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
+  description = "The endpoint for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
   default     = "private"
   validation {
     condition     = can(regex("public|private", var.kms_endpoint_type))
@@ -197,7 +229,7 @@ variable "event_notifications_reply_to_email" {
 # Context-based restriction (CBR)
 ##############################################################
 
-variable "cbr_rules" {
+variable "secrets_manager_cbr_rules" {
   type = list(object({
     description = string
     account_id  = string

@@ -4,13 +4,13 @@
 
 variable "ibmcloud_api_key" {
   type        = string
-  description = "The API Key to use for IBM Cloud."
+  description = "The IBM Cloud API key used to provision resources."
   sensitive   = true
 }
 
 variable "existing_resource_group_name" {
   type        = string
-  description = "Name of the existing resource group."
+  description = "The name of an existing resource group to provision resource in."
 }
 
 variable "region" {
@@ -30,7 +30,7 @@ variable "prefix" {
 
 variable "secrets_manager_instance_name" {
   type        = string
-  description = "The name to give the Secrets Manager instance provisioned by this solution. If a prefix input variable is specified, it is added to the value in the `<prefix>-value` format."
+  description = "The name to give the Secrets Manager instance provisioned by this solution. If a prefix input variable is specified, it is added to the value in the `<prefix>-value` format. Applies only if `existing_secrets_manager_crn` is not provided."
   default     = "secrets-manager"
 }
 
@@ -50,9 +50,15 @@ variable "service_plan" {
   }
 }
 
+variable "skip_iam_authorization_policy" {
+  type        = bool
+  description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine. If set to false, policies will be created that grants the Secrets Manager instance 'Operator' access to the IAM identity service, and 'Groups Service Member Manage' access to the IAM groups service."
+  default     = false
+}
+
 variable "secrets_manager_resource_tags" {
   type        = list(any)
-  description = "The list of resource tags you want to associate with your Secrets Manager instance."
+  description = "The list of resource tags you want to associate with your Secrets Manager instance. Applies only if `existing_secrets_manager_crn` is not provided."
   default     = []
 }
 
@@ -76,16 +82,16 @@ variable "existing_secrets_manager_kms_key_crn" {
 # KMS properties required when creating an encryption key, rather than passing an existing key CRN.
 ########################################################################################################################
 
-variable "key_management_service_encryption_enabled" {
-  type        = bool
-  description = "Set to true to enable Secrets Manager Secrets Encryption."
-  default     = true
-}
-
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
   description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Required only if `existing_secrets_manager_crn` or `existing_secrets_manager_kms_key_crn` is not specified. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`."
+}
+
+variable "force_delete_kms_key" {
+  type        = bool
+  default     = false
+  description = "If creating a new KMS key, toggle whether it should be force deleted or not on undeploy."
 }
 
 variable "kms_key_ring_name" {
@@ -156,7 +162,7 @@ variable "event_notifications_reply_to_email" {
 # Context-based restriction (CBR)
 ##############################################################
 
-variable "cbr_rules" {
+variable "secrets_manager_cbr_rules" {
   type = list(object({
     description = string
     account_id  = string

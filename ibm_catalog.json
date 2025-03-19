@@ -45,7 +45,7 @@
       "support_details": "This product is in the community registry, as such support is handled through the originated repo. If you experience issues please open an issue in that repository [https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/issues](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/issues). Please note this product is not supported via the IBM Cloud Support Center.",
       "flavors": [
         {
-          "label": "Fully-configurable",
+          "label": "Fully configurable",
           "name": "fully-configurable",
           "install_type": "fullstack",
           "working_directory": "solutions/fully-configurable",
@@ -164,6 +164,9 @@
               ]
             },
             {
+              "key": "skip_iam_authorization_policy"
+            },
+            {
               "key": "allowed_network",
               "options": [
                 {
@@ -180,10 +183,10 @@
               "key": "existing_resource_group_name"
             },
             {
-              "key": "key_management_service_encryption_enabled"
+              "key": "kms_encryption_enabled"
             },
             {
-              "key": "service_endpoints",
+              "key": "secrets_manager_endpoint_type",
               "options": [
                 {
                   "displayname": "public",
@@ -224,6 +227,9 @@
               "key": "kms_key_name"
             },
             {
+              "key": "force_delete_kms_key"
+            },
+            {
               "key": "enable_event_notifications"
             },
             {
@@ -242,27 +248,55 @@
               "key": "skip_event_notifications_iam_authorization_policy"
             },
             {
-              "key":"cbr_rules"
+              "key": "secrets_manager_cbr_rules"
             }
           ],
           "architecture": {
             "descriptions": "This architecture supports creating and configuring a Secrets Manager instance.",
             "features": [
               {
-                "title": "Creates a Secrets Manager instance.",
-                "description": "Creates and configures an IBM Secrets Manager instance."
+                "title": "Secrets manager instance creation",
+                "description": "Yes"
               },
               {
-                "title": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance.",
-                "description": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance."
+                "title": "Use existing secrets manager instance",
+                "description": "Yes"
               },
               {
-                "title": "Sets up authorization policy.",
-                "description": "Sets up IBM IAM authorization policy between IBM Secrets Manager instance and IBM Key Management Service (KMS) instance. It also supports Event Notification authorization policy."
+                "title": "New resource group creation",
+                "description": "No"
               },
               {
-                "title": "Configures lifecycle notifications for the Secrets Manager instance.",
-                "description": "Configures lifecycle notifications for the IBM Secrets Manager instance by connecting an IBM Event Notifications service. The DA supports optionally creating a KMS key ring and key, or using an already existing one to encrypt data."
+                "title": "Use existing resource group",
+                "description": "Yes"
+              },
+              {
+                "title": "Enforced private-only endpoint communication",
+                "description": "Yes"
+              },
+              {
+                "title": "Enforced KMS encryption",
+                "description": "Yes"
+              },
+              {
+                "title": "KMS instance creation",
+                "description": "No"
+              },
+              {
+                "title": "KMS key ring and key creation",
+                "description": "Yes"
+              },
+              {
+                "title": "Use existing KMS key",
+                "description": "Yes"
+              },
+              {
+                "title": "IAM s2s auth policies creation",
+                "description": "Yes"
+              },
+              {
+                "title": "Event Notifications integration",
+                "description": "Yes"
               }
             ],
             "diagrams": [
@@ -380,10 +414,10 @@
               ]
             },
             {
-              "key": "existing_resource_group_name"
+              "key": "skip_iam_authorization_policy"
             },
             {
-              "key": "key_management_service_encryption_enabled"
+              "key": "existing_resource_group_name"
             },
             {
               "key": "existing_secrets_manager_kms_key_crn"
@@ -399,6 +433,9 @@
             },
             {
               "key": "kms_key_name"
+            },
+            {
+              "key": "force_delete_kms_key"
             },
             {
               "key": "enable_event_notifications"
@@ -419,27 +456,55 @@
               "key": "skip_event_notifications_iam_authorization_policy"
             },
             {
-              "key":"cbr_rules"
+              "key": "secrets_manager_cbr_rules"
             }
           ],
           "architecture": {
             "descriptions": "This architecture supports creating and configuring a Secrets Manager instance.",
             "features": [
               {
-                "title": "Creates a Secrets Manager instance.",
-                "description": "Creates and configures an IBM Secrets Manager instance."
+                "title": "Secrets manager instance creation",
+                "description": "Yes"
               },
               {
-                "title": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance.",
-                "description": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance."
+                "title": "Use existing secrets manager instance",
+                "description": "Yes"
               },
               {
-                "title": "Sets up authorization policy.",
-                "description": "Sets up IBM IAM authorization policy between IBM Secrets Manager instance and IBM Key Management Service (KMS) instance. It also supports Event Notification authorization policy."
+                "title": "New resource group creation",
+                "description": "No"
               },
               {
-                "title": "Configures lifecycle notifications for the Secrets Manager instance.",
-                "description": "Configures lifecycle notifications for the IBM Secrets Manager instance by connecting an IBM Event Notifications service. The DA supports optionally creating a KMS key ring and key, or using an already existing one to encrypt data."
+                "title": "Use existing resource group",
+                "description": "Yes"
+              },
+              {
+                "title": "Enforced private-only endpoint communication",
+                "description": "Yes"
+              },
+              {
+                "title": "Enforced KMS encryption",
+                "description": "Yes"
+              },
+              {
+                "title": "KMS instance creation",
+                "description": "No"
+              },
+              {
+                "title": "KMS key ring and key creation",
+                "description": "Yes"
+              },
+              {
+                "title": "Use existing KMS key",
+                "description": "Yes"
+              },
+              {
+                "title": "IAM s2s auth policies creation",
+                "description": "Yes"
+              },
+              {
+                "title": "Event Notifications integration",
+                "description": "Yes"
               }
             ],
             "diagrams": [

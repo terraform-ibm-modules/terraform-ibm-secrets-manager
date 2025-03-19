@@ -1,6 +1,6 @@
 output "resource_group_name" {
   description = "Resource group name"
-  value       = var.existing_resource_group_name
+  value       = module.resource_group.resource_group_name
 }
 
 output "resource_group_id" {

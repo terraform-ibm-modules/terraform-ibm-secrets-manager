@@ -57,7 +57,7 @@ module "kms" {
   providers = {
     ibm = ibm.kms
   }
-  count                       = (var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null) ? 0 : (var.key_management_service_encryption_enabled == false ? 0 : 1) # no need to create any KMS resources if passing an existing key, or bucket
+  count                       = (var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null) ? 0 : (var.kms_encryption_enabled == false ? 0 : 1) # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
   version                     = "4.20.0"
   create_key_protect_instance = false
@@ -75,7 +75,7 @@ module "kms" {
           standard_key             = false
           rotation_interval_month  = 3
           dual_auth_delete_enabled = false
-          force_delete             = true
+          force_delete             = var.force_delete_kms_key
         }
       ]
     }
@@ -94,16 +94,17 @@ locals {
 }
 
 module "secrets_manager" {
-  depends_on               = [time_sleep.wait_for_authorization_policy]
-  source                   = "../.."
-  existing_sm_instance_crn = var.existing_secrets_manager_crn
-  resource_group_id        = module.resource_group.resource_group_id
-  region                   = var.region
-  secrets_manager_name     = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
-  sm_service_plan          = var.service_plan
-  sm_tags                  = var.secrets_manager_resource_tags
+  depends_on                    = [time_sleep.wait_for_authorization_policy]
+  source                        = "../.."
+  existing_sm_instance_crn      = var.existing_secrets_manager_crn
+  resource_group_id             = module.resource_group.resource_group_id
+  region                        = var.region
+  secrets_manager_name          = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
+  sm_service_plan               = var.service_plan
+  sm_tags                       = var.secrets_manager_resource_tags
+  skip_iam_authorization_policy = var.skip_iam_authorization_policy
   # kms dependency
-  kms_encryption_enabled            = var.key_management_service_encryption_enabled
+  kms_encryption_enabled            = var.kms_encryption_enabled
   existing_kms_instance_guid        = local.existing_kms_guid
   kms_key_crn                       = local.kms_key_crn
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || local.create_cross_account_auth_policy
@@ -111,8 +112,8 @@ module "secrets_manager" {
   enable_event_notification        = var.enable_event_notifications
   existing_en_instance_crn         = var.existing_event_notifications_instance_crn
   skip_en_iam_authorization_policy = var.skip_event_notifications_iam_authorization_policy
-  cbr_rules                        = var.cbr_rules
-  endpoint_type                    = var.service_endpoints
+  cbr_rules                        = var.secrets_manager_cbr_rules
+  endpoint_type                    = var.secrets_manager_endpoint_type
   allowed_network                  = var.allowed_network
 }
 
@@ -150,7 +151,7 @@ resource "ibm_en_topic" "en_topic" {
   count         = var.existing_secrets_manager_crn == null && var.enable_event_notifications ? 1 : 0
   depends_on    = [time_sleep.wait_for_secrets_manager]
   instance_guid = local.existing_en_guid
-  name          = "Secrets Manager Topic"
+  name          = "Topic for SCC instance ${module.secrets_manager.secrets_manager_guid}"
   description   = "Topic for Secrets Manager events routing"
   sources {
     id = local.secrets_manager_crn
