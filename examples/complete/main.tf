@@ -84,6 +84,9 @@ module "secrets_manager" {
           service_credentials_source_service_role_crn = "crn:v1:bluemix:public:event-notifications::::serviceRole:Event-Notification-Publisher"
         }
       ]
+      access_group_configuration = {
+        roles = ["SecretsReader"]
+      }
     },
     {
       secret_group_name     = "default"
@@ -94,6 +97,9 @@ module "secrets_manager" {
         secret_payload_password = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].key_id
         }
       ]
+      access_group_configuration = {
+        roles = ["SecretsReader"]
+      }
     }
   ]
 }

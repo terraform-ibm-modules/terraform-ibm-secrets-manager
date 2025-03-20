@@ -162,6 +162,11 @@ variable "secrets" {
       service_credentials_source_service_crn      = optional(string)
       service_credentials_source_service_role_crn = optional(string)
     })))
+    access_group_configuration = optional(object({
+      name  = optional(string)
+      roles = list(string)
+      tags  = optional(set(string), [])
+    }))
   }))
   description = "Secret Manager secrets configurations."
   default     = []
