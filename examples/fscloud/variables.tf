@@ -32,11 +32,6 @@ variable "resource_tags" {
 # Key Management Service (KMS)
 ##############################################################################
 
-variable "existing_kms_instance_guid" {
-  type        = string
-  description = "The GUID of the Hyper Protect Crypto Services instance in which the key specified in `kms_key_crn` is coming from."
-}
-
 variable "kms_key_crn" {
   type        = string
   description = "The root key CRN of Hyper Protect Crypto Services (HPCS) that you want to use for encryption."

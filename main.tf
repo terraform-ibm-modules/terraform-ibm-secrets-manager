@@ -6,6 +6,8 @@
 locals {
   # Validation (approach based on https://github.com/hashicorp/terraform/issues/25609#issuecomment-1057614400)
   # tflint-ignore: terraform_unused_declarations
+  validate_kms_values = (!var.kms_encryption_enabled && var.kms_key_crn != null && var.existing_sm_instance_crn == null) ? tobool("When passing values for var.kms_key_crn, you must set 'kms_encryption_enabled' to true. Otherwise set 'kms_encryption_enabled' to false to use default encryption") : true
+  # tflint-ignore: terraform_unused_declarations
   validate_kms_vars = var.kms_encryption_enabled && var.kms_key_crn == null && var.existing_sm_instance_crn == null ? tobool("When setting var.kms_encryption_enabled to true, a value must be passed for var.kms_key_crn") : true
   # tflint-ignore: terraform_unused_declarations
   validate_auth_policy = var.kms_encryption_enabled && var.skip_kms_iam_authorization_policy == false && var.kms_key_crn == null && var.existing_sm_instance_crn == null ? tobool("When var.skip_kms_iam_authorization_policy is set to false, and var.kms_encryption_enabled to true, a value must be passed for var.kms_key_crn in order to create the auth policy.") : true
@@ -32,7 +34,7 @@ data "ibm_resource_instance" "sm_instance" {
 # Create Secrets Manager Instance
 resource "ibm_resource_instance" "secrets_manager_instance" {
   count             = var.existing_sm_instance_crn == null ? 1 : 0
-  depends_on        = [time_sleep.wait_for_sm_kms_authorization_policy, time_sleep.wait_for_sm_hpcs_authorization_policy]
+  depends_on        = [time_sleep.wait_for_authorization_policy, time_sleep.wait_for_sm_hpcs_authorization_policy]
   name              = var.secrets_manager_name
   service           = "secrets-manager"
   plan              = var.sm_service_plan
@@ -41,7 +43,7 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
   tags              = var.sm_tags
   parameters = {
     "allowed_network" = var.allowed_network
-    "kms_instance"    = var.kms_instance_guid
+    "kms_instance"    = local.kms_instance_guid
     "kms_key"         = var.kms_key_crn
   }
 
@@ -74,7 +76,7 @@ resource "ibm_iam_authorization_policy" "iam_groups_policy" {
 #######################################################################################################################
 locals {
   create_kms_auth_policy  = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy && var.existing_sm_instance_crn == null
-  create_hpcs_auth_policy = local.create_kms_auth_policy == true && local.kms_service_name == "hs-crypto" ? 1 : 0
+  create_hpcs_auth_policy = local.create_kms_auth_policy == true && var.is_hpcs_key ? 1 : 0
 
   kms_service_name  = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : null
   kms_account_id    = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_key_crn_parser[0].account_id : null
@@ -134,7 +136,7 @@ resource "ibm_iam_authorization_policy" "kms_policy" {
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
-resource "time_sleep" "wait_for_sm_kms_authorization_policy" {
+resource "time_sleep" "wait_for_authorization_policy" {
   count      = var.existing_sm_instance_crn == null ? 1 : 0
   depends_on = [ibm_iam_authorization_policy.kms_policy, ibm_iam_authorization_policy.en_policy]
 
@@ -220,7 +222,7 @@ resource "ibm_iam_authorization_policy" "en_policy" {
 resource "ibm_sm_en_registration" "sm_en_registration" {
   # if existing SM instance CRN is passed (!= null), then never register EN
   count                                  = var.existing_sm_instance_crn == null && var.enable_event_notification ? 1 : 0
-  depends_on                             = [time_sleep.wait_for_sm_kms_authorization_policy]
+  depends_on                             = [time_sleep.wait_for_authorization_policy]
   instance_id                            = local.secrets_manager_guid
   region                                 = local.secrets_manager_region
   event_notifications_instance_crn       = var.existing_en_instance_crn

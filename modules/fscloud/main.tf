@@ -14,6 +14,7 @@ module "secrets_manager" {
   skip_iam_authorization_policy     = var.skip_iam_authorization_policy
   skip_en_iam_authorization_policy  = var.skip_en_iam_authorization_policy
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy
+  is_hpcs_key                       = var.is_hpcs_key
   kms_key_crn                       = var.kms_key_crn
   cbr_rules                         = var.cbr_rules
   secrets                           = var.secrets

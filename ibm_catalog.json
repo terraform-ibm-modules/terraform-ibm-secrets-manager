@@ -233,6 +233,9 @@
               ]
             },
             {
+              "key":"is_hpcs_key"
+            },
+            {
               "key": "kms_key_ring_name"
             },
             {

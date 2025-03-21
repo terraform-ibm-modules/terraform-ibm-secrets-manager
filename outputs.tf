@@ -37,8 +37,4 @@ output "secrets" {
   value       = module.secrets.secrets
   description = "List of secret mananger secret config data"
 }
-output "kms_key_crn" {
-  value       = var.kms_key_crn
-  description = "List of secret mananger secret config data"
-}
 ##############################################################################

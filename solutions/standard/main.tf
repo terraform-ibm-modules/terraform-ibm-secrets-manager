@@ -27,10 +27,10 @@ locals {
 
   parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
-  existing_kms_guid                = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[7] : null
+  #existing_kms_guid                = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[7] : null
 
   create_cross_account_auth_policy      = var.existing_secrets_manager_crn == null && !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
-  create_cross_account_hpcs_auth_policy = local.create_cross_account_auth_policy == true && local.kms_service_name == "hs-crypto" ? 1 : 0
+  create_cross_account_hpcs_auth_policy = local.create_cross_account_auth_policy == true && var.is_hpcs_key ? 1 : 0
 
   kms_service_name  = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : module.kms_instance_crn_parser[0].service_name
   kms_key_id        = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].resource : module.kms_instance_crn_parser[0].resource
@@ -62,7 +62,7 @@ module "kms_key_crn_parser" {
 }
 
 # Create auth policy (scoped to exact KMS key)
-resource "ibm_iam_authorization_policy" "secrets_manager_kms_policy" {
+resource "ibm_iam_authorization_policy" "kms_policy" {
   count                    = local.create_cross_account_auth_policy ? 1 : 0
   provider                 = ibm.kms
   source_service_account   = data.ibm_iam_account_settings.iam_account_settings[0].account_id
@@ -103,9 +103,9 @@ resource "ibm_iam_authorization_policy" "secrets_manager_kms_policy" {
 
 }
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
-resource "time_sleep" "wait_for_sm_kms_authorization_policy" {
+resource "time_sleep" "wait_for_authorization_policy" {
   count           = local.create_cross_account_auth_policy ? 1 : 0
-  depends_on      = [ibm_iam_authorization_policy.secrets_manager_kms_policy]
+  depends_on      = [ibm_iam_authorization_policy.kms_policy]
   create_duration = "30s"
 }
 
@@ -172,7 +172,7 @@ locals {
 }
 
 module "secrets_manager" {
-  depends_on               = [time_sleep.wait_for_sm_kms_authorization_policy, time_sleep.wait_for_sm_hpcs_authorization_policy]
+  depends_on               = [time_sleep.wait_for_authorization_policy, time_sleep.wait_for_sm_hpcs_authorization_policy]
   source                   = "../../modules/fscloud"
   existing_sm_instance_crn = var.existing_secrets_manager_crn
   resource_group_id        = var.existing_secrets_manager_crn == null ? module.resource_group[0].resource_group_id : data.ibm_resource_instance.existing_sm[0].resource_group_id
@@ -180,6 +180,7 @@ module "secrets_manager" {
   secrets_manager_name     = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
   service_plan             = var.service_plan
   sm_tags                  = var.secrets_manager_tags
+  is_hpcs_key              = var.is_hpcs_key
   # kms dependency
   kms_key_crn                       = local.kms_key_crn
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || local.create_cross_account_auth_policy

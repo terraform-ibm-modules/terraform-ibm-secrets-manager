@@ -67,6 +67,10 @@ variable "kms_key_crn" {
   default     = null
 }
 
+variable "is_hpcs_key" {
+  type        = bool
+  description = "Set it to true if the key is Hyper Protect Crypto Services key"
+}
 variable "existing_sm_instance_crn" {
   type        = string
   description = "An existing Secrets Manager instance CRN. If not provided an new instance will be provisioned."
