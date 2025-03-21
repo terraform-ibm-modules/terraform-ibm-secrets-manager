@@ -1,9 +1,8 @@
-# Secrets Manager solution
+# Secrets Manager fully-configurable solution
 
 This solution supports the following:
-- Creating a new resource group, or taking in an existing one.
+- Taking in an existing resource group.
 - Provisioning and configuring of a Secrets Manager instance.
-- Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance.
 - Configuring KMS encryption using a newly created key, or passing an existing key.
 
 ![secret-manager-deployable-architecture](../../reference-architecture/secrets_manager.svg)
