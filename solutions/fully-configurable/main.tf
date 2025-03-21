@@ -61,7 +61,7 @@ resource "ibm_iam_authorization_policy" "kms_policy" {
   source_service_name      = "secrets-manager"
   source_resource_group_id = module.resource_group[0].resource_group_id
   roles                    = ["Reader"]
-  description              = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} in the account ${data.ibm_iam_account_settings.iam_account_settings[0].account_id} to read the ${local.kms_service_name} key ${local.kms_key_id} from the instance GUID ${local.kms_instance_guid}"
+  description              = "Allow all Secrets Manager instances in the resource group ${local.kms_account_id} to read the ${local.kms_service_name} key ${local.kms_key_id} from the instance GUID ${local.kms_instance_guid}"
   resource_attributes {
     name     = "serviceName"
     operator = "stringEquals"
@@ -111,7 +111,7 @@ resource "ibm_iam_authorization_policy" "secrets_manager_hpcs_policy" {
   target_service_name         = local.kms_service_name
   target_resource_instance_id = local.kms_instance_guid
   roles                       = ["Viewer"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} in the account ${data.ibm_iam_account_settings.iam_account_settings[0].account_id} to view from the ${local.kms_service_name} instance GUID ${local.kms_instance_guid}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} in the account ${local.kms_account_id} to view from the ${local.kms_service_name} instance GUID ${local.kms_instance_guid}"
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
