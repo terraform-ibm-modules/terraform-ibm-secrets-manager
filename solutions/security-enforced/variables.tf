@@ -78,6 +78,12 @@ variable "existing_secrets_manager_kms_key_crn" {
   default     = null
 }
 
+variable "is_hpcs_key" {
+  type        = bool
+  description = "Set it to true if the key is Hyper Protect Crypto Services key."
+  default     = true
+}
+
 ########################################################################################################################
 # KMS properties required when creating an encryption key, rather than passing an existing key CRN.
 ########################################################################################################################
@@ -90,7 +96,7 @@ variable "existing_kms_instance_crn" {
 
 variable "force_delete_kms_key" {
   type        = bool
-  default     = false
+  default     = true
   description = "If creating a new KMS key, toggle whether it should be force deleted or not on undeploy."
 }
 
@@ -117,21 +123,10 @@ variable "ibmcloud_kms_api_key" {
 # Event Notifications
 ########################################################################################################################
 
-variable "enable_event_notifications" {
-  type        = bool
-  default     = false
-  description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_event_notification_instance_crn`"
-}
-
 variable "existing_event_notifications_instance_crn" {
   type        = string
   description = "The CRN of the Event Notifications service used to enable lifecycle notifications for your Secrets Manager instance."
   default     = null
-
-  validation {
-    condition     = (var.existing_event_notifications_instance_crn == null && var.enable_event_notifications) ? false : true
-    error_message = "To enable event notifications, an existing event notifications CRN must be set."
-  }
 }
 
 variable "skip_event_notifications_iam_authorization_policy" {

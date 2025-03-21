@@ -21,7 +21,7 @@ module "secrets_manager" {
   kms_key_ring_name                                 = var.kms_key_ring_name
   kms_key_name                                      = var.kms_key_name
   ibmcloud_kms_api_key                              = var.ibmcloud_kms_api_key
-  enable_event_notifications                        = var.enable_event_notifications
+  is_hpcs_key                                       = var.is_hpcs_key
   existing_event_notifications_instance_crn         = var.existing_event_notifications_instance_crn
   skip_event_notifications_iam_authorization_policy = var.skip_event_notifications_iam_authorization_policy
   event_notifications_email_list                    = var.event_notifications_email_list

@@ -227,10 +227,10 @@
               "key": "kms_key_name"
             },
             {
-              "key": "force_delete_kms_key"
+              "key": "is_hpcs_key"
             },
             {
-              "key": "enable_event_notifications"
+              "key": "force_delete_kms_key"
             },
             {
               "key": "event_notifications_email_list"
@@ -435,10 +435,10 @@
               "key": "kms_key_name"
             },
             {
-              "key": "force_delete_kms_key"
+              "key": "is_hpcs_key"
             },
             {
-              "key": "enable_event_notifications"
+              "key": "force_delete_kms_key"
             },
             {
               "key": "event_notifications_email_list"
