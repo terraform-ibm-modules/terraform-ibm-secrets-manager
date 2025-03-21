@@ -11,6 +11,7 @@ module "secrets_manager" {
   kms_encryption_enabled            = true
   enable_event_notification         = var.enable_event_notification
   existing_en_instance_crn          = var.existing_en_instance_crn
+  skip_iam_authorization_policy     = var.skip_iam_authorization_policy
   skip_en_iam_authorization_policy  = var.skip_en_iam_authorization_policy
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy
   kms_key_crn                       = var.kms_key_crn

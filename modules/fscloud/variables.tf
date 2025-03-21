@@ -35,6 +35,12 @@ variable "existing_sm_instance_crn" {
   default     = null
 }
 
+variable "skip_iam_authorization_policy" {
+  type        = bool
+  description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine. If set to false, policies will be created that grants the Secrets Manager instance 'Operator' access to the IAM identity service, and 'Groups Service Member Manage' access to the IAM groups service."
+  default     = false
+}
+
 variable "skip_kms_iam_authorization_policy" {
   type        = bool
   description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the `existing_kms_instance_crn` variable. If a value is specified for `ibmcloud_kms_api_key`, the policy is created in the KMS account."

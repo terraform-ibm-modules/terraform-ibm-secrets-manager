@@ -12,6 +12,12 @@ import (
 func TestRunBasicExample(t *testing.T) {
 	t.Parallel()
 
+	var validRegions = []string{
+		"eu-de",
+		"eu-gb",
+		"au-syd",
+	}
+
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:      t,
 		TerraformDir: "examples/basic",
