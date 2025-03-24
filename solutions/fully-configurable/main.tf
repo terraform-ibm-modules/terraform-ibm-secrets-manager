@@ -2,7 +2,7 @@
 # Resource Group
 ########################################################################################################################
 locals {
-  prefix = var.prefix != null ? (var.prefix != "" ? var.prefix : null) : null
+  prefix = var.prefix != null ? trimspace(var.prefix) != "" ? "${var.prefix}-" : "" : ""
 }
 
 module "resource_group" {
@@ -16,8 +16,8 @@ module "resource_group" {
 #######################################################################################################################
 locals {
   kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn) : var.existing_secrets_manager_kms_key_crn
-  kms_key_ring_name = try("${local.prefix}-${var.kms_key_ring_name}", var.kms_key_ring_name)
-  kms_key_name      = try("${local.prefix}-${var.kms_key_name}", var.kms_key_name)
+  kms_key_ring_name = "${local.prefix}${var.kms_key_ring_name}"
+  kms_key_name      = "${local.prefix}${var.kms_key_name}"
 
   parsed_existing_kms_instance_crn      = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   kms_region                            = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
@@ -144,7 +144,7 @@ module "kms" {
           standard_key             = false
           rotation_interval_month  = 3
           dual_auth_delete_enabled = false
-          force_delete             = var.force_delete_kms_key
+          force_delete             = true # Force delete must be set to true, or the terraform destroy will fail since the service does not de-register itself from the key until the reclamation period has expired.
         }
       ]
     }
@@ -169,7 +169,7 @@ module "secrets_manager" {
   existing_sm_instance_crn      = var.existing_secrets_manager_crn
   resource_group_id             = module.resource_group.resource_group_id
   region                        = var.region
-  secrets_manager_name          = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
+  secrets_manager_name          = "${local.prefix}${var.secrets_manager_instance_name}"
   sm_service_plan               = var.service_plan
   sm_tags                       = var.secrets_manager_resource_tags
   skip_iam_authorization_policy = var.skip_iam_authorization_policy

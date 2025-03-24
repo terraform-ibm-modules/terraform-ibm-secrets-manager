@@ -14,6 +14,6 @@ output "secrets_manager_guid" {
 }
 
 output "secrets_manager_id" {
-  description = "ID of Secrets Manager instance. Same value as secrets_manager_guid"
+  description = "ID of Secrets Manager instance."
   value       = module.secrets_manager.secrets_manager_id
 }

@@ -123,8 +123,8 @@ variable "existing_secrets_manager_kms_key_crn" {
 
 variable "is_hpcs_key" {
   type        = bool
-  description = "Set it to true if the key is Hyper Protect Crypto Services key."
-  default     = true
+  description = "Set it to true if the key provided through the `existing_kms_instance_crn` is Hyper Protect Crypto Services key."
+  default     = false
 }
 
 ########################################################################################################################
@@ -153,7 +153,7 @@ variable "kms_encryption_enabled" {
 
   validation {
     condition     = var.kms_encryption_enabled ? (var.existing_kms_instance_crn != null ? true : false) : true
-    error_message = "An 'existing_kms_instance_crn' is required if 'kms_encryption_enabled_bucket' is set to true."
+    error_message = "An 'existing_kms_instance_crn' is required if 'kms_encryption_enabled' is set to true."
   }
 }
 
@@ -174,12 +174,6 @@ variable "existing_kms_instance_crn" {
     condition     = var.existing_kms_instance_crn != null ? var.existing_secrets_manager_crn == null : true
     error_message = "A value should not be passed for 'existing_kms_instance_crn' when passing an existing secrets manager instance using the 'existing_secrets_manager_crn' input."
   }
-}
-
-variable "force_delete_kms_key" {
-  type        = bool
-  default     = true
-  description = "If creating a new KMS key, toggle whether it should be force deleted or not on undeploy."
 }
 
 variable "kms_endpoint_type" {

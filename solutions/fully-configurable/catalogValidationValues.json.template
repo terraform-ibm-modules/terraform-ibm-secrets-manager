@@ -1,8 +1,9 @@
 {
   "ibmcloud_api_key": $VALIDATION_APIKEY,
   "existing_resource_group_name": "geretain-test-secrets-manager",
+  "prefix": $PREFIX,
   "service_plan": "trial",
   "kms_encryption_enabled": true,
   "existing_kms_instance_crn": $HPCS_US_SOUTH_CRN,
-  "region": "ca-tor"
+  "region": "eu-de"
 }
