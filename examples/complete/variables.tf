@@ -18,7 +18,7 @@ variable "sm_service_plan" {
 variable "region" {
   type        = string
   description = "Region where resources will be created"
-  default     = "au-syd"
+  default     = "eu-de"
 }
 
 variable "resource_group" {
