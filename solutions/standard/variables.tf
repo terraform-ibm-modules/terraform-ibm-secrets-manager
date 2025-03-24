@@ -195,7 +195,7 @@ variable "existing_kms_instance_crn" {
 variable "is_hpcs_key" {
   type        = bool
   default     = true
-  description = "value"
+  description = "Set to true if the key is hpcs, otherwise false."
 }
 
 variable "kms_endpoint_type" {
