@@ -27,7 +27,6 @@ locals {
 
   parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
-  #existing_kms_guid                = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[7] : null
 
   create_cross_account_auth_policy      = var.existing_secrets_manager_crn == null && !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
   create_cross_account_hpcs_auth_policy = local.create_cross_account_auth_policy == true && var.is_hpcs_key ? 1 : 0
