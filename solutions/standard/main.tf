@@ -28,7 +28,7 @@ locals {
   parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
 
-  parsed_service_name = var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser.service_name : module.kms_key_crn_parser.service_name
+  parsed_service_name = var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_name : module.kms_key_crn_parser[0].service_name
   is_hpcs_key         = local.parsed_service_name == "hs-crypto" ? true : false
 
   create_cross_account_auth_policy      = var.existing_secrets_manager_crn == null && !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
