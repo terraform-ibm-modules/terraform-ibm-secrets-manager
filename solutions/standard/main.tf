@@ -28,8 +28,11 @@ locals {
   parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
 
+  parsed_service_name = var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser.service_name : module.kms_key_crn_parser.service_name
+  is_hpcs_key         = local.parsed_service_name == "hs-crypto" ? true : false
+
   create_cross_account_auth_policy      = var.existing_secrets_manager_crn == null && !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
-  create_cross_account_hpcs_auth_policy = local.create_cross_account_auth_policy == true && var.is_hpcs_key ? 1 : 0
+  create_cross_account_hpcs_auth_policy = local.create_cross_account_auth_policy == true && local.is_hpcs_key ? 1 : 0
 
   kms_service_name  = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : module.kms_instance_crn_parser[0].service_name
   kms_key_id        = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].resource : module.kms_instance_crn_parser[0].resource
@@ -179,7 +182,7 @@ module "secrets_manager" {
   secrets_manager_name     = try("${local.prefix}-${var.secrets_manager_instance_name}", var.secrets_manager_instance_name)
   service_plan             = var.service_plan
   sm_tags                  = var.secrets_manager_tags
-  is_hpcs_key              = var.is_hpcs_key
+  is_hpcs_key              = local.is_hpcs_key
   # kms dependency
   kms_key_crn                       = local.kms_key_crn
   skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || local.create_cross_account_auth_policy

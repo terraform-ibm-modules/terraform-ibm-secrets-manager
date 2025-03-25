@@ -192,12 +192,6 @@ variable "existing_kms_instance_crn" {
   description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Required only if `existing_secrets_manager_crn` or `existing_secrets_manager_kms_key_crn` is not specified. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`."
 }
 
-variable "is_hpcs_key" {
-  type        = bool
-  default     = false
-  description = "Set it to true if the key provided through the `existing_kms_instance_crn` is Hyper Protect Crypto Services key"
-}
-
 variable "kms_endpoint_type" {
   type        = string
   description = "The type of endpoint to use for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
