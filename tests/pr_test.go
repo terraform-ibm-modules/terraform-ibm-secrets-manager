@@ -31,9 +31,9 @@ var permanentResources map[string]interface{}
 // Current supported Event Notification regions
 var validRegions = []string{
 	// "us-south", # do not run secrets manager tests in us regions
-	// "eu-de",
+	"eu-de", // all tests using KMS should run in the same region https://github.ibm.com/GoldenEye/issues/issues/12725
 	// "eu-gb",
-	"au-syd", // all tests using KMS should avoid dallas and EU regions https://github.ibm.com/GoldenEye/issues/issues/12725
+	// "au-syd",
 }
 
 // TestMain will be run before any parallel tests, used to read data from yaml for use with tests
