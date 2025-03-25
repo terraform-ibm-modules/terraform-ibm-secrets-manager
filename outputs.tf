@@ -37,5 +37,4 @@ output "secrets" {
   value       = module.secrets.secrets
   description = "List of secret mananger secret config data"
 }
-
 ##############################################################################
