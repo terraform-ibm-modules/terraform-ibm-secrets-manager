@@ -58,6 +58,7 @@ variable "kms_key_crn" {
 variable "is_hpcs_key" {
   type        = bool
   description = "Set to true if the key is hpcs, otherwise false."
+  default     = false
 }
 ##############################################################################
 # Event Notification

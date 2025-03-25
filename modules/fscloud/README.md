@@ -51,7 +51,7 @@ No resources.
 | <a name="input_enable_event_notification"></a> [enable\_event\_notification](#input\_enable\_event\_notification) | Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_en_instance_crn` variable. | `bool` | `false` | no |
 | <a name="input_existing_en_instance_crn"></a> [existing\_en\_instance\_crn](#input\_existing\_en\_instance\_crn) | The CRN of the Event Notifications service to enable lifecycle notifications for your Secrets Manager instance. | `string` | `null` | no |
 | <a name="input_existing_sm_instance_crn"></a> [existing\_sm\_instance\_crn](#input\_existing\_sm\_instance\_crn) | The CRN of an existing Secrets Manager instance. If not supplied, a new instance is created. | `string` | `null` | no |
-| <a name="input_is_hpcs_key"></a> [is\_hpcs\_key](#input\_is\_hpcs\_key) | Set to true if the key is hpcs, otherwise false. | `bool` | n/a | yes |
+| <a name="input_is_hpcs_key"></a> [is\_hpcs\_key](#input\_is\_hpcs\_key) | Set to true if the key is hpcs, otherwise false. | `bool` | `false` | no |
 | <a name="input_kms_key_crn"></a> [kms\_key\_crn](#input\_kms\_key\_crn) | The root key CRN of Key Management Service (KMS) key that you want to use for encryption. | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | The region to provision the Secrets Manager instance to. | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | The ID of the resource group to provision the Secrets Manager instance to. | `string` | n/a | yes |
