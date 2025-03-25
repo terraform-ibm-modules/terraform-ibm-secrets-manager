@@ -17,6 +17,8 @@ locals {
   validate_endpoint = var.endpoint_type == "public" && var.allowed_network == "private-only" && var.existing_sm_instance_crn == null ? tobool("It is not allowed to have conflicting var.endpoint_type and var.allowed_network values.") : true
   # tflint-ignore: terraform_unused_declarations
   validate_region = var.existing_sm_instance_crn == null && var.region == null ? tobool("When existing_sm_instance_crn is null, a value must be passed for var.region") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_is_hpcs_key = var.is_hpcs_key && local.kms_service_name != "hs-crypto" ? tobool("When is_hpcs_key is set to true then the key provided through kms_key_crn must be a Hyper Protect Crypto Services key") : true
 }
 
 locals {
