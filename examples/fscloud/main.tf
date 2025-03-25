@@ -51,13 +51,27 @@ module "event_notification" {
   region            = var.region
 }
 
+##############################################################################
+# Parse info from KMS key crn
+##############################################################################
+
+module "kms_key_crn_parser" {
+  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
+  version = "1.1.0"
+  crn     = var.kms_key_crn
+}
+
+locals {
+  kms_service = module.kms_key_crn_parser.service_name
+}
+
 module "secrets_manager" {
   source                   = "../../modules/fscloud"
   resource_group_id        = module.resource_group.resource_group_id
   region                   = var.region
   secrets_manager_name     = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
   sm_tags                  = var.resource_tags
-  is_hpcs_key              = true
+  is_hpcs_key              = local.kms_service == "hs-crypto" ? true : false
   kms_key_crn              = var.kms_key_crn
   existing_en_instance_crn = module.event_notification.crn
   cbr_rules = [

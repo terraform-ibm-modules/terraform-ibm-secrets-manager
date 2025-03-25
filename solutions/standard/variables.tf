@@ -194,8 +194,8 @@ variable "existing_kms_instance_crn" {
 
 variable "is_hpcs_key" {
   type        = bool
-  default     = true
-  description = "Set to true if the key is hpcs, otherwise false."
+  default     = false
+  description = "Set it to true if the key provided through the `existing_kms_instance_crn` is Hyper Protect Crypto Services key"
 }
 
 variable "kms_endpoint_type" {
