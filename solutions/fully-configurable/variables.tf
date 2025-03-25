@@ -152,8 +152,8 @@ variable "kms_encryption_enabled" {
   }
 
   validation {
-    condition     = var.kms_encryption_enabled ? (var.existing_kms_instance_crn != null ? true : false) : true
-    error_message = "An 'existing_kms_instance_crn' is required if 'kms_encryption_enabled' is set to true."
+    condition     = var.kms_encryption_enabled ? ((var.existing_kms_instance_crn != null || var.existing_secrets_manager_kms_key_crn != null) ? true : false) : true
+    error_message = "Either 'existing_kms_instance_crn' or `existing_secrets_manager_kms_key_crn` is required if 'kms_encryption_enabled' is set to true."
   }
 }
 
