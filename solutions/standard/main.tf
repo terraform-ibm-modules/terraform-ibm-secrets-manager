@@ -136,7 +136,7 @@ module "kms" {
   }
   count                       = var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null ? 0 : 1 # no need to create any KMS resources if passing an existing key, or bucket
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "4.20.0"
+  version                     = "4.21.3"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_crn   = var.existing_kms_instance_crn
@@ -194,7 +194,7 @@ module "secrets_manager" {
 module "iam_secrets_engine" {
   count                = var.iam_engine_enabled ? 1 : 0
   source               = "terraform-ibm-modules/secrets-manager-iam-engine/ibm"
-  version              = "1.2.8"
+  version              = "1.2.10"
   region               = local.secrets_manager_region
   iam_engine_name      = try("${local.prefix}-${var.iam_engine_name}", var.iam_engine_name)
   secrets_manager_guid = local.secrets_manager_guid
@@ -206,7 +206,7 @@ module "iam_secrets_engine" {
 module "secrets_manager_public_cert_engine" {
   count   = var.public_cert_engine_enabled ? 1 : 0
   source  = "terraform-ibm-modules/secrets-manager-public-cert-engine/ibm"
-  version = "1.0.2"
+  version = "1.0.3"
   providers = {
     ibm              = ibm
     ibm.secret-store = ibm
