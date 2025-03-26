@@ -121,12 +121,6 @@ variable "existing_secrets_manager_kms_key_crn" {
   default     = null
 }
 
-variable "is_hpcs_key" {
-  type        = bool
-  description = "Set it to true if the key provided through the `existing_kms_instance_crn` is Hyper Protect Crypto Services key."
-  default     = false
-}
-
 ########################################################################################################################
 # KMS properties required when creating an encryption key, rather than passing an existing key CRN.
 ########################################################################################################################

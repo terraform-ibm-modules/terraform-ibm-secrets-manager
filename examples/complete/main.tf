@@ -32,7 +32,6 @@ module "event_notification" {
   name              = "${var.prefix}-en"
   tags              = var.resource_tags
   plan              = "lite"
-  service_endpoints = "public"
   region            = var.en_region
 }
 
@@ -55,18 +54,18 @@ resource "time_sleep" "wait_for_en_policy" {
 }
 
 module "secrets_manager" {
-  depends_on                 = [time_sleep.wait_for_en_policy]
-  source                     = "../.."
-  resource_group_id          = module.resource_group.resource_group_id
-  region                     = var.region
-  secrets_manager_name       = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
-  sm_service_plan            = var.sm_service_plan
-  sm_tags                    = var.resource_tags
-  kms_encryption_enabled     = true
-  existing_kms_instance_guid = module.key_protect.kms_guid
-  kms_key_crn                = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
-  enable_event_notification  = true
-  existing_en_instance_crn   = module.event_notification.crn
+  depends_on                = [time_sleep.wait_for_en_policy]
+  source                    = "../.."
+  resource_group_id         = module.resource_group.resource_group_id
+  region                    = var.region
+  secrets_manager_name      = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
+  sm_service_plan           = var.sm_service_plan
+  sm_tags                   = var.resource_tags
+  kms_encryption_enabled    = true
+  is_hpcs_key               = false
+  kms_key_crn               = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
+  enable_event_notification = true
+  existing_en_instance_crn  = module.event_notification.crn
   secrets = [
     {
       secret_group_name = "${var.prefix}-secret-group"

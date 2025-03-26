@@ -227,9 +227,6 @@
               "key": "kms_key_name"
             },
             {
-              "key": "is_hpcs_key"
-            },
-            {
               "key": "event_notifications_email_list"
             },
             {
@@ -430,9 +427,6 @@
             },
             {
               "key": "kms_key_name"
-            },
-            {
-              "key": "is_hpcs_key"
             },
             {
               "key": "event_notifications_email_list"
