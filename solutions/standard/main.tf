@@ -193,6 +193,19 @@ module "secrets_manager" {
   cbr_rules                        = var.cbr_rules
 }
 
+module "secrets_manager_group_acct" {
+  source               = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
+  version              = "1.3.0"
+  region               = var.region
+  secrets_manager_guid = module.secrets_manager.secrets_manager_guid
+  #tfsec:ignore:general-secrets-no-plaintext-exposure
+  secret_group_name        = "General"                        #checkov:skip=CKV_SECRET_6: does not require high entropy string as is static value
+  secret_group_description = "Initially created secret group" #tfsec:ignore:general-secrets-no-plaintext-exposure
+  create_access_group      = true
+  access_group_name        = "${var.prefix}-General-secrets-group-access-group"
+  access_group_roles       = ["SecretsReader"]
+}
+
 # Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.
 module "iam_secrets_engine" {
   count                = var.iam_engine_enabled ? 1 : 0
