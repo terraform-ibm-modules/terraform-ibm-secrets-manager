@@ -70,7 +70,6 @@ func setupOptions(t *testing.T, prefix string, checkApplyResultForUpgrade bool) 
 }
 
 func TestRunFullyConfigurableSchematics(t *testing.T) {
-	t.Parallel()
 
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
