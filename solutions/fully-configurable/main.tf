@@ -22,16 +22,16 @@ locals {
   parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
 
-  parsed_service_name = var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_name : module.kms_key_crn_parser[0].service_name
+  parsed_service_name = var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_name : (var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : null)
   is_hpcs_key         = local.parsed_service_name == "hs-crypto" ? true : false
 
   create_cross_account_auth_policy      = var.existing_secrets_manager_crn == null && !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
   create_cross_account_hpcs_auth_policy = local.create_cross_account_auth_policy == true && local.is_hpcs_key ? 1 : 0
 
-  kms_service_name  = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : module.kms_instance_crn_parser[0].service_name
-  kms_key_id        = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].resource : module.kms_instance_crn_parser[0].resource
-  kms_instance_guid = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_instance : module.kms_instance_crn_parser[0].service_instance
-  kms_account_id    = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].account_id : module.kms_instance_crn_parser[0].account_id
+  kms_service_name  = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : (var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_name : null)
+  kms_key_id        = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].resource : (var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].resource : null)
+  kms_instance_guid = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_instance : (var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_instance : null)
+  kms_account_id    = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].account_id : (var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].account_id : null)
 }
 
 data "ibm_iam_account_settings" "iam_account_settings" {
@@ -129,7 +129,7 @@ module "kms" {
   providers = {
     ibm = ibm.kms
   }
-  count                       = (var.existing_secrets_manager_crn != null || var.existing_secrets_manager_kms_key_crn != null) ? 0 : (var.kms_encryption_enabled == false ? 0 : 1) # no need to create any KMS resources if passing an existing key, or bucket
+  count                       = var.existing_secrets_manager_crn == null && var.kms_encryption_enabled && var.existing_secrets_manager_kms_key_crn == null ? 1 : 0 # no need to create any KMS resources if passing an existing key
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
   version                     = "4.20.0"
   create_key_protect_instance = false

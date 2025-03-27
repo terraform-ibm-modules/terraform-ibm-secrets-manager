@@ -180,7 +180,16 @@
               ]
             },
             {
-              "key": "existing_resource_group_name"
+              "key": "existing_resource_group_name",
+              "required": true,
+              "custom_config": {
+                  "type": "resource_group",
+                  "grouping": "deployment",
+                  "original_grouping": "deployment",
+                  "config_constraints": {
+                      "identifier": "rg_name"
+                  }
+              }
             },
             {
               "key": "kms_encryption_enabled"
@@ -411,7 +420,16 @@
               "key": "skip_iam_authorization_policy"
             },
             {
-              "key": "existing_resource_group_name"
+              "key": "existing_resource_group_name",
+              "required": true,
+              "custom_config": {
+                  "type": "resource_group",
+                  "grouping": "deployment",
+                  "original_grouping": "deployment",
+                  "config_constraints": {
+                      "identifier": "rg_name"
+                  }
+              }
             },
             {
               "key": "existing_secrets_manager_kms_key_crn"

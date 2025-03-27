@@ -127,7 +127,7 @@ variable "existing_secrets_manager_kms_key_crn" {
 
 variable "kms_encryption_enabled" {
   type        = bool
-  description = "Set to true to enable Secrets Manager Secrets Encryption using customer managed keys. When set to true, a value must be passed for `existing_kms_instance_crn`. Cannot be set to true if passing a value for `existing_secrets_manager_crn` or `existing_secrets_manager_kms_key_crn`."
+  description = "Set to true to enable Secrets Manager Secrets Encryption using customer managed keys. When set to true, a value must be passed for either `existing_kms_instance_crn` or `existing_secrets_manager_kms_key_crn`. Cannot be set to true if passing a value for `existing_secrets_manager_crn`."
   default     = false
 
   validation {
@@ -136,8 +136,8 @@ variable "kms_encryption_enabled" {
   }
 
   validation {
-    condition     = var.kms_encryption_enabled ? var.existing_secrets_manager_kms_key_crn == null : true
-    error_message = "'kms_encryption_enabled' should be false if passing a value for 'existing_secrets_manager_kms_key_crn'."
+    condition     = var.existing_secrets_manager_kms_key_crn != null ? var.kms_encryption_enabled : true
+    error_message = "If passing a value for 'existing_secrets_manager_kms_key_crn', you should set 'kms_encryption_enabled' to true."
   }
 
   validation {
