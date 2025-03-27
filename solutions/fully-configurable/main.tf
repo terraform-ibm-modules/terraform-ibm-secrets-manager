@@ -19,13 +19,12 @@ locals {
   kms_key_ring_name = "${local.prefix}${var.kms_key_ring_name}"
   kms_key_name      = "${local.prefix}${var.kms_key_name}"
 
-  parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
-  kms_region                       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[5] : null
+  kms_region = var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].region : null
 
   parsed_service_name = var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_name : (var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : null)
   is_hpcs_key         = local.parsed_service_name == "hs-crypto" ? true : false
 
-  create_cross_account_auth_policy      = var.existing_secrets_manager_crn == null && !var.skip_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
+  create_cross_account_auth_policy      = var.existing_secrets_manager_crn == null && !var.skip_sm_kms_iam_authorization_policy && var.ibmcloud_kms_api_key != null
   create_cross_account_hpcs_auth_policy = local.create_cross_account_auth_policy == true && local.is_hpcs_key ? 1 : 0
 
   kms_service_name  = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : (var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_name : null)
@@ -175,12 +174,12 @@ module "secrets_manager" {
   secrets_manager_name          = "${local.prefix}${var.secrets_manager_instance_name}"
   sm_service_plan               = var.service_plan
   sm_tags                       = var.secrets_manager_resource_tags
-  skip_iam_authorization_policy = var.skip_iam_authorization_policy
+  skip_iam_authorization_policy = var.skip_sm_ce_iam_authorization_policy
   # kms dependency
   is_hpcs_key                       = local.is_hpcs_key
   kms_encryption_enabled            = var.kms_encryption_enabled
   kms_key_crn                       = local.kms_key_crn
-  skip_kms_iam_authorization_policy = var.skip_kms_iam_authorization_policy || local.create_cross_account_auth_policy
+  skip_kms_iam_authorization_policy = var.skip_sm_kms_iam_authorization_policy || local.create_cross_account_auth_policy
   # event notifications dependency
   enable_event_notification        = local.enable_event_notifications
   existing_en_instance_crn         = var.existing_event_notifications_instance_crn

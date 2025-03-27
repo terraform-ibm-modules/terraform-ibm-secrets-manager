@@ -8,11 +8,11 @@ module "secrets_manager" {
   secrets_manager_instance_name                     = var.secrets_manager_instance_name
   existing_secrets_manager_crn                      = var.existing_secrets_manager_crn
   service_plan                                      = var.service_plan
-  skip_iam_authorization_policy                     = var.skip_iam_authorization_policy
+  skip_sm_ce_iam_authorization_policy               = var.skip_sm_ce_iam_authorization_policy
   secrets_manager_resource_tags                     = var.secrets_manager_resource_tags
   secrets_manager_endpoint_type                     = "private"
   allowed_network                                   = "private-only"
-  skip_kms_iam_authorization_policy                 = var.skip_kms_iam_authorization_policy
+  skip_sm_kms_iam_authorization_policy              = var.skip_sm_kms_iam_authorization_policy
   existing_secrets_manager_kms_key_crn              = var.existing_secrets_manager_kms_key_crn
   kms_encryption_enabled                            = true
   existing_kms_instance_crn                         = var.existing_kms_instance_crn

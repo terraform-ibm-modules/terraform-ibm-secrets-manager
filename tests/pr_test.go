@@ -25,7 +25,7 @@ const fscloudExampleTerraformDir = "examples/fscloud"
 const fullyConfigurableTerraformDir = "solutions/fully-configurable"
 const securityEnforcedTerraformDir = "solutions/security-enforced"
 
-const resourceGroup = "geretain-test-scc-module"
+const resourceGroup = "geretain-test-secrets-manager"
 
 // Define a struct with fields that match the structure of the YAML data
 const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
@@ -164,7 +164,7 @@ func TestRunExistingResourcesInstancesFullyConfigurable(t *testing.T) {
 			{Name: "region", Value: region, DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "existing_event_notification_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"), DataType: "string"},
-			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+			{Name: "existing_secrets_manager_kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
 			{Name: "kms_encryption_enabled", Value: true, DataType: "bool"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
 		}
@@ -184,41 +184,6 @@ func TestRunExistingResourcesInstancesFullyConfigurable(t *testing.T) {
 		terraform.WorkspaceDelete(t, existingTerraformOptions, prefix)
 		logger.Log(t, "END: Destroy (existing resources)")
 	}
-}
-
-func TestExistingKeyFullyConfigurableSchematics(t *testing.T) {
-	t.Parallel()
-
-	// Set up a schematics test
-	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
-		Testing: t,
-		TarIncludePatterns: []string{
-			"*.tf",
-			fmt.Sprintf("%s/*.tf", fullyConfigurableTerraformDir),
-			fmt.Sprintf("%s/*.tf", fscloudExampleTerraformDir),
-			fmt.Sprintf("%s/*.tf", "modules/secrets"),
-			fmt.Sprintf("%s/*.tf", "modules/fscloud"),
-		},
-		TemplateFolder:         fullyConfigurableTerraformDir,
-		ResourceGroup:          resourceGroup,
-		Prefix:                 "sm-ek",
-		Tags:                   []string{"test-schematic"},
-		DeleteWorkspaceOnFail:  false,
-		WaitJobCompleteMinutes: 60,
-	})
-
-	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
-		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
-		{Name: "prefix", Value: options.Prefix, DataType: "string"},
-		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
-		{Name: "existing_resource_group_name", Value: "geretain-test-secrets-manager", DataType: "string"},
-		{Name: "service_plan", Value: "trial", DataType: "string"},
-		{Name: "existing_secrets_manager_kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
-		{Name: "kms_encryption_enabled", Value: true, DataType: "bool"},
-	}
-
-	err := options.RunSchematicTest()
-	assert.NoError(t, err, "Schematic Test had unexpected error")
 }
 
 func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {

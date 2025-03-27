@@ -17,3 +17,8 @@ output "secrets_manager_id" {
   description = "ID of Secrets Manager instance."
   value       = module.secrets_manager.secrets_manager_id
 }
+
+output "secrets_manager_crn" {
+  description = "CRN of Secrets Manager instance."
+  value       = module.secrets_manager.secrets_manager_crn
+}
