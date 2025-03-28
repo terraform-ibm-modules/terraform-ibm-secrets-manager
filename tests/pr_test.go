@@ -93,10 +93,8 @@ func TestRunFullyConfigurableSchematics(t *testing.T) {
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
 		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
-		{Name: "existing_resource_group_name", Value: "geretain-test-secrets-manager", DataType: "string"},
+		{Name: "existing_resource_group_name", Value: resourceGroup, DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
-		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
-		{Name: "kms_encryption_enabled", Value: true, DataType: "bool"},
 	}
 
 	err := options.RunSchematicTest()
@@ -187,84 +185,33 @@ func TestRunExistingResourcesInstancesFullyConfigurable(t *testing.T) {
 }
 
 func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {
-	t.Parallel()
-
-	// ------------------------------------------------------------------------------------
-	// Provision SM
-	// ------------------------------------------------------------------------------------
-	region := validRegions[rand.Intn(len(validRegions))]
-	prefix := fmt.Sprintf("sm-ex-%s", strings.ToLower(random.UniqueId()))
-	realTerraformDir := ".."
-	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
-	tags := common.GetTagsFromTravis()
-
-	// Verify ibmcloud_api_key variable is set
-	checkVariable := "TF_VAR_ibmcloud_api_key"
-	val, present := os.LookupEnv(checkVariable)
-	require.True(t, present, checkVariable+" environment variable not set")
-	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
-	logger.Log(t, "Tempdir: ", tempTerraformDir)
-	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: tempTerraformDir + "/tests/resources",
-		Vars: map[string]interface{}{
-			"prefix":        prefix,
-			"region":        region,
-			"resource_tags": tags,
+	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
+		Testing: t,
+		TarIncludePatterns: []string{
+			"*.tf",
+			fmt.Sprintf("%s/*.tf", fullyConfigurableTerraformDir),
+			fmt.Sprintf("%s/*.tf", "modules/secrets"),
+			fmt.Sprintf("%s/*.tf", "modules/fscloud"),
 		},
-		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
-		// This is the same as setting the -upgrade=true flag with terraform.
-		Upgrade: true,
+		TemplateFolder:         fullyConfigurableTerraformDir,
+		ResourceGroup:          resourceGroup,
+		Prefix:                 "ex-scm",
+		Tags:                   []string{"test-schematic"},
+		DeleteWorkspaceOnFail:  false,
+		WaitJobCompleteMinutes: 60,
 	})
 
-	terraform.WorkspaceSelectOrNew(t, existingTerraformOptions, prefix)
-	_, existErr := terraform.InitAndApplyE(t, existingTerraformOptions)
-	if existErr != nil {
-		assert.True(t, existErr == nil, "Init and Apply of temp existing resource failed")
-	} else {
-
-		// ------------------------------------------------------------------------------------
-		// Test passing existing RG and SM
-		// ------------------------------------------------------------------------------------
-		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
-			Testing: t,
-			TarIncludePatterns: []string{
-				"*.tf",
-				fmt.Sprintf("%s/*.tf", fullyConfigurableTerraformDir),
-				fmt.Sprintf("%s/*.tf", "modules/secrets"),
-				fmt.Sprintf("%s/*.tf", "modules/fscloud"),
-			},
-			TemplateFolder:         fullyConfigurableTerraformDir,
-			ResourceGroup:          resourceGroup,
-			Prefix:                 "ex-scm",
-			Tags:                   []string{"test-schematic"},
-			DeleteWorkspaceOnFail:  false,
-			WaitJobCompleteMinutes: 60,
-		})
-
-		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
-			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
-			{Name: "prefix", Value: options.Prefix, DataType: "string"},
-			{Name: "region", Value: region, DataType: "string"},
-			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
-			{Name: "existing_secrets_manager_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_crn"), DataType: "string"},
-			{Name: "service_plan", Value: "trial", DataType: "string"},
-		}
-
-		err := options.RunSchematicTest()
-		assert.NoError(t, err, "Schematic Test had unexpected error")
+	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
+		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
+		{Name: "prefix", Value: options.Prefix, DataType: "string"},
+		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
+		{Name: "existing_resource_group_name", Value: resourceGroup, DataType: "string"},
+		{Name: "existing_secrets_manager_crn", Value: permanentResources["secretsManagerCRN"], DataType: "string"},
+		{Name: "service_plan", Value: "trial", DataType: "string"},
 	}
 
-	// Check if "DO_NOT_DESTROY_ON_FAILURE" is set
-	envVal, _ := os.LookupEnv("DO_NOT_DESTROY_ON_FAILURE")
-	// Destroy the temporary existing resources if required
-	if t.Failed() && strings.ToLower(envVal) == "true" {
-		fmt.Println("Terratest failed. Debug the test and delete resources manually.")
-	} else {
-		logger.Log(t, "START: Destroy (existing resources)")
-		terraform.Destroy(t, existingTerraformOptions)
-		terraform.WorkspaceDelete(t, existingTerraformOptions, prefix)
-		logger.Log(t, "END: Destroy (existing resources)")
-	}
+	err := options.RunSchematicTest()
+	assert.NoError(t, err, "Schematic Test had unexpected error")
 }
 
 func TestRunSecurityEnforcedSchematics(t *testing.T) {

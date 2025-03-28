@@ -15,7 +15,7 @@ module "resource_group" {
 # KMS Key
 #######################################################################################################################
 locals {
-  kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn) : var.existing_secrets_manager_kms_key_crn
+  kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : (var.kms_encryption_enabled == true ? module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn : null)) : var.existing_secrets_manager_kms_key_crn
   kms_key_ring_name = "${local.prefix}${var.kms_key_ring_name}"
   kms_key_name      = "${local.prefix}${var.kms_key_name}"
 
