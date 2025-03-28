@@ -205,6 +205,7 @@ module "secrets_manager_group_acct" {
   create_access_group      = true
   access_group_name        = "${var.prefix}-General-secrets-group-access-group"
   access_group_roles       = ["SecretsReader"]
+  endpoint_type            = var.secrets_manager_endpoint_type
 }
 
 #######################################################################################################################
