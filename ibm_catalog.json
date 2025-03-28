@@ -20,8 +20,8 @@
         "solution"
       ],
       "short_description": "Creates and configures a Secrets Manager instance.",
-      "long_description": "This solution is used to provision and configure an IBM Cloud Secrets Manager instance.",
-      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/solutions/standard/README.md",
+      "long_description": "This deployable architecture is used to provision and configure an [IBM Cloud Secrets Manager](https://www.ibm.com/products/secrets-manager) instance. Centrally manage your secrets in a single-tenant, dedicated instance. This Terraform-based automation is part of a broader suite of IBM-maintained Infrastructure as Code (IaC) asset collection, each following the naming pattern \"Cloud automation for *servicename*\" and focusing on single IBM Cloud service. These single-service deployable architectures can be used on their own to streamline and automate service deployments through an [IaC approach](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-understanding-projects), or assembled together into a broader [automated IaC stack](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-config-stack) to automate the deployment of an end-to-end solution architecture.",
+      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/images/secrets_manager.svg",
       "provider_name": "IBM",
       "features": [
@@ -39,16 +39,16 @@
         },
         {
           "title": "Configures lifecycle notifications for the Secrets Manager instance.",
-          "description": "Configures lifecycle notifications for the IBM Secrets Manager instance by connecting an IBM Event Notifications service. The DA supports optionally creating a KMS key ring and key, or using an already existing one to encrypt data."
+          "description": "Configures lifecycle notifications for the IBM Secrets Manager instance by connecting an IBM Event Notifications service. The automation supports optionally creating a KMS key ring and key, or using an already existing one to encrypt data."
         }
       ],
       "support_details": "This product is in the community registry, as such support is handled through the originated repo. If you experience issues please open an issue in that repository [https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/issues](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/issues). Please note this product is not supported via the IBM Cloud Support Center.",
       "flavors": [
         {
-          "label": "Standard",
-          "name": "standard",
+          "label": "Fully configurable",
+          "name": "fully-configurable",
           "install_type": "fullstack",
-          "working_directory": "solutions/standard",
+          "working_directory": "solutions/fully-configurable",
           "compliance": {
             "authority": "scc-v3",
             "profiles": [
@@ -114,18 +114,6 @@
               "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
             },
             {
-              "key": "use_existing_resource_group",
-              "required": true
-            },
-            {
-              "key": "resource_group_name",
-              "required": true
-            },
-            {
-              "key": "existing_kms_instance_crn",
-              "required": true
-            },
-            {
               "key": "provider_visibility",
               "options": [
                 {
@@ -143,13 +131,38 @@
               ]
             },
             {
+              "key": "existing_resource_group_name",
+              "required": true,
+              "custom_config": {
+                  "type": "resource_group",
+                  "grouping": "deployment",
+                  "original_grouping": "deployment",
+                  "config_constraints": {
+                      "identifier": "rg_name"
+                  }
+              }
+            },
+            {
               "key": "secrets_manager_instance_name"
             },
             {
               "key": "existing_secrets_manager_crn"
             },
             {
-              "key": "secrets_manager_tags",
+              "key": "secrets_manager_endpoint_type",
+              "options": [
+                {
+                  "displayname": "public",
+                  "value": "public"
+                },
+                {
+                  "displayname": "private",
+                  "value": "private"
+                }
+              ]
+            },
+            {
+              "key": "secrets_manager_resource_tags",
               "custom_config": {
                 "grouping": "deployment",
                 "original_grouping": "deployment",
@@ -172,49 +185,33 @@
               ]
             },
             {
-              "key": "iam_engine_enabled"
+              "key": "skip_sm_ce_iam_authorization_policy"
             },
             {
-              "key": "iam_engine_name"
+              "key": "allowed_network",
+              "options": [
+                {
+                  "displayname": "private-only",
+                  "value": "private-only"
+                },
+                {
+                  "displayname": "public-and-private",
+                  "value": "public-and-private"
+                }
+              ]
             },
             {
-              "key": "public_cert_engine_enabled"
+              "key": "kms_encryption_enabled"
             },
             {
-              "key": "public_cert_engine_internet_services_crn"
-            },
-            {
-              "key": "public_cert_engine_dns_provider_config_name"
-            },
-            {
-              "key": "public_cert_engine_lets_encrypt_config_ca_name"
-            },
-            {
-              "key": "acme_letsencrypt_private_key"
-            },
-            {
-              "key": "private_cert_engine_enabled"
-            },
-            {
-              "key": "private_cert_engine_config_root_ca_name"
-            },
-            {
-              "key": "private_cert_engine_config_root_ca_common_name"
-            },
-            {
-              "key": "private_cert_engine_config_root_ca_max_ttl"
-            },
-            {
-              "key": "private_cert_engine_config_intermediate_ca_name"
-            },
-            {
-              "key": "private_cert_engine_config_template_name"
+              "key": "existing_kms_instance_crn",
+              "required": true
             },
             {
               "key": "existing_secrets_manager_kms_key_crn"
             },
             {
-              "key": "skip_kms_iam_authorization_policy"
+              "key": "skip_sm_kms_iam_authorization_policy"
             },
             {
               "key": "ibmcloud_kms_api_key"
@@ -239,7 +236,215 @@
               "key": "kms_key_name"
             },
             {
-              "key": "enable_event_notifications"
+              "key": "event_notifications_email_list"
+            },
+            {
+              "key": "event_notifications_from_email"
+            },
+            {
+              "key": "event_notifications_reply_to_email"
+            },
+            {
+              "key": "existing_event_notifications_instance_crn"
+            },
+            {
+              "key": "skip_event_notifications_iam_authorization_policy"
+            },
+            {
+              "key": "secrets_manager_cbr_rules"
+            }
+          ],
+          "architecture": {
+            "descriptions": "This architecture supports creating and configuring a Secrets Manager instance.",
+            "features": [
+              {
+                "title": "Secrets manager instance creation",
+                "description": "Yes"
+              },
+              {
+                "title": "Use existing secrets manager instance",
+                "description": "Yes"
+              },
+              {
+                "title": "New resource group creation",
+                "description": "No"
+              },
+              {
+                "title": "Use existing resource group",
+                "description": "Yes"
+              },
+              {
+                "title": "Enforced private-only endpoint communication",
+                "description": "Yes"
+              },
+              {
+                "title": "Enforced KMS encryption",
+                "description": "Yes"
+              },
+              {
+                "title": "KMS instance creation",
+                "description": "No"
+              },
+              {
+                "title": "KMS key ring and key creation",
+                "description": "Yes"
+              },
+              {
+                "title": "Use existing KMS key",
+                "description": "Yes"
+              },
+              {
+                "title": "IAM s2s auth policies creation",
+                "description": "Yes"
+              },
+              {
+                "title": "Event Notifications integration",
+                "description": "Yes"
+              }
+            ],
+            "diagrams": [
+              {
+                "diagram": {
+                  "caption": "Secrets Manager",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architecture/secrets_manager.svg",
+                  "type": "image/svg+xml"
+                },
+                "description": "This architecture supports creating and configuring IBM Secrets Manager instance."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Security-enforced",
+          "name": "security-enforced",
+          "install_type": "fullstack",
+          "working_directory": "solutions/security-enforced",
+          "compliance": {
+            "authority": "scc-v3",
+            "profiles": [
+              {
+                "profile_name": "IBM Cloud Framework for Financial Services",
+                "profile_version": "1.7.0"
+              }
+            ]
+          },
+          "configuration": [
+            {
+              "key": "ibmcloud_api_key"
+            },
+            {
+              "key": "region",
+              "required": true,
+              "options": [
+                {
+                  "displayname": "Osaka (jp-osa)",
+                  "value": "jp-osa"
+                },
+                {
+                  "displayname": "Sydney (au-syd)",
+                  "value": "au-syd"
+                },
+                {
+                  "displayname": "Tokyo (jp-tok)",
+                  "value": "jp-tok"
+                },
+                {
+                  "displayname": "Frankfurt (eu-de)",
+                  "value": "eu-de"
+                },
+                {
+                  "displayname": "London (eu-gb)",
+                  "value": "eu-gb"
+                },
+                {
+                  "displayname": "Madrid (eu-es)",
+                  "value": "eu-es"
+                },
+                {
+                  "displayname": "Dallas (us-south)",
+                  "value": "us-south"
+                },
+                {
+                  "displayname": "Toronto (ca-tor)",
+                  "value": "ca-tor"
+                },
+                {
+                  "displayname": "Washington DC (us-east)",
+                  "value": "us-east"
+                },
+                {
+                  "displayname": "Sao Paulo (br-sao)",
+                  "value": "br-sao"
+                }
+              ]
+            },
+            {
+              "key": "prefix",
+              "required": true,
+              "description": "Prefix to add to all resources created by this solution. To not use any prefix value, you can enter the string `__NULL__`."
+            },
+            {
+              "key": "existing_kms_instance_crn",
+              "required": true
+            },
+            {
+              "key": "secrets_manager_instance_name"
+            },
+            {
+              "key": "existing_secrets_manager_crn"
+            },
+            {
+              "key": "secrets_manager_resource_tags",
+              "custom_config": {
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "type": "string"
+                }
+            }
+            },
+            {
+              "key": "service_plan",
+              "options": [
+                {
+                  "displayname": "Standard",
+                  "value": "standard"
+                },
+                {
+                  "displayname": "Trial",
+                  "value": "trial"
+                }
+              ]
+            },
+            {
+              "key": "skip_sm_ce_iam_authorization_policy"
+            },
+            {
+              "key": "existing_resource_group_name",
+              "required": true,
+              "custom_config": {
+                  "type": "resource_group",
+                  "grouping": "deployment",
+                  "original_grouping": "deployment",
+                  "config_constraints": {
+                      "identifier": "rg_name"
+                  }
+              }
+            },
+            {
+              "key": "existing_secrets_manager_kms_key_crn"
+            },
+            {
+              "key": "skip_sm_kms_iam_authorization_policy"
+            },
+            {
+              "key": "ibmcloud_kms_api_key"
+            },
+            {
+              "key": "kms_key_ring_name"
+            },
+            {
+              "key": "kms_key_name"
             },
             {
               "key": "event_notifications_email_list"
@@ -257,27 +462,55 @@
               "key": "skip_event_notifications_iam_authorization_policy"
             },
             {
-              "key":"cbr_rules"
+              "key": "secrets_manager_cbr_rules"
             }
           ],
           "architecture": {
             "descriptions": "This architecture supports creating and configuring a Secrets Manager instance.",
             "features": [
               {
-                "title": "Creates a Secrets Manager instance.",
-                "description": "Creates and configures an IBM Secrets Manager instance."
+                "title": "Secrets manager instance creation",
+                "description": "Yes"
               },
               {
-                "title": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance.",
-                "description": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance."
+                "title": "Use existing secrets manager instance",
+                "description": "Yes"
               },
               {
-                "title": "Sets up authorization policy.",
-                "description": "Sets up IBM IAM authorization policy between IBM Secrets Manager instance and IBM Key Management Service (KMS) instance. It also supports Event Notification authorization policy."
+                "title": "New resource group creation",
+                "description": "No"
               },
               {
-                "title": "Configures lifecycle notifications for the Secrets Manager instance.",
-                "description": "Configures lifecycle notifications for the IBM Secrets Manager instance by connecting an IBM Event Notifications service. The DA supports optionally creating a KMS key ring and key, or using an already existing one to encrypt data."
+                "title": "Use existing resource group",
+                "description": "Yes"
+              },
+              {
+                "title": "Enforced private-only endpoint communication",
+                "description": "Yes"
+              },
+              {
+                "title": "Enforced KMS encryption",
+                "description": "Yes"
+              },
+              {
+                "title": "KMS instance creation",
+                "description": "No"
+              },
+              {
+                "title": "KMS key ring and key creation",
+                "description": "Yes"
+              },
+              {
+                "title": "Use existing KMS key",
+                "description": "Yes"
+              },
+              {
+                "title": "IAM s2s auth policies creation",
+                "description": "Yes"
+              },
+              {
+                "title": "Event Notifications integration",
+                "description": "Yes"
               }
             ],
             "diagrams": [
