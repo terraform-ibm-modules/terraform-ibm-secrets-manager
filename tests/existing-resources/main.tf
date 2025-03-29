@@ -16,7 +16,7 @@ module "resource_group" {
 
 module "event_notifications" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "1.19.4"
+  version           = "1.19.6"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en"
   tags              = var.resource_tags
