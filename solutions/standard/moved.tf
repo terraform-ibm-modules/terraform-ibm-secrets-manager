@@ -17,3 +17,8 @@ moved {
   from = module.secrets_manager.ibm_iam_authorization_policy.en_policy
   to   = module.secrets_manager.module.secrets_manager.ibm_iam_authorization_policy.en_policy
 }
+
+moved {
+  from = module.secrets_manager.ibm_sm_en_registration.sm_en_registration
+  to   = module.secrets_manager.module.secrets_manager.ibm_sm_en_registration.sm_en_registration
+}
