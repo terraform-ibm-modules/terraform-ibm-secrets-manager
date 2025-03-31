@@ -105,7 +105,7 @@ variable "allowed_network" {
   }
 }
 
-variable "secret_groups" {
+variable "secrets" {
   type = list(object({
     secret_group_name        = string
     secret_group_description = optional(string)
@@ -127,21 +127,14 @@ variable "secret_groups" {
   validation {
     error_message = "The name of the secret group cannot be null or empty string."
     condition = length([
-      for group in var.secret_groups :
+      for group in var.secrets :
       true if(group.secret_group_name == "" || group.secret_group_name == null)
-    ]) == 0
-  }
-  validation {
-    error_message = "The `default` secret group already exist, set `existing_secret_group` flag to true."
-    condition = length([
-      for group in var.secret_groups :
-      true if(group.secret_group_name == "default" && group.existing_secret_group == false)
     ]) == 0
   }
   validation {
     error_message = "When creating an access group, a list of roles must be specified."
     condition = length([
-      for group in var.secret_groups :
+      for group in var.secrets :
       true if(group.create_access_group && group.access_group_roles == null)
     ]) == 0
   }

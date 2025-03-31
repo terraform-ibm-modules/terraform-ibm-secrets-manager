@@ -40,23 +40,6 @@ var validRegions = []string{
 	// "au-syd",
 }
 
-type secrets_group_config struct {
-	secret_group_name        string
-	secret_group_description string
-	create_access_group      bool
-	access_group_name        string
-	access_group_names       []string
-}
-
-func _get_secrets_group_config(prefix string) []secrets_group_config {
-	secret_groups := []secrets_group_config{
-		{
-			"General", "A general purpose secrets group with an associated access group", true, prefix + "general-secrets-group-access-group", []string{"SecretsReader"},
-		},
-	}
-	return secret_groups
-}
-
 // TestMain will be run before any parallel tests, used to read data from yaml for use with tests
 func TestMain(m *testing.M) {
 
@@ -113,7 +96,15 @@ func TestRunFullyConfigurableSchematics(t *testing.T) {
 		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 		{Name: "existing_resource_group_name", Value: resourceGroup, DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
-		{Name: "secrets_groups", Value: _get_secrets_group_config(options.Prefix), DataType: "list(object())"},
+		{Name: "secrets", Value: []map[string]interface{}{
+			{
+				"secret_group_name":        "General",
+				"secret_group_description": "default description",
+				"create_access_group":      true,
+				"access_group_name":        options.Prefix + "-1-general-secrets-group-access-group", // this needs to be unique
+				"access_group_roles":       []string{"SecretsReader"},
+			}}, DataType: "list(object)",
+		},
 	}
 
 	err := options.RunSchematicTest()
@@ -184,6 +175,15 @@ func TestRunExistingResourcesInstancesFullyConfigurable(t *testing.T) {
 			{Name: "existing_secrets_manager_kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
 			{Name: "kms_encryption_enabled", Value: true, DataType: "bool"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
+			{Name: "secrets", Value: []map[string]interface{}{
+				{
+					"secret_group_name":        "General",
+					"secret_group_description": "default description",
+					"create_access_group":      true,
+					"access_group_name":        options.Prefix + "-2-general-secrets-group-access-group", // this needs to be unique
+					"access_group_roles":       []string{"SecretsReader"},
+				}}, DataType: "list(object)",
+			},
 		}
 
 		err := options.RunSchematicTest()
@@ -229,6 +229,15 @@ func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {
 		{Name: "existing_resource_group_name", Value: resourceGroup, DataType: "string"},
 		{Name: "existing_secrets_manager_crn", Value: permanentResources["secretsManagerCRN"], DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
+		{Name: "secrets", Value: []map[string]interface{}{
+			{
+				"secret_group_name":        "General",
+				"secret_group_description": "default description",
+				"create_access_group":      true,
+				"access_group_name":        options.Prefix + "-3-general-secrets-group-access-group", // this needs to be unique
+				"access_group_roles":       []string{"SecretsReader"},
+			}}, DataType: "list(object)",
+		},
 	}
 
 	err := options.RunSchematicTest()
@@ -264,6 +273,15 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 		{Name: "existing_resource_group_name", Value: "geretain-test-secrets-manager", DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
 		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+		{Name: "secrets", Value: []map[string]interface{}{
+			{
+				"secret_group_name":        "General",
+				"secret_group_description": "default description",
+				"create_access_group":      true,
+				"access_group_name":        options.Prefix + "-4-general-secrets-group-access-group", // this needs to be unique
+				"access_group_roles":       []string{"SecretsReader"},
+			}}, DataType: "list(object)",
+		},
 	}
 
 	err := options.RunSchematicTest()
@@ -298,6 +316,15 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 		{Name: "existing_resource_group_name", Value: "geretain-test-secrets-manager", DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
 		{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+		{Name: "secrets", Value: []map[string]interface{}{
+			{
+				"secret_group_name":        "General",
+				"secret_group_description": "default description",
+				"create_access_group":      true,
+				"access_group_name":        options.Prefix + "-5-general-secrets-group-access-group", // this needs to be unique
+				"access_group_roles":       []string{"SecretsReader"},
+			}}, DataType: "list(object)",
+		},
 	}
 
 	err := options.RunSchematicUpgradeTest()
