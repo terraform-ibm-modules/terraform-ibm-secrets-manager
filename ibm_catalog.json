@@ -254,10 +254,7 @@
               "key": "secrets_manager_cbr_rules"
             },
             {
-              "key": "create_general_secret_group"
-            },
-            {
-              "key": "create_general_secret_group_access_group"
+              "key": "secrets"
             }
           ],
           "architecture": {

@@ -162,7 +162,6 @@ locals {
   secrets_manager_guid                = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[7] : null) : module.secrets_manager.secrets_manager_guid
   secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager.secrets_manager_crn
   secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager.secrets_manager_region
-  secrets_manager_endpoint_type       = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[3] : null) : var.secrets_manager_endpoint_type
   enable_event_notifications          = var.existing_event_notifications_instance_crn != null ? true : false
 }
 
@@ -188,27 +187,12 @@ module "secrets_manager" {
   cbr_rules                        = var.secrets_manager_cbr_rules
   endpoint_type                    = var.secrets_manager_endpoint_type
   allowed_network                  = var.allowed_network
+  secrets                          = var.secrets
 }
 
 data "ibm_resource_instance" "existing_sm" {
   count      = var.existing_secrets_manager_crn == null ? 0 : 1
   identifier = var.existing_secrets_manager_crn
-}
-
-module "secrets_manager_group" {
-  depends_on           = [module.secrets_manager]
-  count                = var.create_general_secret_group ? 1 : 0
-  source               = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
-  version              = "1.3.2"
-  region               = local.secrets_manager_region
-  secrets_manager_guid = local.secrets_manager_guid
-  #tfsec:ignore:general-secrets-no-plaintext-exposure
-  secret_group_name        = "General"                        #checkov:skip=CKV_SECRET_6: does not require high entropy string as is static value
-  secret_group_description = "Initially created secret group" #tfsec:ignore:general-secrets-no-plaintext-exposure
-  create_access_group      = var.create_general_secret_group_access_group
-  access_group_name        = "${var.prefix}-General-secrets-group-access-group"
-  access_group_roles       = ["SecretsReader"]
-  endpoint_type            = local.secrets_manager_endpoint_type
 }
 
 #######################################################################################################################

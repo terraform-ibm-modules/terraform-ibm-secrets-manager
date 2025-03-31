@@ -105,17 +105,67 @@ variable "allowed_network" {
   }
 }
 
-variable "create_general_secret_group" {
-  type        = bool
-  description = "Whether to create a secret group named 'General' in your Secrets Manager instance."
-  default     = true
+variable "secrets" {
+  type = list(object({
+    secret_group_name        = string
+    secret_group_description = optional(string)
+    existing_secret_group    = optional(bool, false)
+    create_access_group      = optional(bool, false)
+    access_group_name        = optional(string)
+    access_group_roles       = optional(list(string))
+    access_group_tags        = optional(list(string))
+    secrets = optional(list(object({
+      secret_name                                 = string
+      secret_description                          = optional(string)
+      secret_type                                 = optional(string)
+      imported_cert_certificate                   = optional(string)
+      imported_cert_private_key                   = optional(string)
+      imported_cert_intermediate                  = optional(string)
+      secret_username                             = optional(string)
+      secret_labels                               = optional(list(string), [])
+      secret_payload_password                     = optional(string, "")
+      secret_auto_rotation                        = optional(bool, true)
+      secret_auto_rotation_unit                   = optional(string, "day")
+      secret_auto_rotation_interval               = optional(number, 89)
+      service_credentials_ttl                     = optional(string, "7776000") # 90 days
+      service_credentials_source_service_crn      = optional(string)
+      service_credentials_source_service_role_crn = optional(string)
+      service_credentials_source_service_hmac     = optional(bool, false)
+    })))
+  }))
+  description = "Secret Manager secrets configurations."
+  default = [
+    {
+      secret_group_name   = "General"
+      secrets             = []
+      create_access_group = true
+      access_group_name   = "general-secrets-group-access-group"
+      access_group_roles  = ["SecretsReader"]
+    }
+  ]
+  validation {
+    error_message = "The name of the secret group cannot be null or empty string."
+    condition = length([
+      for secret in var.secrets :
+      true if(secret.secret_group_name == "" || secret.secret_group_name == null)
+    ]) == 0
+  }
+  validation {
+    error_message = "The `default` secret group already exist, set `existing_secret_group` flag to true."
+    condition = length([
+      for secret in var.secrets :
+      true if(secret.secret_group_name == "default" && secret.existing_secret_group == false)
+    ]) == 0
+  }
+  validation {
+    error_message = "When creating an access group, a list of roles must be specified."
+    condition = length([
+      for secret in var.secrets :
+      true if(secret.create_access_group && secret.access_group_roles == null)
+    ]) == 0
+  }
 }
 
-variable "create_general_secret_group_access_group" {
-  type        = bool
-  description = "Whether to create an access group with 'SecretsReader' access to the 'General' secret group."
-  default     = true
-}
 
 ########################################################################################################################
 # Key Protect
