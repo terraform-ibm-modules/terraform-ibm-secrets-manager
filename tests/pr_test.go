@@ -70,6 +70,7 @@ func setupOptions(t *testing.T, prefix string, checkApplyResultForUpgrade bool) 
 }
 
 func TestRunFullyConfigurableSchematics(t *testing.T) {
+	t.Parallel()
 
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
@@ -185,6 +186,8 @@ func TestRunExistingResourcesInstancesFullyConfigurable(t *testing.T) {
 }
 
 func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {
+	t.Parallel()
+
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 		Testing: t,
 		TarIncludePatterns: []string{
@@ -215,6 +218,7 @@ func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {
 }
 
 func TestRunSecurityEnforcedSchematics(t *testing.T) {
+	t.Parallel()
 
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
@@ -249,6 +253,7 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 }
 
 func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
+	t.Parallel()
 
 	// Set up a schematics test
 	options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
