@@ -49,6 +49,8 @@ This solution supports the following:
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_allowed_network"></a> [allowed\_network](#input\_allowed\_network) | The types of service endpoints to set on the Secrets Manager instance. Possible values are `private-only` or `public-and-private`. | `string` | `"private-only"` | no |
+| <a name="input_create_general_secret_group"></a> [create\_general\_secret\_group](#input\_create\_general\_secret\_group) | Whether to create a secret group named 'General' in your Secrets Manager instance. | `bool` | `true` | no |
+| <a name="input_create_general_secret_group_access_group"></a> [create\_general\_secret\_group\_access\_group](#input\_create\_general\_secret\_group\_access\_group) | Whether to create an access group with 'SecretsReader' access to the 'General' secret group. | `bool` | `true` | no |
 | <a name="input_event_notifications_email_list"></a> [event\_notifications\_email\_list](#input\_event\_notifications\_email\_list) | The list of email address to target out when Secrets Manager triggers an event | `list(string)` | `[]` | no |
 | <a name="input_event_notifications_from_email"></a> [event\_notifications\_from\_email](#input\_event\_notifications\_from\_email) | The email address used to send any Secrets Manager event coming via Event Notifications | `string` | `"compliancealert@ibm.com"` | no |
 | <a name="input_event_notifications_reply_to_email"></a> [event\_notifications\_reply\_to\_email](#input\_event\_notifications\_reply\_to\_email) | The email address specified in the 'reply\_to' section for any Secret Manager event coming via Event Notifications | `string` | `"no-reply@ibm.com"` | no |

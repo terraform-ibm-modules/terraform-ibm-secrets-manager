@@ -134,12 +134,12 @@
               "key": "existing_resource_group_name",
               "required": true,
               "custom_config": {
-                  "type": "resource_group",
-                  "grouping": "deployment",
-                  "original_grouping": "deployment",
-                  "config_constraints": {
-                      "identifier": "rg_name"
-                  }
+                "type": "resource_group",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "identifier": "rg_name"
+                }
               }
             },
             {
@@ -169,7 +169,7 @@
                 "config_constraints": {
                   "type": "string"
                 }
-            }
+              }
             },
             {
               "key": "service_plan",
@@ -252,6 +252,12 @@
             },
             {
               "key": "secrets_manager_cbr_rules"
+            },
+            {
+              "key": "create_general_secret_group"
+            },
+            {
+              "key": "create_general_secret_group_access_group"
             }
           ],
           "architecture": {
@@ -401,7 +407,7 @@
                 "config_constraints": {
                   "type": "string"
                 }
-            }
+              }
             },
             {
               "key": "service_plan",
@@ -423,12 +429,12 @@
               "key": "existing_resource_group_name",
               "required": true,
               "custom_config": {
-                  "type": "resource_group",
-                  "grouping": "deployment",
-                  "original_grouping": "deployment",
-                  "config_constraints": {
-                      "identifier": "rg_name"
-                  }
+                "type": "resource_group",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "identifier": "rg_name"
+                }
               }
             },
             {

@@ -105,6 +105,18 @@ variable "allowed_network" {
   }
 }
 
+variable "create_general_secret_group" {
+  type        = bool
+  description = "Whether to create a secret group named 'General' in your Secrets Manager instance."
+  default     = true
+}
+
+variable "create_general_secret_group_access_group" {
+  type        = bool
+  description = "Whether to create an access group with 'SecretsReader' access to the 'General' secret group."
+  default     = true
+}
+
 ########################################################################################################################
 # Key Protect
 ########################################################################################################################

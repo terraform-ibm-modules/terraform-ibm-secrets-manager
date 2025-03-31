@@ -197,6 +197,7 @@ data "ibm_resource_instance" "existing_sm" {
 
 module "secrets_manager_group" {
   depends_on           = [module.secrets_manager]
+  count                = var.create_general_secret_group ? 1 : 0
   source               = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
   version              = "1.3.0"
   region               = local.secrets_manager_region
@@ -204,7 +205,7 @@ module "secrets_manager_group" {
   #tfsec:ignore:general-secrets-no-plaintext-exposure
   secret_group_name        = "General"                        #checkov:skip=CKV_SECRET_6: does not require high entropy string as is static value
   secret_group_description = "Initially created secret group" #tfsec:ignore:general-secrets-no-plaintext-exposure
-  create_access_group      = true
+  create_access_group      = var.create_general_secret_group_access_group
   access_group_name        = "${var.prefix}-General-secrets-group-access-group"
   access_group_roles       = ["SecretsReader"]
   endpoint_type            = local.secrets_manager_endpoint_type
