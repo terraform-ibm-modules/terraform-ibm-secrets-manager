@@ -199,7 +199,7 @@ module "secrets_manager_group" {
   depends_on           = [module.secrets_manager]
   count                = var.create_general_secret_group ? 1 : 0
   source               = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
-  version              = "1.3.0"
+  version              = "1.3.2"
   region               = local.secrets_manager_region
   secrets_manager_guid = local.secrets_manager_guid
   #tfsec:ignore:general-secrets-no-plaintext-exposure
