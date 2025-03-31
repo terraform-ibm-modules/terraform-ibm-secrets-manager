@@ -162,6 +162,7 @@ locals {
   secrets_manager_guid                = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[7] : null) : module.secrets_manager.secrets_manager_guid
   secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager.secrets_manager_crn
   secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager.secrets_manager_region
+  secrets_manager_endpoint_type       = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[3] : null) : var.secrets_manager_endpoint_type
   enable_event_notifications          = var.existing_event_notifications_instance_crn != null ? true : false
 }
 
@@ -194,18 +195,19 @@ data "ibm_resource_instance" "existing_sm" {
   identifier = var.existing_secrets_manager_crn
 }
 
-module "secrets_manager_group_acct" {
+module "secrets_manager_group" {
+  depends_on           = [module.secrets_manager]
   source               = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
   version              = "1.3.0"
-  region               = var.region
-  secrets_manager_guid = module.secrets_manager.secrets_manager_guid
+  region               = local.secrets_manager_region
+  secrets_manager_guid = local.secrets_manager_guid
   #tfsec:ignore:general-secrets-no-plaintext-exposure
   secret_group_name        = "General"                        #checkov:skip=CKV_SECRET_6: does not require high entropy string as is static value
   secret_group_description = "Initially created secret group" #tfsec:ignore:general-secrets-no-plaintext-exposure
   create_access_group      = true
   access_group_name        = "${var.prefix}-General-secrets-group-access-group"
   access_group_roles       = ["SecretsReader"]
-  endpoint_type            = var.secrets_manager_endpoint_type
+  endpoint_type            = local.secrets_manager_endpoint_type
 }
 
 #######################################################################################################################

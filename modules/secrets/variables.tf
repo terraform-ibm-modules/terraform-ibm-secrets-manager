@@ -66,7 +66,7 @@ variable "secrets" {
     error_message = "When creating an access group, a list of roles must be specified."
     condition = length([
       for secret in var.secrets :
-      true if(secret.create_access_group && secret.access_group_roles != null && length(secret.access_group_roles) != 0)
+      true if(secret.create_access_group && secret.access_group_roles == null)
     ]) == 0
   }
 }
