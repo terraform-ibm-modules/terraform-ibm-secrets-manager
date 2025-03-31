@@ -254,7 +254,7 @@
               "key": "secrets_manager_cbr_rules"
             },
             {
-              "key": "secrets"
+              "key": "secret_groups"
             }
           ],
           "architecture": {
