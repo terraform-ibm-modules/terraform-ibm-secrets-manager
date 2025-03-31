@@ -40,6 +40,23 @@ var validRegions = []string{
 	// "au-syd",
 }
 
+type secrets_group_config struct {
+	secret_group_name        string
+	secret_group_description string
+	create_access_group      bool
+	access_group_name        string
+	access_group_names       []string
+}
+
+func _get_secrets_group_config(prefix string) []secrets_group_config {
+	secret_groups := []secrets_group_config{
+		{
+			"General", "A general purpose secrets group with an associated access group", true, prefix + "general-secrets-group-access-group", []string{"SecretsReader"},
+		},
+	}
+	return secret_groups
+}
+
 // TestMain will be run before any parallel tests, used to read data from yaml for use with tests
 func TestMain(m *testing.M) {
 
@@ -96,6 +113,7 @@ func TestRunFullyConfigurableSchematics(t *testing.T) {
 		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 		{Name: "existing_resource_group_name", Value: resourceGroup, DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
+		{Name: "secrets_groups", Value: _get_secrets_group_config(options.Prefix), DataType: "list(object())"},
 	}
 
 	err := options.RunSchematicTest()
