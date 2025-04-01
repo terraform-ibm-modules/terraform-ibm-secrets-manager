@@ -30,6 +30,14 @@
           "description": "Creates an IBM Secrets Manager instance."
         },
         {
+          "title": "Create secret groups.",
+          "description": "Optionally create secret groups inside your IBM Secrets Manager instance."
+        },
+        {
+          "title": "Create access groups for your secret groups.",
+          "description": "Optionally create access groups for the secret groups inside your IBM Secrets Manager instance."
+        },
+        {
           "title": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance.",
           "description": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance."
         },
@@ -254,7 +262,7 @@
               "key": "secrets_manager_cbr_rules"
             },
             {
-              "key": "secrets"
+              "key": "secret_groups"
             }
           ],
           "architecture": {
@@ -466,6 +474,9 @@
             },
             {
               "key": "secrets_manager_cbr_rules"
+            },
+            {
+              "key": "secret_groups"
             }
           ],
           "architecture": {

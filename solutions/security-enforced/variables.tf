@@ -74,6 +74,41 @@ variable "secrets_manager_resource_tags" {
   default     = []
 }
 
+variable "secret_groups" {
+  type = list(object({
+    secret_group_name        = string
+    secret_group_description = optional(string)
+    create_access_group      = optional(bool, true)
+    access_group_name        = optional(string)
+    access_group_roles       = optional(list(string), ["SecretsReader"])
+    access_group_tags        = optional(list(string))
+  }))
+  description = "Secret Manager secret group and access group configurations. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/solutions/fully-configurable/provisioning_secrets_groups.md)."
+  default = [
+    {
+      secret_group_name        = "General"
+      secret_group_description = "A general purpose secrets group with an associated access group which has a secrets reader role"
+      create_access_group      = true
+      access_group_name        = "general-secrets-group-access-group"
+      access_group_roles       = ["SecretsReader"]
+    }
+  ]
+  validation {
+    error_message = "The name of the secret group cannot be null or empty string."
+    condition = length([
+      for group in var.secret_groups :
+      true if(group.secret_group_name == "" || group.secret_group_name == null)
+    ]) == 0
+  }
+  validation {
+    error_message = "When creating an access group, a list of roles must be specified."
+    condition = length([
+      for group in var.secret_groups :
+      true if(group.create_access_group && group.access_group_roles == null)
+    ]) == 0
+  }
+}
+
 ########################################################################################################################
 # Key Protect
 ########################################################################################################################
