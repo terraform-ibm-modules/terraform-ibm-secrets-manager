@@ -145,6 +145,10 @@ variable "secrets" {
     secret_group_name        = string
     secret_group_description = optional(string)
     existing_secret_group    = optional(bool, false)
+    create_access_group      = optional(bool, false)
+    access_group_name        = optional(string)
+    access_group_roles       = optional(list(string))
+    access_group_tags        = optional(list(string))
     secrets = optional(list(object({
       secret_name                                 = string
       secret_description                          = optional(string)
