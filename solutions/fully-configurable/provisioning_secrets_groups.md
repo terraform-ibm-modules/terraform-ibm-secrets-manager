@@ -21,7 +21,7 @@ An example value:
 ]
 ```
 
-It is a list of objects, so you can specify as many secrets groups as you wish.
+It is a list of objects, so you can specify as many secrets groups as you wish. If you do not want to create any secret groups, pass a value of `[]`.
 
 ## Options:
 

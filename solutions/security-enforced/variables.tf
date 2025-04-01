@@ -84,6 +84,7 @@ variable "secret_groups" {
     access_group_tags        = optional(list(string))
   }))
   description = "Secret Manager secret group and access group configurations. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/solutions/fully-configurable/provisioning_secrets_groups.md)."
+  nullable    = false
   default = [
     {
       secret_group_name        = "General"
