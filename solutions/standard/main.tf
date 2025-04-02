@@ -191,6 +191,7 @@ module "secrets_manager" {
   existing_en_instance_crn         = var.existing_event_notifications_instance_crn
   skip_en_iam_authorization_policy = var.skip_event_notifications_iam_authorization_policy
   cbr_rules                        = var.cbr_rules
+  skip_iam_authorization_policy    = var.skip_iam_authorization_policy
 }
 
 # Configure an IBM Secrets Manager IAM credentials engine for an existing IBM Secrets Manager instance.

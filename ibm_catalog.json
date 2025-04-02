@@ -172,6 +172,9 @@
               ]
             },
             {
+              "key": "skip_iam_authorization_policy"
+            },
+            {
               "key": "iam_engine_enabled"
             },
             {
