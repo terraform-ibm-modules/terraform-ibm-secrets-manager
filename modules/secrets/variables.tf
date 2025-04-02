@@ -23,6 +23,10 @@ variable "secrets" {
     secret_group_name        = string
     secret_group_description = optional(string)
     existing_secret_group    = optional(bool, false)
+    create_access_group      = optional(bool, false)
+    access_group_name        = optional(string)
+    access_group_roles       = optional(list(string))
+    access_group_tags        = optional(list(string))
     secrets = optional(list(object({
       secret_name                                 = string
       secret_description                          = optional(string)
@@ -40,7 +44,7 @@ variable "secrets" {
       service_credentials_source_service_crn      = optional(string)
       service_credentials_source_service_role_crn = optional(string)
       service_credentials_source_service_hmac     = optional(bool, false)
-    })))
+    })), [])
   }))
   description = "Secret Manager secrets configurations."
   default     = []
@@ -56,6 +60,13 @@ variable "secrets" {
     condition = length([
       for secret in var.secrets :
       true if(secret.secret_group_name == "default" && secret.existing_secret_group == false)
+    ]) == 0
+  }
+  validation {
+    error_message = "When creating an access group, a list of roles must be specified."
+    condition = length([
+      for secret in var.secrets :
+      true if(secret.create_access_group && secret.access_group_roles == null)
     ]) == 0
   }
 }

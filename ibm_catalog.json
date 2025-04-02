@@ -30,6 +30,14 @@
           "description": "Creates an IBM Secrets Manager instance."
         },
         {
+          "title": "Create secret groups.",
+          "description": "Optionally create secret groups inside your IBM Secrets Manager instance."
+        },
+        {
+          "title": "Create access groups for your secret groups.",
+          "description": "Optionally create access groups for the secret groups inside your IBM Secrets Manager instance."
+        },
+        {
           "title": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance.",
           "description": "Optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance."
         },
@@ -134,12 +142,12 @@
               "key": "existing_resource_group_name",
               "required": true,
               "custom_config": {
-                  "type": "resource_group",
-                  "grouping": "deployment",
-                  "original_grouping": "deployment",
-                  "config_constraints": {
-                      "identifier": "rg_name"
-                  }
+                "type": "resource_group",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "identifier": "rg_name"
+                }
               }
             },
             {
@@ -169,7 +177,7 @@
                 "config_constraints": {
                   "type": "string"
                 }
-            }
+              }
             },
             {
               "key": "service_plan",
@@ -252,6 +260,9 @@
             },
             {
               "key": "secrets_manager_cbr_rules"
+            },
+            {
+              "key": "secret_groups"
             }
           ],
           "architecture": {
@@ -401,7 +412,7 @@
                 "config_constraints": {
                   "type": "string"
                 }
-            }
+              }
             },
             {
               "key": "service_plan",
@@ -423,12 +434,12 @@
               "key": "existing_resource_group_name",
               "required": true,
               "custom_config": {
-                  "type": "resource_group",
-                  "grouping": "deployment",
-                  "original_grouping": "deployment",
-                  "config_constraints": {
-                      "identifier": "rg_name"
-                  }
+                "type": "resource_group",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "identifier": "rg_name"
+                }
               }
             },
             {
@@ -463,6 +474,9 @@
             },
             {
               "key": "secrets_manager_cbr_rules"
+            },
+            {
+              "key": "secret_groups"
             }
           ],
           "architecture": {
