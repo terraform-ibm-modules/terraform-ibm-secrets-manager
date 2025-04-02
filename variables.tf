@@ -67,12 +67,12 @@ variable "kms_key_crn" {
   default     = null
 
   validation {
-    condition = var.kms_key_crn != null && var.kms_encryption_enabled == false ? false : true
+    condition     = var.kms_key_crn != null && var.kms_encryption_enabled == false ? false : true
     error_message = "When passing values for var.kms_key_crn, you must set 'kms_encryption_enabled' to true. Otherwise set 'kms_encryption_enabled' to false to use default encryption."
   }
 
   validation {
-    condition = var.kms_encryption_enabled == true && var.kms_key_crn == null ? false : true
+    condition     = var.kms_encryption_enabled == true && var.kms_key_crn == null ? false : true
     error_message = "When setting var.kms_encryption_enabled to true, a value must be passed for var.kms_key_crn."
   }
 }
@@ -89,7 +89,7 @@ variable "existing_sm_instance_crn" {
   default     = null
 
   validation {
-    condition = var.existing_sm_instance_crn == null && var.region == null ? false : true
+    condition     = var.existing_sm_instance_crn == null && var.region == null ? false : true
     error_message = "When existing_sm_instance_crn is null, a value must be passed for var.region"
   }
 }
@@ -135,7 +135,7 @@ variable "enable_event_notification" {
   description = "Set this to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When setting this to true, a value must be passed for `existing_en_instance_crn` and `existing_sm_instance_crn` must be null."
 
   validation {
-    condition = var.enable_event_notification == true && var.existing_en_instance_crn == null ? false : true
+    condition     = var.enable_event_notification == true && var.existing_en_instance_crn == null ? false : true
     error_message = "When setting var.enable_event_notification to true, a value must be passed for var.existing_en_instance_crn"
   }
 }
@@ -156,7 +156,7 @@ variable "endpoint_type" {
   }
 
   validation {
-    condition = var.endpoint_type == "public" && var.allowed_network == "private-only" ? false : true
+    condition     = var.endpoint_type == "public" && var.allowed_network == "private-only" ? false : true
     error_message = "It is not allowed to have conflicting `var.endpoint_type` and `var.allowed_network values`."
   }
 }
