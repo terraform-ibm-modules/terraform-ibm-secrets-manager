@@ -187,6 +187,7 @@ module "secrets_manager" {
   cbr_rules                        = var.secrets_manager_cbr_rules
   endpoint_type                    = var.secrets_manager_endpoint_type
   allowed_network                  = var.allowed_network
+  secrets                          = var.secret_groups
 }
 
 data "ibm_resource_instance" "existing_sm" {

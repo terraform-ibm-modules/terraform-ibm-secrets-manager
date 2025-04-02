@@ -26,4 +26,5 @@ module "secrets_manager" {
   event_notifications_from_email                    = var.event_notifications_from_email
   event_notifications_reply_to_email                = var.event_notifications_reply_to_email
   secrets_manager_cbr_rules                         = var.secrets_manager_cbr_rules
+  secret_groups                                     = var.secret_groups
 }
