@@ -250,7 +250,7 @@ func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {
 			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 			{Name: "prefix", Value: options.Prefix, DataType: "string"},
 			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
-			{Name: "existing_resource_group_name", Value: resourceGroup, DataType: "string"},
+			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "existing_secrets_manager_crn", Value: permanentResources["secretsManagerCRN"], DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
 			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
