@@ -205,6 +205,7 @@ func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {
 	// ------------------------------------------------------------------------------------
 	// Provision new RG
 	// ------------------------------------------------------------------------------------
+	region := validRegions[rand.Intn(len(validRegions))]
 	prefix := fmt.Sprintf("ex-scm-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
@@ -216,9 +217,11 @@ func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {
 	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
 	logger.Log(t, "Tempdir: ", tempTerraformDir)
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: tempTerraformDir + "/tests/new-resource-group",
+		TerraformDir: tempTerraformDir + "/tests/new-resources",
 		Vars: map[string]interface{}{
-			"prefix": prefix,
+			"prefix":                    prefix,
+			"region":                    region,
+			"provision_secrets_manager": true,
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
@@ -228,7 +231,7 @@ func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {
 	terraform.WorkspaceSelectOrNew(t, existingTerraformOptions, prefix)
 	_, existErr := terraform.InitAndApplyE(t, existingTerraformOptions)
 	if existErr != nil {
-		assert.True(t, existErr == nil, "Init and Apply of new resource group failed")
+		assert.True(t, existErr == nil, "Init and Apply of new resources failed failed")
 	} else {
 		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{
 			Testing: t,
@@ -251,7 +254,7 @@ func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {
 			{Name: "prefix", Value: options.Prefix, DataType: "string"},
 			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
-			{Name: "existing_secrets_manager_crn", Value: permanentResources["secretsManagerCRN"], DataType: "string"},
+			{Name: "existing_secrets_manager_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_crn"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
 			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
 		}
@@ -279,6 +282,7 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 	// ------------------------------------------------------------------------------------
 	// Provision new RG
 	// ------------------------------------------------------------------------------------
+	region := validRegions[rand.Intn(len(validRegions))]
 	prefix := fmt.Sprintf("sm-se-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
@@ -290,9 +294,10 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
 	logger.Log(t, "Tempdir: ", tempTerraformDir)
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: tempTerraformDir + "/tests/new-resource-group",
+		TerraformDir: tempTerraformDir + "/tests/new-resources",
 		Vars: map[string]interface{}{
 			"prefix": prefix,
+			"region": region,
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
@@ -302,7 +307,7 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 	terraform.WorkspaceSelectOrNew(t, existingTerraformOptions, prefix)
 	_, existErr := terraform.InitAndApplyE(t, existingTerraformOptions)
 	if existErr != nil {
-		assert.True(t, existErr == nil, "Init and Apply of new resource group failed")
+		assert.True(t, existErr == nil, "Init and Apply of new resources failed")
 	} else {
 
 		// Set up a schematics test
@@ -356,6 +361,7 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 	// ------------------------------------------------------------------------------------
 	// Provision new RG
 	// ------------------------------------------------------------------------------------
+	region := validRegions[rand.Intn(len(validRegions))]
 	prefix := fmt.Sprintf("sm-se-ug-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
@@ -367,9 +373,10 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
 	logger.Log(t, "Tempdir: ", tempTerraformDir)
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: tempTerraformDir + "/tests/new-resource-group",
+		TerraformDir: tempTerraformDir + "/tests/new-resources",
 		Vars: map[string]interface{}{
 			"prefix": prefix,
+			"region": region,
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
@@ -379,7 +386,7 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 	terraform.WorkspaceSelectOrNew(t, existingTerraformOptions, prefix)
 	_, existErr := terraform.InitAndApplyE(t, existingTerraformOptions)
 	if existErr != nil {
-		assert.True(t, existErr == nil, "Init and Apply of new resource group failed")
+		assert.True(t, existErr == nil, "Init and Apply of new resources failed")
 	} else {
 		// Set up a schematics test
 		options := testschematic.TestSchematicOptionsDefault(&testschematic.TestSchematicOptions{

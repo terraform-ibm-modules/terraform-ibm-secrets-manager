@@ -14,3 +14,14 @@ variable "resource_group" {
   description = "The name of an existing resource group to provision resources in to. If not set a new resource group will be created using the prefix variable"
   default     = null
 }
+
+variable "region" {
+  type        = string
+  description = "Region"
+}
+
+variable "provision_secrets_manager" {
+  type        = bool
+  description = "Set it to true to provision a secrets manager"
+  default     = false
+}
