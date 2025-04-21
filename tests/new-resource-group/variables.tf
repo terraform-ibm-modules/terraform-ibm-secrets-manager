@@ -1,3 +1,9 @@
+variable "ibmcloud_api_key" {
+  type        = string
+  description = "The IBM Cloud API Key"
+  sensitive   = true
+}
+
 variable "prefix" {
   type        = string
   description = "Prefix to append to all resources"
