@@ -9,6 +9,6 @@ output "resource_group_id" {
 }
 
 output "secrets_manager_crn" {
-  value       = module.secrets_manager[0].secrets_manager_crn
+  value       = var.provision_secrets_manager == true ? module.secrets_manager[0].secrets_manager_crn : null
   description = "CRN of the secrets manager instance"
 }
