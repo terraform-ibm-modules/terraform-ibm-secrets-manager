@@ -7,7 +7,7 @@ This examples handles the provisioning of a new Secrets Manager instance.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= v1.0.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= v1.9.0 |
 | <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >=1.76.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | 0.12.1 |
 
