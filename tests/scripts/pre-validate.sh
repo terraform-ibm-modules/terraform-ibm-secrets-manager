@@ -1,7 +1,7 @@
 #! /bin/bash
 
 ############################################################################################################
-## This script is used by the catalog pipeline to provision a new resource group 
+## This script is used by the catalog pipeline to provision a new resource group
 ## (required to ensure auth policies don't clash in account)
 ############################################################################################################
 
