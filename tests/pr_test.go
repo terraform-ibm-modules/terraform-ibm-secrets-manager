@@ -282,7 +282,6 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 	// ------------------------------------------------------------------------------------
 	// Provision new RG
 	// ------------------------------------------------------------------------------------
-	region := validRegions[rand.Intn(len(validRegions))]
 	prefix := fmt.Sprintf("sm-se-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
@@ -294,10 +293,9 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
 	logger.Log(t, "Tempdir: ", tempTerraformDir)
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: tempTerraformDir + "/tests/new-resources",
+		TerraformDir: tempTerraformDir + "/tests/new-rg",
 		Vars: map[string]interface{}{
 			"prefix": prefix,
-			"region": region,
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
@@ -335,7 +333,7 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
-			{Name: "existing_kms_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"), DataType: "string"},
+			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
 		}
 		err := options.RunSchematicTest()
@@ -361,7 +359,6 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 	// ------------------------------------------------------------------------------------
 	// Provision new RG
 	// ------------------------------------------------------------------------------------
-	region := validRegions[rand.Intn(len(validRegions))]
 	prefix := fmt.Sprintf("sm-se-ug-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueId())))
@@ -373,10 +370,9 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
 	logger.Log(t, "Tempdir: ", tempTerraformDir)
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: tempTerraformDir + "/tests/new-resources",
+		TerraformDir: tempTerraformDir + "/tests/new-rg",
 		Vars: map[string]interface{}{
 			"prefix": prefix,
-			"region": region,
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
@@ -412,7 +408,7 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
-			{Name: "existing_kms_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"), DataType: "string"},
+			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
 			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
 		}
 
