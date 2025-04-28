@@ -176,7 +176,7 @@ func TestRunExistingResourcesInstancesFullyConfigurable(t *testing.T) {
 			{Name: "region", Value: region, DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "existing_event_notification_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"), DataType: "string"},
-			{Name: "existing_secrets_manager_kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
+			{Name: "existing_secrets_manager_kms_key_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_key_crn"), DataType: "string"},
 			{Name: "kms_encryption_enabled", Value: true, DataType: "bool"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
 			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
@@ -335,7 +335,7 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
-			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+			{Name: "existing_kms_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"), DataType: "string"},
 			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
 		}
 		err := options.RunSchematicTest()
@@ -412,7 +412,7 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
-			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+			{Name: "existing_kms_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"), DataType: "string"},
 			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
 		}
 
