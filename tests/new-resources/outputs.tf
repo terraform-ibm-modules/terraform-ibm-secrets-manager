@@ -12,8 +12,3 @@ output "secrets_manager_crn" {
   value       = var.provision_secrets_manager == true ? module.secrets_manager[0].secrets_manager_crn : null
   description = "CRN of the secrets manager instance"
 }
-
-output "secrets_manager_kms_instance_crn" {
-  value       = module.key_protect.key_protect_id
-  description = "CRN of created secret manager KMS instance"
-}
