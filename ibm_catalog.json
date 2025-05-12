@@ -287,11 +287,11 @@
               },
               {
                 "title": "Enforced private-only endpoint communication",
-                "description": "Yes"
+                "description": "No"
               },
               {
                 "title": "Enforced KMS encryption",
-                "description": "Yes"
+                "description": "No"
               },
               {
                 "title": "KMS instance creation",
