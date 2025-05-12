@@ -169,6 +169,7 @@
             },
             {
               "key": "secrets_manager_endpoint_type",
+              "hidden": true,
               "options": [
                 {
                   "displayname": "public",
