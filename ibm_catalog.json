@@ -265,7 +265,6 @@
             }
           ],
           "architecture": {
-            "descriptions": "This architecture supports creating and configuring a Secrets Manager instance.",
             "features": [
               {
                 "title": "Secrets manager instance creation",
@@ -478,7 +477,6 @@
             }
           ],
           "architecture": {
-            "descriptions": "This architecture supports creating and configuring a Secrets Manager instance.",
             "features": [
               {
                 "title": "Secrets manager instance creation",
