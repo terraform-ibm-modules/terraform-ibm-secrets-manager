@@ -121,19 +121,16 @@
               "required": true
             },
             {
-              "key": "provider_visibility",
+              "key": "service_plan",
+              "required": true,
               "options": [
                 {
-                  "displayname": "private",
-                  "value": "private"
+                  "displayname": "Standard",
+                  "value": "standard"
                 },
                 {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "public-and-private",
-                  "value": "public-and-private"
+                  "displayname": "Trial",
+                  "value": "trial"
                 }
               ]
             },
@@ -150,13 +147,29 @@
               }
             },
             {
+              "key": "provider_visibility",
+              "hidden": true,
+              "options": [
+                {
+                  "displayname": "private",
+                  "value": "private"
+                },
+                {
+                  "displayname": "public",
+                  "value": "public"
+                },
+                {
+                  "displayname": "public-and-private",
+                  "value": "public-and-private"
+                }
+              ]
+            },
+            {
               "key": "secrets_manager_instance_name"
             },
             {
-              "key": "existing_secrets_manager_crn"
-            },
-            {
               "key": "secrets_manager_endpoint_type",
+              "hidden": true,
               "options": [
                 {
                   "displayname": "public",
@@ -179,19 +192,6 @@
               }
             },
             {
-              "key": "service_plan",
-              "options": [
-                {
-                  "displayname": "Standard",
-                  "value": "standard"
-                },
-                {
-                  "displayname": "Trial",
-                  "value": "trial"
-                }
-              ]
-            },
-            {
               "key": "skip_sm_ce_iam_authorization_policy"
             },
             {
@@ -211,8 +211,7 @@
               "key": "kms_encryption_enabled"
             },
             {
-              "key": "existing_kms_instance_crn",
-              "required": true
+              "key": "existing_kms_instance_crn"
             },
             {
               "key": "existing_secrets_manager_kms_key_crn"
@@ -262,6 +261,9 @@
             },
             {
               "key": "secret_groups"
+            },
+            {
+              "key": "existing_secrets_manager_crn"
             }
           ],
           "architecture": {
@@ -285,11 +287,11 @@
               },
               {
                 "title": "Enforced private-only endpoint communication",
-                "description": "Yes"
+                "description": "No"
               },
               {
                 "title": "Enforced KMS encryption",
-                "description": "Yes"
+                "description": "No"
               },
               {
                 "title": "KMS instance creation",
@@ -393,27 +395,8 @@
               "required": true
             },
             {
-              "key": "existing_kms_instance_crn",
-              "required": true
-            },
-            {
-              "key": "secrets_manager_instance_name"
-            },
-            {
-              "key": "existing_secrets_manager_crn"
-            },
-            {
-              "key": "secrets_manager_resource_tags",
-              "custom_config": {
-                "grouping": "deployment",
-                "original_grouping": "deployment",
-                "config_constraints": {
-                  "type": "string"
-                }
-              }
-            },
-            {
               "key": "service_plan",
+              "required": true,
               "options": [
                 {
                   "displayname": "Standard",
@@ -424,6 +407,23 @@
                   "value": "trial"
                 }
               ]
+            },
+            {
+              "key": "existing_kms_instance_crn",
+              "required": true
+            },
+            {
+              "key": "secrets_manager_instance_name"
+            },
+            {
+              "key": "secrets_manager_resource_tags",
+              "custom_config": {
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "type": "string"
+                }
+              }
             },
             {
               "key": "skip_sm_ce_iam_authorization_policy"
@@ -475,6 +475,9 @@
             },
             {
               "key": "secret_groups"
+            },
+            {
+              "key": "existing_secrets_manager_crn"
             }
           ],
           "architecture": {

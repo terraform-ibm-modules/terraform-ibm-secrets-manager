@@ -10,3 +10,4 @@ CRA_TARGETS:
       TF_VAR_existing_resource_group_name: "geretain-test-secrets-manager"
       TF_VAR_provider_visibility: "public"
       TF_VAR_prefix: "test"
+      TF_VAR_service_plan: "trial"
