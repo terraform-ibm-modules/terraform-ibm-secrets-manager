@@ -41,7 +41,7 @@ variable "sm_tags" {
 
 variable "allowed_network" {
   type        = string
-  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values are `private-only` or `public-and-private`."
+  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values are `private-only` or `public-and-private`. For more details, see https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-endpoints#service-endpoints"
   default     = "public-and-private"
   validation {
     condition     = contains(["private-only", "public-and-private"], var.allowed_network)

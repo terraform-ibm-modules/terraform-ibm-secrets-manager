@@ -76,9 +76,9 @@ variable "service_plan" {
   }
 }
 
-variable "skip_sm_ce_iam_authorization_policy" {
+variable "skip_secrets_manager_certificate_engine_iam_authorization_policy" {
   type        = bool
-  description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine. If set to false, policies will be created that grants the Secrets Manager instance 'Operator' access to the IAM identity service, and 'Groups Service Member Manage' access to the IAM groups service."
+  description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine (if you are using an existing Secrets Manager isntance, attempting to re-create can cause conflicts if the policies already exist). If set to false, policies will be created that grants the Secrets Manager instance 'Operator' access to the IAM identity service, and 'Groups Service Member Manage' access to the IAM groups service."
   default     = false
 }
 
@@ -149,7 +149,7 @@ variable "secret_groups" {
 # Key Protect
 ########################################################################################################################
 
-variable "skip_sm_kms_iam_authorization_policy" {
+variable "skip_secrets_manager_kms_iam_authorization_policy" {
   type        = bool
   description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the `existing_kms_instance_crn` variable. If a value is specified for `ibmcloud_kms_api_key`, the policy is created in the KMS account."
   default     = false
@@ -210,16 +210,6 @@ variable "existing_kms_instance_crn" {
   }
 }
 
-variable "kms_endpoint_type" {
-  type        = string
-  description = "The endpoint for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
-  default     = "private"
-  validation {
-    condition     = can(regex("public|private", var.kms_endpoint_type))
-    error_message = "The kms_endpoint_type value must be 'public' or 'private'."
-  }
-}
-
 variable "kms_key_ring_name" {
   type        = string
   default     = "secrets-manager-key-ring"
@@ -249,7 +239,7 @@ variable "existing_event_notifications_instance_crn" {
   default     = null
 }
 
-variable "skip_event_notifications_iam_authorization_policy" {
+variable "skip_secrets_manager_event_notifications_iam_authorization_policy" {
   type        = bool
   description = "If set to true, this skips the creation of a service to service authorization from Secrets Manager to Event Notifications. If false, the service to service authorization is created."
   default     = false
