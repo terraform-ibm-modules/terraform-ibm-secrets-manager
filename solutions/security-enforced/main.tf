@@ -16,6 +16,7 @@ module "secrets_manager" {
   existing_secrets_manager_kms_key_crn                              = var.existing_secrets_manager_kms_key_crn
   kms_encryption_enabled                                            = true
   existing_kms_instance_crn                                         = var.existing_kms_instance_crn
+  kms_endpoint_type                                                 = "private"
   kms_key_ring_name                                                 = var.kms_key_ring_name
   kms_key_name                                                      = var.kms_key_name
   ibmcloud_kms_api_key                                              = var.ibmcloud_kms_api_key

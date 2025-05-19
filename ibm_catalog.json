@@ -229,8 +229,19 @@
               "key": "kms_key_name"
             },
             {
+              "key": "kms_endpoint_type",
+              "hidden": true
+            },
+            {
               "key": "event_notifications_email_list",
-              "type": "array"
+              "type": "array",
+              "custom_config": {
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "type": "string"
+                }
+              }
             },
             {
               "key": "event_notifications_from_email"
@@ -444,7 +455,14 @@
             },
             {
               "key": "event_notifications_email_list",
-              "type": "array"
+              "type": "array",
+              "custom_config": {
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "type": "string"
+                }
+              }
             },
             {
               "key": "event_notifications_from_email"
