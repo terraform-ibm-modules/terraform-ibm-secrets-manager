@@ -76,7 +76,7 @@ variable "service_plan" {
   }
 }
 
-variable "skip_secrets_manager_certificate_engine_iam_authorization_policy" {
+variable "skip_secrets_manager_certificate_engine_iam_auth_policy" {
   type        = bool
   description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine (if you are using an existing Secrets Manager isntance, attempting to re-create can cause conflicts if the policies already exist). If set to false, policies will be created that grants the Secrets Manager instance 'Operator' access to the IAM identity service, and 'Groups Service Member Manage' access to the IAM groups service."
   default     = false
@@ -100,7 +100,7 @@ variable "secrets_manager_endpoint_type" {
 
 variable "allowed_network" {
   type        = string
-  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values are `private-only` or `public-and-private`."
+  description = "The types of service endpoints to set on the Secrets Manager instance. Possible values are `private-only` or `public-and-private`. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-endpoints#service-endpoints)."
   default     = "private-only"
   validation {
     condition     = contains(["private-only", "public-and-private"], var.allowed_network)
@@ -149,7 +149,7 @@ variable "secret_groups" {
 # Key Protect
 ########################################################################################################################
 
-variable "skip_secrets_manager_kms_iam_authorization_policy" {
+variable "skip_secrets_manager_kms_iam_auth_policy" {
   type        = bool
   description = "Set to true to skip the creation of an IAM authorization policy that permits all Secrets Manager instances in the resource group to read the encryption key from the KMS instance. If set to false, pass in a value for the KMS instance in the `existing_kms_instance_crn` variable. If a value is specified for `ibmcloud_kms_api_key`, the policy is created in the KMS account."
   default     = false
@@ -249,7 +249,7 @@ variable "existing_event_notifications_instance_crn" {
   default     = null
 }
 
-variable "skip_secrets_manager_event_notifications_iam_authorization_policy" {
+variable "skip_secrets_manager_event_notifications_iam_auth_policy" {
   type        = bool
   description = "If set to true, this skips the creation of a service to service authorization from Secrets Manager to Event Notifications. If false, the service to service authorization is created."
   default     = false
