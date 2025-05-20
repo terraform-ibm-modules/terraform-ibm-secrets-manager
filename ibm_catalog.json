@@ -192,7 +192,7 @@
               }
             },
             {
-              "key": "skip_secrets_manager_certificate_engine_iam_auth_policy"
+              "key": "skip_secrets_manager_iam_auth_policy"
             },
             {
               "key": "allowed_network",
@@ -424,7 +424,7 @@
               }
             },
             {
-              "key": "skip_secrets_manager_certificate_engine_iam_auth_policy"
+              "key": "skip_secrets_manager_iam_auth_policy"
             },
             {
               "key": "existing_resource_group_name",

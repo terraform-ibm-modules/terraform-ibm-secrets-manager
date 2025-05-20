@@ -8,7 +8,7 @@ module "secrets_manager" {
   secrets_manager_instance_name                            = var.secrets_manager_instance_name
   existing_secrets_manager_crn                             = var.existing_secrets_manager_crn
   service_plan                                             = var.service_plan
-  skip_secrets_manager_certificate_engine_iam_auth_policy  = var.skip_secrets_manager_certificate_engine_iam_auth_policy
+  skip_secrets_manager_iam_auth_policy                     = var.skip_secrets_manager_iam_auth_policy
   secrets_manager_resource_tags                            = var.secrets_manager_resource_tags
   secrets_manager_endpoint_type                            = "private"
   allowed_network                                          = "private-only"
