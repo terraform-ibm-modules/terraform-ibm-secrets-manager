@@ -192,7 +192,7 @@
               }
             },
             {
-              "key": "skip_sm_ce_iam_authorization_policy"
+              "key": "skip_secrets_manager_iam_auth_policy"
             },
             {
               "key": "allowed_network",
@@ -217,23 +217,10 @@
               "key": "existing_secrets_manager_kms_key_crn"
             },
             {
-              "key": "skip_sm_kms_iam_authorization_policy"
+              "key": "skip_secrets_manager_kms_iam_auth_policy"
             },
             {
               "key": "ibmcloud_kms_api_key"
-            },
-            {
-              "key": "kms_endpoint_type",
-              "options": [
-                {
-                  "displayname": "Public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "Private",
-                  "value": "private"
-                }
-              ]
             },
             {
               "key": "kms_key_ring_name"
@@ -242,7 +229,19 @@
               "key": "kms_key_name"
             },
             {
-              "key": "event_notifications_email_list"
+              "key": "kms_endpoint_type",
+              "hidden": true
+            },
+            {
+              "key": "event_notifications_email_list",
+              "type": "array",
+              "custom_config": {
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "type": "string"
+                }
+              }
             },
             {
               "key": "event_notifications_from_email"
@@ -254,7 +253,7 @@
               "key": "existing_event_notifications_instance_crn"
             },
             {
-              "key": "skip_event_notifications_iam_authorization_policy"
+              "key": "skip_secrets_manager_event_notifications_iam_auth_policy"
             },
             {
               "key": "secrets_manager_cbr_rules"
@@ -425,7 +424,7 @@
               }
             },
             {
-              "key": "skip_sm_ce_iam_authorization_policy"
+              "key": "skip_secrets_manager_iam_auth_policy"
             },
             {
               "key": "existing_resource_group_name",
@@ -443,7 +442,7 @@
               "key": "existing_secrets_manager_kms_key_crn"
             },
             {
-              "key": "skip_sm_kms_iam_authorization_policy"
+              "key": "skip_secrets_manager_kms_iam_auth_policy"
             },
             {
               "key": "ibmcloud_kms_api_key"
@@ -455,7 +454,15 @@
               "key": "kms_key_name"
             },
             {
-              "key": "event_notifications_email_list"
+              "key": "event_notifications_email_list",
+              "type": "array",
+              "custom_config": {
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "type": "string"
+                }
+              }
             },
             {
               "key": "event_notifications_from_email"
@@ -467,7 +474,7 @@
               "key": "existing_event_notifications_instance_crn"
             },
             {
-              "key": "skip_event_notifications_iam_authorization_policy"
+              "key": "skip_secrets_manager_event_notifications_iam_auth_policy"
             },
             {
               "key": "secrets_manager_cbr_rules"
