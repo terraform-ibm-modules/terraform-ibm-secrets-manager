@@ -17,14 +17,14 @@ This solution supports the following:
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.76.2 |
-| <a name="requirement_time"></a> [time](#requirement\_time) | 0.13.0 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.78.3 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | 0.13.1 |
 
 ### Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_kms"></a> [kms](#module\_kms) | terraform-ibm-modules/kms-all-inclusive/ibm | 5.1.5 |
+| <a name="module_kms"></a> [kms](#module\_kms) | terraform-ibm-modules/kms-all-inclusive/ibm | 5.1.7 |
 | <a name="module_kms_instance_crn_parser"></a> [kms\_instance\_crn\_parser](#module\_kms\_instance\_crn\_parser) | terraform-ibm-modules/common-utilities/ibm//modules/crn-parser | 1.1.0 |
 | <a name="module_kms_key_crn_parser"></a> [kms\_key\_crn\_parser](#module\_kms\_key\_crn\_parser) | terraform-ibm-modules/common-utilities/ibm//modules/crn-parser | 1.1.0 |
 | <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group) | terraform-ibm-modules/resource-group/ibm | 1.2.0 |
@@ -34,16 +34,16 @@ This solution supports the following:
 
 | Name | Type |
 |------|------|
-| [ibm_en_subscription_email.email_subscription](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.76.2/docs/resources/en_subscription_email) | resource |
-| [ibm_en_topic.en_topic](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.76.2/docs/resources/en_topic) | resource |
-| [ibm_iam_authorization_policy.kms_policy](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.76.2/docs/resources/iam_authorization_policy) | resource |
-| [ibm_iam_authorization_policy.secrets_manager_hpcs_policy](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.76.2/docs/resources/iam_authorization_policy) | resource |
-| [time_sleep.wait_for_authorization_policy](https://registry.terraform.io/providers/hashicorp/time/0.13.0/docs/resources/sleep) | resource |
-| [time_sleep.wait_for_secrets_manager](https://registry.terraform.io/providers/hashicorp/time/0.13.0/docs/resources/sleep) | resource |
-| [time_sleep.wait_for_sm_hpcs_authorization_policy](https://registry.terraform.io/providers/hashicorp/time/0.13.0/docs/resources/sleep) | resource |
-| [ibm_en_destinations.en_destinations](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.76.2/docs/data-sources/en_destinations) | data source |
-| [ibm_iam_account_settings.iam_account_settings](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.76.2/docs/data-sources/iam_account_settings) | data source |
-| [ibm_resource_instance.existing_sm](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.76.2/docs/data-sources/resource_instance) | data source |
+| [ibm_en_subscription_email.email_subscription](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.78.3/docs/resources/en_subscription_email) | resource |
+| [ibm_en_topic.en_topic](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.78.3/docs/resources/en_topic) | resource |
+| [ibm_iam_authorization_policy.kms_policy](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.78.3/docs/resources/iam_authorization_policy) | resource |
+| [ibm_iam_authorization_policy.secrets_manager_hpcs_policy](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.78.3/docs/resources/iam_authorization_policy) | resource |
+| [time_sleep.wait_for_authorization_policy](https://registry.terraform.io/providers/hashicorp/time/0.13.1/docs/resources/sleep) | resource |
+| [time_sleep.wait_for_secrets_manager](https://registry.terraform.io/providers/hashicorp/time/0.13.1/docs/resources/sleep) | resource |
+| [time_sleep.wait_for_sm_hpcs_authorization_policy](https://registry.terraform.io/providers/hashicorp/time/0.13.1/docs/resources/sleep) | resource |
+| [ibm_en_destinations.en_destinations](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.78.3/docs/data-sources/en_destinations) | data source |
+| [ibm_iam_account_settings.iam_account_settings](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.78.3/docs/data-sources/iam_account_settings) | data source |
+| [ibm_resource_instance.existing_sm](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.78.3/docs/data-sources/resource_instance) | data source |
 
 ### Inputs
 
