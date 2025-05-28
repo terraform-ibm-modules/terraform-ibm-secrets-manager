@@ -165,7 +165,7 @@ locals {
   enable_event_notifications          = var.existing_event_notifications_instance_crn != null ? true : false
   secret_groups_with_prefix = [
     for group in var.secret_groups : merge(group, {
-      access_group_name = group.access_group_name != null ? "${var.prefix != null && var.prefix != "" ? "${var.prefix}-" : ""}${group.access_group_name}" : null
+      access_group_name = group.access_group_name != null ? "${local.prefix}${group.access_group_name}" : null
     })
   ]
 }
