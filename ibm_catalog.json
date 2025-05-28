@@ -31,7 +31,7 @@
         },
         {
           "title": "Create secret groups.",
-          "description": "For more details on creating optional secret groups inside the Secrets Manager instance, [see here](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-secret-groups&interface=ui)."
+          "description": "Secret groups help you to organize and manage your secrets. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-secret-groups&interface=ui)."
         },
         {
           "title": "Create access groups for your secret groups.",
