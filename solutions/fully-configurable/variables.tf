@@ -117,7 +117,7 @@ variable "secret_groups" {
     access_group_roles       = optional(list(string), ["SecretsReader"])
     access_group_tags        = optional(list(string))
   }))
-  description = "Secret Manager secret group and access group configurations. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/solutions/fully-configurable/provisioning_secrets_groups.md)."
+  description = "Secret Manager secret group and access group configurations. If a prefix input variable is specified, it is added to the `access_group_name` value in the `<prefix>-value` format. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/solutions/fully-configurable/provisioning_secrets_groups.md)."
   nullable    = false
   default = [
     {
