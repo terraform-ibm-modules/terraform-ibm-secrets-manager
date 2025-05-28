@@ -39,7 +39,7 @@
         },
         {
           "title": "Configure an IAM credentials engine.",
-          "description": "For more details on optionally configure an IBM Secrets Manager IAM credentials engine to an IBM Secrets Manager instance, [see here](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-configure-iam-engine&interface=ui)."
+          "description": "An IAM credentials engine can be used to manage the lifecycle of your IBM Cloud resources through Secrets Manager. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-configure-iam-engine&interface=ui)."
         },
         {
           "title": "Sets up authorization policy.",
