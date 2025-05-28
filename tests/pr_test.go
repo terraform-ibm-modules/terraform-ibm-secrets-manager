@@ -40,18 +40,6 @@ var validRegions = []string{
 	// "au-syd",
 }
 
-func _secret_group_config(prefix string) []map[string]interface{} {
-	var secretGroupConfig = []map[string]interface{}{
-		{
-			"secret_group_name":        "General",
-			"secret_group_description": "default description",
-			"create_access_group":      true,
-			"access_group_name":        prefix + "-general-secrets-group-access-group", // this needs to be unique
-			"access_group_roles":       []string{"SecretsReader"},
-		}}
-	return secretGroupConfig
-}
-
 // TestMain will be run before any parallel tests, used to read data from yaml for use with tests
 func TestMain(m *testing.M) {
 
@@ -108,7 +96,6 @@ func TestRunFullyConfigurableSchematics(t *testing.T) {
 		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 		{Name: "existing_resource_group_name", Value: resourceGroup, DataType: "string"},
 		{Name: "service_plan", Value: "trial", DataType: "string"},
-		{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
 	}
 
 	err := options.RunSchematicTest()
@@ -179,7 +166,6 @@ func TestRunExistingResourcesInstancesFullyConfigurable(t *testing.T) {
 			{Name: "existing_secrets_manager_kms_key_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_key_crn"), DataType: "string"},
 			{Name: "kms_encryption_enabled", Value: true, DataType: "bool"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
-			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
 		}
 
 		err := options.RunSchematicTest()
@@ -256,7 +242,6 @@ func TestRunExistingSMInstanceFullyConfigurable(t *testing.T) {
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "existing_secrets_manager_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_crn"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
-			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
 		}
 
 		err := options.RunSchematicTest()
@@ -334,7 +319,6 @@ func TestRunSecurityEnforcedSchematics(t *testing.T) {
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
 			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
-			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
 		}
 		err := options.RunSchematicTest()
 		assert.NoError(t, err, "Schematic Test had unexpected error")
@@ -409,7 +393,6 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
 			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
-			{Name: "secret_groups", Value: _secret_group_config(options.Prefix), DataType: "list(object)"},
 		}
 
 		err := options.RunSchematicUpgradeTest()
