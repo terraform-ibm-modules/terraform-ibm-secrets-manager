@@ -27,7 +27,7 @@
       "features": [
         {
           "title": "Creates a Secrets Manager instance.",
-          "description": "For more details on an IBM Cloud Secrets Manager instance, [see here](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-getting-started)."
+          "description": "Get started with Secrets Manager by creating an instance. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-getting-started)."
         },
         {
           "title": "Create secret groups.",
