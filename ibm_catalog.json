@@ -35,7 +35,7 @@
         },
         {
           "title": "Create access groups for your secret groups.",
-          "description": "For more details on optional configuring access groups for the secret groups, [see here](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-assign-access#assign-access-secret-group-console)."
+          "description": "Manage access for secret groups by creating access groups. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-assign-access#assign-access-secret-group-console)."
         },
         {
           "title": "Configure an IAM credentials engine to an IBM Secrets Manager instance.",
