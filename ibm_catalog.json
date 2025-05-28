@@ -34,7 +34,7 @@
           "description": "Secret groups help you to organize and manage your secrets. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-secret-groups&interface=ui)."
         },
         {
-          "title": "Create access groups for your secret groups.",
+          "title": "Manage access to your secrets.",
           "description": "Manage access for secret groups by creating access groups. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-assign-access#assign-access-secret-group-console)."
         },
         {
