@@ -2,8 +2,7 @@
 # Resource Group
 ########################################################################################################################
 locals {
-  prefix                        = var.prefix != null ? trimspace(var.prefix) != "" ? "${var.prefix}-" : "" : ""
-  effective_provider_visibility = var.provider_visibility != null ? var.provider_visibility : (var.region == "ca-mon" ? "vpe" : "private")
+  prefix = var.prefix != null ? trimspace(var.prefix) != "" ? "${var.prefix}-" : "" : ""
 }
 
 module "resource_group" {
