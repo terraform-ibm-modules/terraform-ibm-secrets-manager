@@ -347,7 +347,7 @@
             "diagrams": [
               {
                 "diagram": {
-                  "caption": "Secrets Manager",
+                  "caption": "Secrets Manager and optional surround services.",
                   "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architecture/secrets_manager.svg",
                   "type": "image/svg+xml"
                 },
