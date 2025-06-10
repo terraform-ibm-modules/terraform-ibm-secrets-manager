@@ -32,3 +32,27 @@ output "secrets_manager_region" {
   value       = local.secrets_manager_region
   description = "Region of the Secrets Manager instance"
 }
+
+output "next_steps_text" {
+  value       = "Next steps:"
+  description = "Next steps"
+}
+
+output "next_step_primary_label" {
+  value       = "SM GUID (1)"
+  description = "Primary label"
+}
+
+output "next_step_primary_url" {
+  value       = local.secrets_manager_guid
+  description = "primary url"
+}
+
+output "next_step_secondary_label" {
+  value       = "SM CRN (2)"
+  description = "Secondary label"
+}
+output "next_step_secondary_url" {
+  value       = local.secrets_manager_crn
+  description = "Secondary url"
+}

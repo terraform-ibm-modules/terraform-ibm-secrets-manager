@@ -81,6 +81,11 @@ This solution supports the following:
 
 | Name | Description |
 |------|-------------|
+| <a name="output_next_step_primary_label"></a> [next\_step\_primary\_label](#output\_next\_step\_primary\_label) | Primary label |
+| <a name="output_next_step_primary_url"></a> [next\_step\_primary\_url](#output\_next\_step\_primary\_url) | primary url |
+| <a name="output_next_step_secondary_label"></a> [next\_step\_secondary\_label](#output\_next\_step\_secondary\_label) | Secondary label |
+| <a name="output_next_step_secondary_url"></a> [next\_step\_secondary\_url](#output\_next\_step\_secondary\_url) | Secondary url |
+| <a name="output_next_steps_text"></a> [next\_steps\_text](#output\_next\_steps\_text) | Next steps |
 | <a name="output_resource_group_id"></a> [resource\_group\_id](#output\_resource\_group\_id) | Resource group ID |
 | <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name) | Resource group name |
 | <a name="output_secrets_manager_crn"></a> [secrets\_manager\_crn](#output\_secrets\_manager\_crn) | CRN of the Secrets Manager instance |
