@@ -31,7 +31,7 @@ module "secrets_manager" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >=1.62.0, <2.0.0 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >=1.79.0, <2.0.0 |
 
 ### Modules
 
