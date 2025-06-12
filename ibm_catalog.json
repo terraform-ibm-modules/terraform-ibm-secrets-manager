@@ -701,7 +701,7 @@
           "architecture": {
             "features": [
               {
-                "title": "",
+                "title": " ",
                 "description": "Configured to use IBM secure by default standards that can't be changed."
               }
             ],
