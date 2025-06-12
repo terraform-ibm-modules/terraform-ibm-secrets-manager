@@ -33,24 +33,22 @@ The `secrets_manager_cbr_rules` input variable allows you to provide a rule for 
 
 ### Example Rule For Context-Based Restrictions Configuration
 
+The following example defines a **Context-Based Restrictions (CBR) rule** that restricts access to a **Secrets Manager instance** in a specific **IBM Cloud account**, based on contextual attributes like network zone and endpoint type.
+
 ```hcl
 [
   {
   description = "Secrets Manager can be accessed from xyz"
-  account_id = "defc0df06b644a9cabc6e44f55b3880s."
+  account_id = "<REPLACE ME>"
   rule_contexts= [{
-      attributes = [
-                {
-                              "name" : "endpointType",
-                              "value" : "private"
-                },
-                {
-                  name  = "networkZoneId"
-                  value = "93a51a1debe2674193217209601dde6f" # pragma: allowlist secret
-                }
-        ]
-     }
-   ]
+    attributes = [{
+      name : "endpointType",
+      value : "private"
+    },{
+      name  = "networkZoneId"
+      value = "<REPLACE ME>" # pragma: allowlist secret
+    }]
+  }]
   enforcement_mode = "enabled"
   operations = [{
     api_types = [{
