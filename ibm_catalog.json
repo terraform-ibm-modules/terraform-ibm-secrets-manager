@@ -366,6 +366,10 @@
           "architecture": {
             "features": [
               {
+                "title": " ",
+                "description": "Provision preconfigured resources according to IBM secure by default standards. Configurations in this variation can be edited from the default to fit your specific use case."
+              },
+              {
                 "title": "Creates or configures an IBM Cloud Secrets Manager instance",
                 "description": "Creates a Secrets Manager instance. Optionally, configures an exising Secrets Manager instance."
               },
