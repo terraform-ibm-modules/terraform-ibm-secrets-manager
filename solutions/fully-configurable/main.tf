@@ -205,7 +205,7 @@ data "ibm_resource_instance" "existing_sm" {
 #######################################################################################################################
 
 locals {
-  parsed_existing_en_instance_crn = var.existing_event_notifications_instance_crn != null || var.existing_event_notifications_instance_crn != "" ? split(":", var.existing_event_notifications_instance_crn) : []
+  parsed_existing_en_instance_crn = var.existing_event_notifications_instance_crn == null || var.existing_event_notifications_instance_crn == "" ? [] : split(":", var.existing_event_notifications_instance_crn)
   existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
 }
 
