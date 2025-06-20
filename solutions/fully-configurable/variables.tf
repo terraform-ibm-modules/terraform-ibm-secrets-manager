@@ -119,7 +119,7 @@ variable "secret_groups" {
     access_group_roles       = optional(list(string), ["SecretsReader"])
     access_group_tags        = optional(list(string))
   }))
-  description = "Secret Manager secret group and access group configurations. If a prefix input variable is specified, it is added to the `access_group_name` value in the `<prefix>-value` format. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/solutions/fully-configurable/provisioning_secrets_groups.md)."
+  description = "Secret Manager secret group and access group configurations. If a prefix input variable is specified, it is added to the `access_group_name` value in the `<prefix>-value` format. If you do not wish to create any groups, et the value to `[]`. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/solutions/fully-configurable/provisioning_secrets_groups.md)."
   nullable    = false
   default = [
     {
@@ -130,6 +130,10 @@ variable "secret_groups" {
       access_group_roles       = ["SecretsReader"]
     }
   ]
+  validation {
+    error_message = "The value of secret_groups cannot be an empty string. If you do not want to create any groups, set the value to []."
+    condition     = var.secret_groups == ""
+  }
   validation {
     error_message = "The name of the secret group cannot be null or empty string."
     condition = length([

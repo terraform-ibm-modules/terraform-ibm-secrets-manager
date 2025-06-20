@@ -163,9 +163,8 @@ locals {
   secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager.secrets_manager_crn
   secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager.secrets_manager_region
   enable_event_notifications          = var.existing_event_notifications_instance_crn != null ? true : false
-  secret_groups                       = var.secret_groups == "" ? [] : var.secret_groups
   secret_groups_with_prefix = [
-    for group in local.secret_groups : merge(group, {
+    for group in var.secret_groups : merge(group, {
       access_group_name = group.access_group_name != null ? "${local.prefix}${group.access_group_name}" : null
     })
   ]
