@@ -187,7 +187,7 @@ module "secrets_manager" {
   skip_kms_iam_authorization_policy = var.skip_secrets_manager_kms_iam_auth_policy || local.create_cross_account_auth_policy
   # event notifications dependency
   enable_event_notification        = local.enable_event_notifications
-  existing_en_instance_crn         = var.existing_event_notifications_instance_crn
+  existing_en_instance_crn         = local.enable_event_notifications ? var.existing_event_notifications_instance_crn : null
   skip_en_iam_authorization_policy = var.skip_secrets_manager_event_notifications_iam_auth_policy
   cbr_rules                        = var.secrets_manager_cbr_rules
   endpoint_type                    = var.secrets_manager_endpoint_type
@@ -205,7 +205,7 @@ data "ibm_resource_instance" "existing_sm" {
 #######################################################################################################################
 
 locals {
-  parsed_existing_en_instance_crn = var.existing_event_notifications_instance_crn != null ? split(":", var.existing_event_notifications_instance_crn) : []
+  parsed_existing_en_instance_crn = var.existing_event_notifications_instance_crn != null || var.existing_event_notifications_instance_crn != "" ? split(":", var.existing_event_notifications_instance_crn) : []
   existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
 }
 
