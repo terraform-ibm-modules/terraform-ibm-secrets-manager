@@ -100,10 +100,6 @@ variable "secret_groups" {
     }
   ]
   validation {
-    error_message = "The value of secret_groups cannot be an empty string. If you do not want to create any groups, set the value to []."
-    condition     = var.secret_groups == ""
-  }
-  validation {
     error_message = "The name of the secret group cannot be null or empty string."
     condition = length([
       for group in var.secret_groups :
