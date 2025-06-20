@@ -61,7 +61,7 @@ resource "ibm_iam_authorization_policy" "kms_policy" {
   provider                 = ibm.kms
   source_service_account   = data.ibm_iam_account_settings.iam_account_settings[0].account_id
   source_service_name      = "secrets-manager"
-  source_resource_group_id = module.resource_group[0].resource_group_id
+  source_resource_group_id = module.resource_group.resource_group_id
   roles                    = ["Reader"]
   description              = "Allow all Secrets Manager instances in the resource group ${local.kms_account_id} to read the ${local.kms_service_name} key ${local.kms_key_id} from the instance GUID ${local.kms_instance_guid}"
   resource_attributes {
@@ -109,11 +109,11 @@ resource "ibm_iam_authorization_policy" "secrets_manager_hpcs_policy" {
   provider                    = ibm.kms
   source_service_account      = data.ibm_iam_account_settings.iam_account_settings[0].account_id
   source_service_name         = "secrets-manager"
-  source_resource_group_id    = module.resource_group[0].resource_group_id
+  source_resource_group_id    = module.resource_group.resource_group_id
   target_service_name         = local.kms_service_name
   target_resource_instance_id = local.kms_instance_guid
   roles                       = ["Viewer"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group[0].resource_group_id} in the account ${local.kms_account_id} to view from the ${local.kms_service_name} instance GUID ${local.kms_instance_guid}"
+  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group.resource_group_id} in the account ${local.kms_account_id} to view from the ${local.kms_service_name} instance GUID ${local.kms_instance_guid}"
 }
 
 # workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
@@ -162,7 +162,7 @@ locals {
   secrets_manager_guid                = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[7] : null) : module.secrets_manager.secrets_manager_guid
   secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager.secrets_manager_crn
   secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager.secrets_manager_region
-  enable_event_notifications          = var.existing_event_notifications_instance_crn != null ? true : false
+  enable_event_notifications          = var.existing_event_notifications_instance_crn == null || var.existing_event_notifications_instance_crn == "" ? false : true
   secret_groups_with_prefix = [
     for group in var.secret_groups : merge(group, {
       access_group_name = group.access_group_name != null ? "${local.prefix}${group.access_group_name}" : null
@@ -187,7 +187,7 @@ module "secrets_manager" {
   skip_kms_iam_authorization_policy = var.skip_secrets_manager_kms_iam_auth_policy || local.create_cross_account_auth_policy
   # event notifications dependency
   enable_event_notification        = local.enable_event_notifications
-  existing_en_instance_crn         = var.existing_event_notifications_instance_crn
+  existing_en_instance_crn         = local.enable_event_notifications ? var.existing_event_notifications_instance_crn : null
   skip_en_iam_authorization_policy = var.skip_secrets_manager_event_notifications_iam_auth_policy
   cbr_rules                        = var.secrets_manager_cbr_rules
   endpoint_type                    = var.secrets_manager_endpoint_type
@@ -205,7 +205,7 @@ data "ibm_resource_instance" "existing_sm" {
 #######################################################################################################################
 
 locals {
-  parsed_existing_en_instance_crn = var.existing_event_notifications_instance_crn != null ? split(":", var.existing_event_notifications_instance_crn) : []
+  parsed_existing_en_instance_crn = var.existing_event_notifications_instance_crn == null || var.existing_event_notifications_instance_crn == "" ? [] : split(":", var.existing_event_notifications_instance_crn)
   existing_en_guid                = length(local.parsed_existing_en_instance_crn) > 0 ? local.parsed_existing_en_instance_crn[7] : null
 }
 
