@@ -74,7 +74,7 @@ variable "skip_secrets_manager_iam_auth_policy" {
 }
 
 variable "secrets_manager_resource_tags" {
-  type        = list(any)
+  type        = list(string)
   description = "The list of resource tags you want to associate with your Secrets Manager instance. Applies only if `existing_secrets_manager_crn` is not provided."
   default     = []
 }
