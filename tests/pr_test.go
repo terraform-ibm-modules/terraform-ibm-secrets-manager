@@ -9,13 +9,16 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/IBM/go-sdk-core/v5/core"
 	"github.com/gruntwork-io/terratest/modules/files"
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/cloudinfo"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/common"
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testaddons"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testschematic"
 )
@@ -413,4 +416,228 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 		logger.Log(t, "END: Destroy (existing resources)")
 	}
 
+}
+
+func TestRunFullyConfigurableAddonTests(t *testing.T) {
+
+	testCases := []testaddons.AddonTestCase{
+		{
+			Name:                         "SecretsManager-Default-Configuration",
+			Prefix:                       "smdef",
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-All-Services-Disabled",
+			Prefix: "small",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-kms",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(false),
+				},
+				{
+					OfferingName:   "deploy-arch-ibm-observability",
+					OfferingFlavor: "instances",
+					Enabled:        core.BoolPtr(false),
+				},
+				{
+					OfferingName:   "deploy-arch-ibm-event-notifications",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(false),
+				},
+			},
+			Inputs: map[string]interface{}{
+				"kms_encryption_enabled": false,
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-KMS-Disabled",
+			Prefix: "smkms",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-kms",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(false),
+				},
+			},
+			Inputs: map[string]interface{}{
+				"kms_encryption_enabled": false,
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-Observability-Disabled",
+			Prefix: "smobs",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-observability",
+					OfferingFlavor: "instances",
+					Enabled:        core.BoolPtr(false),
+				},
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-EventNotifications-Disabled",
+			Prefix: "smevent",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-event-notifications",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(false),
+				},
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-With-Account-Infrastructure",
+			Prefix: "smacct",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-account-infra-base",
+					OfferingFlavor: "resource-group-only",
+					Enabled:        core.BoolPtr(true),
+				},
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-With-Account-Settings",
+			Prefix: "smaset",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-account-infra-base",
+					OfferingFlavor: "resource-groups-with-account-settings",
+					Enabled:        core.BoolPtr(true),
+				},
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-KMS-ObservabilityDisabled",
+			Prefix: "smkmob",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-observability",
+					OfferingFlavor: "instances",
+					Enabled:        core.BoolPtr(false),
+				},
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-KMS-EventNotificationsDisabled",
+			Prefix: "smkmen",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-event-notifications",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(false),
+				},
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-Observability-EventNotificationsDisabled",
+			Prefix: "smobev",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-observability",
+					OfferingFlavor: "instances",
+					Enabled:        core.BoolPtr(false),
+				},
+				{
+					OfferingName:   "deploy-arch-ibm-event-notifications",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(false),
+				},
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-Existing-KMS-Instance",
+			Prefix: "smexkms",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-kms",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(false),
+				},
+			},
+			Inputs: map[string]interface{}{
+				"kms_encryption_enabled":    true,
+				"existing_kms_instance_crn": permanentResources["hpcs_south_crn"],
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-Existing-EventNotifications-Instance",
+			Prefix: "smexev",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-event-notifications",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(false),
+				},
+			},
+			Inputs: map[string]interface{}{
+				"existing_event_notifications_instance_crn": permanentResources["event_notifications_crn"],
+			},
+			SkipInfrastructureDeployment: true,
+		},
+		{
+			Name:   "SecretsManager-All-Services-Enabled-Validation",
+			Prefix: "smvalid",
+			Dependencies: []cloudinfo.AddonConfig{
+				{
+					OfferingName:   "deploy-arch-ibm-account-infra-base",
+					OfferingFlavor: "resource-group-only",
+					Enabled:        core.BoolPtr(true),
+				},
+				{
+					OfferingName:   "deploy-arch-ibm-kms",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(true),
+				},
+				{
+					OfferingName:   "deploy-arch-ibm-observability",
+					OfferingFlavor: "instances",
+					Enabled:        core.BoolPtr(true),
+				},
+				{
+					OfferingName:   "deploy-arch-ibm-event-notifications",
+					OfferingFlavor: "fully-configurable",
+					Enabled:        core.BoolPtr(true),
+				},
+			},
+			SkipInfrastructureDeployment: true,
+		},
+	}
+
+	baseOptions := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
+		Testing:              t,
+		Prefix:               "fc-sm",
+		ResourceGroup:        resourceGroup,
+		SkipLocalChangeCheck: true,
+	})
+
+	matrix := testaddons.AddonTestMatrix{
+		TestCases:   testCases,
+		BaseOptions: baseOptions,
+		AddonConfigFunc: func(options *testaddons.TestAddonOptions, testCase testaddons.AddonTestCase) cloudinfo.AddonConfig {
+			return cloudinfo.NewAddonConfigTerraform(
+				options.Prefix,
+				"deploy-arch-ibm-secrets-manager",
+				"fully-configurable",
+				map[string]interface{}{
+					"prefix":                       options.Prefix,
+					"region":                       validRegions[rand.Intn(len(validRegions))],
+					"existing_resource_group_name": resourceGroup,
+				},
+			)
+		},
+	}
+
+	baseOptions.RunAddonTestMatrix(matrix)
 }
