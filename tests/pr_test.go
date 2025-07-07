@@ -422,9 +422,8 @@ func TestRunFullyConfigurableAddonTests(t *testing.T) {
 
 	testCases := []testaddons.AddonTestCase{
 		{
-			Name:                         "SecretsManager-Default-Configuration",
-			Prefix:                       "smdef",
-			SkipInfrastructureDeployment: true,
+			Name:   "SecretsManager-Default-Configuration",
+			Prefix: "smdef",
 		},
 		{
 			Name:   "SecretsManager-All-Services-Disabled",
@@ -634,6 +633,7 @@ func TestRunFullyConfigurableAddonTests(t *testing.T) {
 					"prefix":                       options.Prefix,
 					"region":                       validRegions[rand.Intn(len(validRegions))],
 					"existing_resource_group_name": resourceGroup,
+					"service_plan":                 "trial",
 				},
 			)
 		},
