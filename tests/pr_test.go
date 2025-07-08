@@ -634,6 +634,7 @@ func TestRunFullyConfigurableAddonTests(t *testing.T) {
 					"region":                       validRegions[rand.Intn(len(validRegions))],
 					"existing_resource_group_name": resourceGroup,
 					"service_plan":                 "trial",
+					"enable_platform_metrics":      false, // Disable platform metrics for addon tests
 				},
 			)
 		},
