@@ -111,6 +111,10 @@
                   "value": "us-south"
                 },
                 {
+                  "displayname": "Montreal (ca-mon)",
+                  "value": "ca-mon"
+                },
+                {
                   "displayname": "Toronto (ca-tor)",
                   "value": "ca-tor"
                 },
@@ -570,6 +574,10 @@
                 {
                   "displayname": "Dallas (us-south)",
                   "value": "us-south"
+                },
+                {
+                  "displayname": "Montreal (ca-mon)",
+                  "value": "ca-mon"
                 },
                 {
                   "displayname": "Toronto (ca-tor)",
