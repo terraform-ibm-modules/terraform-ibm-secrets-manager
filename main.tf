@@ -79,10 +79,10 @@ locals {
 ########################################################################################################################
 
 module "kms_key_crn_parser" {
-  count   = var.kms_encryption_enabled != null ? 1 : 0
+  count   = var.kms_key_crn != null ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
   version = "1.2.0"
-  crn     = var.kms_key_crn
+  crn     = var.kms_key_crn != null ? var.kms_key_crn : ""
 }
 
 # Create auth policy (scoped to exact KMS key)
