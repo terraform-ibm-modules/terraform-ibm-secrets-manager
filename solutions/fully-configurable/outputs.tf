@@ -34,17 +34,17 @@ output "secrets_manager_region" {
 }
 
 output "next_steps_text" {
-  value       = "Next steps:"
-  description = "Next steps"
+  value       = "View the deployed Secrets Manager instance:"
+  description = "View the deployed Secrets Manager instance"
 }
 
 output "next_step_primary_label" {
-  value       = "SM GUID (1)"
+  value       = "SM Instance"
   description = "Primary label"
 }
 
 output "next_step_primary_url" {
-  value       = local.secrets_manager_guid
+  value       = "https://cloud.ibm.com/services/secrets-manager/${local.secrets_manager_crn}"
   description = "primary url"
 }
 
