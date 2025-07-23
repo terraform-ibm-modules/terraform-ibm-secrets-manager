@@ -34,7 +34,7 @@ output "secrets_manager_region" {
 }
 
 output "next_steps_text" {
-  value       = "View the deployed Secrets Manager instance:"
+  value       = "View the deployed Secrets Manager instance ${var.existing_secrets_manager_crn == null ? module.secrets_manager.secrets_manager_name : data.ibm_resource_instance.existing_sm[0].resource_name}"
   description = "View the deployed Secrets Manager instance"
 }
 
@@ -49,7 +49,7 @@ output "next_step_primary_url" {
 }
 
 output "next_step_secondary_label" {
-  value       = "SM CRN (2)"
+  value       = "Secondary label"
   description = "Secondary label"
 }
 output "next_step_secondary_url" {
