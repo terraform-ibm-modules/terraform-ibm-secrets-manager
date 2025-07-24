@@ -34,7 +34,7 @@ output "secrets_manager_region" {
 }
 
 output "next_steps_text" {
-  value       = "Congragulations! You successfully deployed your changes. Next, view your Secrets Manager instance."
+  value       = "Congratulations! You successfully deployed your changes. Next, view your Secrets Manager instance."
   description = "Next steps text"
 }
 
