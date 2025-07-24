@@ -34,12 +34,12 @@ output "secrets_manager_region" {
 }
 
 output "next_steps_text" {
-  value       = "Congragulations! You successfully deployed your changes. Next, view your Secrets Manager instance: ${var.existing_secrets_manager_crn == null ? module.secrets_manager.secrets_manager_name : data.ibm_resource_instance.existing_sm[0].resource_name}"
+  value       = "Congragulations! You successfully deployed your changes. Next, view your Secrets Manager instance."
   description = "Next steps text"
 }
 
 output "next_step_primary_label" {
-  value       = "SM Instance"
+  value       = "View Secrets Manager"
   description = "Primary label"
 }
 
