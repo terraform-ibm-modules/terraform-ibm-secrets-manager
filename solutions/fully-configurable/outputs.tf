@@ -34,7 +34,7 @@ output "secrets_manager_region" {
 }
 
 output "next_steps_text" {
-  value       = "Congratulations! You successfully deployed your changes. Next, view your Secrets Manager instance."
+  value       = "Congratulations! Click the link below to go your Secrets Manager instance. Refer to this deployment guide/documentation for more information."
   description = "Next steps text"
 }
 
@@ -43,7 +43,23 @@ output "next_step_primary_label" {
   description = "Primary label"
 }
 
+
+output "secrets_manager_dashboard_url" {
+  description = "Secrets Manager dashboard url."
+  value       = var.existing_secrets_manager_crn != null ? "" : module.secrets_manager.secrets_manager_dashboard_url
+}
+
 output "next_step_primary_url" {
-  value       = "https://cloud.ibm.com/services/secrets-manager/${local.secrets_manager_crn}"
+  value       = module.secrets_manager.secrets_manager_dashboard_url
   description = "primary url"
+}
+
+output "next_step_secondary_label" {
+  value       = "Check out related Deployable Architectures"
+  description = "Secondary label"
+}
+
+output "next_step_secondary_url" {
+  value       = "https://cloud.ibm.com/catalog?search=Secrets%20Manager%20label%3Adeployable_architecture#search_results"
+  description = "Secondary url"
 }
