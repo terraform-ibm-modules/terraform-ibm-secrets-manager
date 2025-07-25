@@ -37,4 +37,9 @@ output "secrets" {
   value       = module.secrets.secrets
   description = "List of secret mananger secret config data"
 }
+
+output "secrets_manager_dashboard_url" {
+  description = "Secrets Manager dashboard url."
+  value       = var.existing_sm_instance_crn != null ? "" : ibm_resource_instance.secrets_manager_instance[0].dashboard_url
+}
 ##############################################################################
