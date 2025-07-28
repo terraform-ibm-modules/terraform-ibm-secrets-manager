@@ -43,14 +43,8 @@ output "next_step_primary_label" {
   description = "Primary label"
 }
 
-
-output "secrets_manager_dashboard_url" {
-  description = "Secrets Manager dashboard url."
-  value       = var.existing_secrets_manager_crn != null ? "" : module.secrets_manager.secrets_manager_dashboard_url
-}
-
 output "next_step_primary_url" {
-  value       = module.secrets_manager.secrets_manager_dashboard_url
+  value       = "https://cloud.ibm.com/services/secrets-manager/${local.secrets_manager_crn}"
   description = "primary url"
 }
 
