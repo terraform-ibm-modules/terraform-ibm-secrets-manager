@@ -162,7 +162,7 @@ func TestRunExistingResourcesInstancesFullyConfigurable(t *testing.T) {
 			{Name: "prefix", Value: options.Prefix, DataType: "string"},
 			{Name: "region", Value: region, DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
-			{Name: "existing_event_notification_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "event_notification_instance_crn"), DataType: "string"},
+			{Name: "existing_event_notifications_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "event_notifications_instance_crn"), DataType: "string"},
 			{Name: "existing_secrets_manager_kms_key_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_key_crn"), DataType: "string"},
 			{Name: "kms_encryption_enabled", Value: true, DataType: "bool"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
