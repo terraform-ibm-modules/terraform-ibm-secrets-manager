@@ -435,6 +435,7 @@ func TestSecretsManagerDefaultConfiguration(t *testing.T) {
 			"prefix":                  options.Prefix,
 			"region":                  validRegions[rand.Intn(len(validRegions))],
 			"enable_platform_metrics": "false", // Disable platform metrics for addon tests
+			"service_plan":            "standard",
 		},
 	)
 
@@ -455,6 +456,7 @@ func TestDependencyPermutations(t *testing.T) {
 				"prefix":                       "sm-perm",
 				"region":                       validRegions[rand.Intn(len(validRegions))],
 				"existing_resource_group_name": resourceGroup,
+				"service_plan":                 "standard",
 			},
 		},
 	})
