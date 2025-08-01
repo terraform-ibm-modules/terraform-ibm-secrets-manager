@@ -79,10 +79,10 @@ locals {
 ########################################################################################################################
 
 module "kms_key_crn_parser" {
-  count   = local.create_kms_auth_policy ? 1 : 0
+  count   = var.kms_encryption_enabled ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
   version = "1.2.0"
-  crn     = var.kms_key_crn
+  crn     = var.kms_key_crn != null ? var.kms_key_crn : ""
 }
 
 # Create auth policy (scoped to exact KMS key)
@@ -163,7 +163,7 @@ locals {
 module "cbr_rule" {
   count            = length(var.cbr_rules) > 0 ? length(var.cbr_rules) : 0
   source           = "terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module"
-  version          = "1.32.3"
+  version          = "1.32.4"
   rule_description = var.cbr_rules[count.index].description
   enforcement_mode = var.cbr_rules[count.index].enforcement_mode
   rule_contexts    = var.cbr_rules[count.index].rule_contexts
