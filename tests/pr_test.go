@@ -3,6 +3,8 @@ package test
 
 import (
 	"fmt"
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/cloudinfo"
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testaddons"
 	"log"
 	"math/rand"
 	"os"
@@ -413,4 +415,50 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 		logger.Log(t, "END: Destroy (existing resources)")
 	}
 
+}
+
+func TestSecretsManagerDefaultConfiguration(t *testing.T) {
+	t.Parallel()
+
+	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
+		Testing:       t,
+		Prefix:        "smdeft",
+		ResourceGroup: resourceGroup,
+		QuietMode:     true, // Suppress logs except on failure
+	})
+
+	options.AddonConfig = cloudinfo.NewAddonConfigTerraform(
+		options.Prefix,
+		"deploy-arch-ibm-secrets-manager",
+		"fully-configurable",
+		map[string]interface{}{
+			"prefix":                  options.Prefix,
+			"region":                  validRegions[rand.Intn(len(validRegions))],
+			"enable_platform_metrics": "false", // Disable platform metrics for addon tests
+		},
+	)
+
+	err := options.RunAddonTest()
+	require.NoError(t, err)
+}
+
+// TestDependencyPermutations runs dependency permutations for the Secrets Manager and all its dependencies
+func TestDependencyPermutations(t *testing.T) {
+
+	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
+		Testing: t,
+		Prefix:  "sm-perm",
+		AddonConfig: cloudinfo.AddonConfig{
+			OfferingName:   "deploy-arch-ibm-secrets-manager",
+			OfferingFlavor: "fully-configurable",
+			Inputs: map[string]interface{}{
+				"prefix":                       "sm-perm",
+				"region":                       validRegions[rand.Intn(len(validRegions))],
+				"existing_resource_group_name": resourceGroup,
+			},
+		},
+	})
+
+	err := options.RunAddonPermutationTest()
+	assert.NoError(t, err, "Dependency permutation test should not fail")
 }
