@@ -18,7 +18,7 @@ output "secrets_manager_kms_instance_crn" {
   description = "CRN of created secret manager KMS instance"
 }
 
-output "event_notification_instance_crn" {
+output "event_notifications_instance_crn" {
   value       = module.event_notifications.crn
   description = "CRN of created event notification"
 }
