@@ -15,9 +15,9 @@ This examples handles the provisioning of a new Secrets Manager instance.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_event_notification"></a> [event\_notification](#module\_event\_notification) | terraform-ibm-modules/event-notifications/ibm | 2.4.22 |
-| <a name="module_key_protect"></a> [key\_protect](#module\_key\_protect) | terraform-ibm-modules/kms-all-inclusive/ibm | 5.1.13 |
-| <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group) | terraform-ibm-modules/resource-group/ibm | 1.2.1 |
+| <a name="module_event_notification"></a> [event\_notification](#module\_event\_notification) | terraform-ibm-modules/event-notifications/ibm | 2.6.2 |
+| <a name="module_key_protect"></a> [key\_protect](#module\_key\_protect) | terraform-ibm-modules/kms-all-inclusive/ibm | 5.1.16 |
+| <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group) | terraform-ibm-modules/resource-group/ibm | 1.3.0 |
 | <a name="module_secrets_manager"></a> [secrets\_manager](#module\_secrets\_manager) | ../.. | n/a |
 
 ### Resources
