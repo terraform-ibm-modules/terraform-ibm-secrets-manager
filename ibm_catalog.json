@@ -493,7 +493,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v2.5.0"
+              "version": "v2.6.0"
             }
           ],
           "dependency_version_2": true,
