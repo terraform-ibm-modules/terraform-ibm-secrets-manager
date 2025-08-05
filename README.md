@@ -25,9 +25,6 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 
-## Reference architectures
-- [Secrets Manager - Standard variation](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/solutions/standard)
-
 ## terraform-ibm-secrets-manager
 
 ### Usage
