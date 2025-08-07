@@ -339,7 +339,7 @@
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
               "service_name": "sysdig-monitor",
-              "notes": "[Optional] Required if you are consuming the Observability deployable architecture which sets up Cloud Monitoring."
+              "notes": "[Optional] Required if you are consuming the Cloud Monitoring deployable architecture."
             },
             {
               "role_crns": [
@@ -347,7 +347,7 @@
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
               "service_name": "logs",
-              "notes": "[Optional] Required if you are consuming the Observability deployable architecture which sets up Cloud Logs."
+              "notes": "[Optional] Required if you are consuming the Cloud logs deployable architecture."
             },
             {
               "role_crns": [
