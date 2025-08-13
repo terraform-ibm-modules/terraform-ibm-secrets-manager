@@ -22,3 +22,18 @@ output "secrets_manager_crn" {
   description = "CRN of Secrets Manager instance."
   value       = module.secrets_manager.secrets_manager_crn
 }
+
+output "next_steps_text" {
+  value       = "Now, you can use Secrets Manager to manage sensitive data like passwords and API keys."
+  description = "Next steps text"
+}
+
+output "next_step_primary_label" {
+  value       = "Go to Secrets Manager"
+  description = "Primary label"
+}
+
+output "next_step_primary_url" {
+  value       = "https://cloud.ibm.com/services/secrets-manager/${module.secrets_manager.secrets_manager_crn}"
+  description = "primary url"
+}

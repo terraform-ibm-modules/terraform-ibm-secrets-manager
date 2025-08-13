@@ -25,9 +25,6 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 
-## Reference architectures
-- [Secrets Manager - Standard variation](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/solutions/standard)
-
 ## terraform-ibm-secrets-manager
 
 ### Usage
@@ -75,7 +72,7 @@ You need the following permissions to run this module.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cbr_rule"></a> [cbr\_rule](#module\_cbr\_rule) | terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module | 1.32.4 |
+| <a name="module_cbr_rule"></a> [cbr\_rule](#module\_cbr\_rule) | terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module | 1.32.7 |
 | <a name="module_kms_key_crn_parser"></a> [kms\_key\_crn\_parser](#module\_kms\_key\_crn\_parser) | terraform-ibm-modules/common-utilities/ibm//modules/crn-parser | 1.2.0 |
 | <a name="module_secrets"></a> [secrets](#module\_secrets) | ./modules/secrets | n/a |
 
