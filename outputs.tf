@@ -30,11 +30,11 @@ output "secrets_manager_region" {
 
 output "secret_groups" {
   value       = module.secrets.secret_groups
-  description = "IDs of the created Secret Group"
+  description = "IDs of the secret groups"
 }
 
 output "secrets" {
   value       = module.secrets.secrets
-  description = "List of secret mananger secret config data"
+  description = "List of Secrets Mananger secret configuration data"
 }
 ##############################################################################

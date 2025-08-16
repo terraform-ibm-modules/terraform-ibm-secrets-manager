@@ -20,8 +20,8 @@
         "terraform",
         "solution"
       ],
-      "short_description": "Cloud architecture including Secrets Manager instance and optional security, logging and notification services.",
-      "long_description": "This deployable architecture is used to provision and configure an [IBM Cloud Secrets Manager](https://www.ibm.com/products/secrets-manager) instance. **Optionally**, supports creating and/or configuring:\n* [IBM Cloud account](https://cloud.ibm.com/docs/account?topic=account-account-getting-started): To set up IBM Cloud accounts settings.\n* [Key Protect](https://cloud.ibm.com/docs/key-protect?topic=key-protect-getting-started-tutorial): For data encryption using customer-managed keys.\n* [Cloud Logs](https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-getting-started): Logging and monitoring platform logs.\n* [Cloud Monitoring](https://cloud.ibm.com/docs/monitoring?topic=monitoring-getting-started):Measure how users and applications interact with the Secrets Manager instance.\n* [Event Notifications](https://cloud.ibm.com/docs/event-notifications?topic=event-notifications-getting-started): Send notifications of events to other users, or destinations, by using email, SMS or other supported delivery channels.\n\nℹ️ This Terraform-based automation is part of a broader suite of IBM-maintained Infrastructure as Code (IaC) assets, each following the naming pattern \"Cloud automation for *servicename*\" and focusing on single IBM Cloud service. These single-service deployable architectures can be used on their own to streamline and automate service deployments through an [IaC approach](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-understanding-projects), or assembled together into a broader [automated IaC stack](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-config-stack) to automate the deployment of an end-to-end solution architecture.",
+      "short_description": "Cloud architecture including a Secrets Manager instance and optional security, logging, and notification services.",
+      "long_description": "This deployable architecture is used to provision and configure an [IBM Cloud Secrets Manager](https://www.ibm.com/products/secrets-manager) instance. It optionally supports creating and configuring the following:\n* [an IBM Cloud account](https://cloud.ibm.com/docs/account?topic=account-account-getting-started) to set up basic account settings.\n* [Key Protect](https://cloud.ibm.com/docs/key-protect?topic=key-protect-getting-started-tutorial) for data encryption by using your own managed keys.\n* [Cloud Logs](https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-getting-started) for logging and monitoring platform logs.\n* [Cloud Monitoring](https://cloud.ibm.com/docs/monitoring?topic=monitoring-getting-started) to measure how users and applications interact with the Secrets Manager instance.\n* [Event Notifications](https://cloud.ibm.com/docs/event-notifications?topic=event-notifications-getting-started) to send notifications of events to other users, or destinations, by using email, SMS or other supported delivery channels.\n\nℹ️ This deployable architecture is a part of a larger collection that IBM provides. Each deployable architecture focuses on a single IBM Cloud service. You can use these deployable architectures on their own to automate deployments by following an [IaC approach](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-understanding-projects), or you can [combine them together](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-config-stack) to deploy a more complex end-to-end solution architecture.",
       "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/images/secrets_manager.svg",
       "provider_name": "IBM",
@@ -44,11 +44,11 @@
         },
         {
           "title": "Sets up authorization policy",
-          "description": "Sets up IBM IAM authorization policy between IBM Secrets Manager instance and IBM Key Management Service (KMS) instance. It also supports Event Notification authorization policy. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-integrations)."
+          "description": "Sets up IBM IAM authorization policy between the Secrets Manager instance and a key management service instance. It also supports Event Notifications authorization policy. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-integrations)."
         },
         {
           "title": "Configures lifecycle notifications",
-          "description": "Optionally, you can choose to configure lifecycle notifications by integrating the Event Notifications service. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-event-notifications&interface=ui)."
+          "description": "Optionally, you can choose to configure lifecycle notifications by integrating with the Event Notifications service. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-event-notifications&interface=ui)."
         },
         {
           "title": "Sets up logging for Secrets Manager instance",
@@ -151,7 +151,7 @@
               "key": "enable_platform_metrics",
               "type": "string",
               "default_value": "true",
-              "description": "When set to `true`, the IBM Cloud Monitoring instance will be configured to collect platform metrics from the provided region. You can configure 1 instance only of the IBM Cloud Monitoring service per region to collect platform metrics in that location. Check with the account or service administrator if another monitoring instance has already been configured. You may not have permissions to see all monitoring instances in the region. [Learn more](https://cloud.ibm.com/docs/monitoring?topic=monitoring-platform_metrics_enabling).",
+              "description": "When set to `true`, the IBM Cloud Monitoring instance is configured to collect platform metrics from the specified region. You can configure only one instance of the IBM Cloud Monitoring service per region to collect platform metrics in that location. Check with the account or service administrator if another Monitoring instance is already configured. You might not have permissions to see all monitoring instances in the region. [Learn more](https://cloud.ibm.com/docs/monitoring?topic=monitoring-platform_metrics_enabling).",
               "required": true,
               "virtual": true,
               "options": [
@@ -333,7 +333,7 @@
                 "crn:v1:bluemix:public:iam::::serviceRole:Manager"
               ],
               "service_name": "secrets-manager",
-              "notes": "Required for creating an Secrets Manager instance. 'Manager' access required to create new secret groups."
+              "notes": "Required for creating a Secrets Manager instance. 'Manager' access is required to create secret groups."
             },
             {
               "role_crns": [
@@ -341,7 +341,7 @@
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
               "service_name": "event-notifications",
-              "notes": "[Optional] Required if you are configuring an Event Notifications Instance."
+              "notes": "[Optional] Required if you are configuring an Event Notifications instance."
             },
             {
               "role_crns": [
@@ -349,7 +349,7 @@
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
               "service_name": "sysdig-monitor",
-              "notes": "[Optional] Required if you are consuming the Observability deployable architecture which sets up Cloud Monitoring."
+              "notes": "[Optional] Required to deploy Cloud automation for Observability, which includes Cloud Monitoring."
             },
             {
               "role_crns": [
@@ -357,7 +357,7 @@
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
               "service_name": "logs",
-              "notes": "[Optional] Required if you are consuming the Observability deployable architecture which sets up Cloud Logs."
+              "notes": "[Optional] Required to deploy Cloud automation for Observability, which includes Cloud Logs."
             },
             {
               "role_crns": [
@@ -365,7 +365,7 @@
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
               "service_name": "hs-crypto",
-              "notes": "[Optional] Required if you are creating/configuring keys in an existing Hyper Protect Crypto Services (HPCS) instance for encryption."
+              "notes": "[Optional] Required if you are creating and configuring keys in an existing Hyper Protect Crypto Services instance for key encryption."
             },
             {
               "role_crns": [
@@ -373,21 +373,21 @@
                 "crn:v1:bluemix:public:iam::::role:Editor"
               ],
               "service_name": "kms",
-              "notes": "[Optional] Required if you are creating/configuring Key Protect instance and keys for encryption."
+              "notes": "[Optional] Required if you are creating and configuring a Key Protect instance for key encryption."
             },
             {
               "role_crns": [
                 "crn:v1:bluemix:public:iam::::role:Administrator"
               ],
               "service_name": "iam-identity",
-              "notes": "[Optional] Required if Cloud automation for account configuration is enabled."
+              "notes": "[Optional] Required to deploy Cloud automation for account configuration, which creates foundational IBM Cloud account resources, like IAM settings, trusted profiles, access groups, and resource groups."
             }
           ],
           "architecture": {
             "features": [
               {
                 "title": " ",
-                "description": "Configured to use IBM secure by default standards, but can be edited to fit your use case."
+                "description": "Configured to use IBM secure-by-default standards, but you can edit it to fit your use case."
               }
             ],
             "diagrams": [
@@ -397,14 +397,14 @@
                   "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architecture/secrets_manager.svg",
                   "type": "image/svg+xml"
                 },
-                "description": "This architecture supports creating and configuring a Secrets Manager instance and optional security, logging and notification services."
+                "description": "This architecture supports creating and configuring a Secrets Manager instance and optional security, logging, and notification services."
               }
             ]
           },
           "dependencies": [
             {
               "name": "deploy-arch-ibm-account-infra-base",
-              "description": "Advanced users can leverage cloud automation for account configuration to configure IBM Cloud account with a ready-made set of resource groups by default. When you enable the \"with account settings\" option, it also applies baseline security and governance settings.",
+              "description": "Advanced users can leverage the Cloud automation for account configuration deployable architecture to configure an IBM Cloud account with a ready-made set of resource groups by default. When you enable the \"with account settings\" option, it also applies baseline security and governance settings.",
               "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
               "flavors": [
                 "resource-group-only",
@@ -714,14 +714,14 @@
                 "crn:v1:bluemix:public:iam::::serviceRole:Manager"
               ],
               "service_name": "secrets-manager",
-              "notes": "Required for creating an Secrets Manager instance. 'Manager' access required to create new secret groups."
+              "notes": "Required to create a Secrets Manager instance. 'Manager' access is required to create secret groups."
             }
           ],
           "architecture": {
             "features": [
               {
                 "title": " ",
-                "description": "Configured to use IBM secure by default standards that can't be changed."
+                "description": "Configured to use IBM secure-by-default standards that can't be changed."
               }
             ],
             "diagrams": [
@@ -731,7 +731,7 @@
                   "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architecture/secrets_manager.svg",
                   "type": "image/svg+xml"
                 },
-                "description": "This architecture supports creating and configuring IBM Secrets Manager instance."
+                "description": "This architecture supports creating and configuring an IBM Secrets Manager instance."
               }
             ]
           },
