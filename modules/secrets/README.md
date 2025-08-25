@@ -73,5 +73,5 @@ module "secrets_manager" {
 | Name | Description |
 |------|-------------|
 | <a name="output_secret_groups"></a> [secret\_groups](#output\_secret\_groups) | IDs of the created Secret Group |
-| <a name="output_secrets"></a> [secrets](#output\_secrets) | List of secret mananger secret config data |
+| <a name="output_secrets"></a> [secrets](#output\_secrets) | List of secret manager secret config data |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
