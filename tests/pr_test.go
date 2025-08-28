@@ -3,13 +3,14 @@ package test
 
 import (
 	"fmt"
-	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/cloudinfo"
-	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testaddons"
 	"log"
 	"math/rand"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/cloudinfo"
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testaddons"
 
 	"github.com/gruntwork-io/terratest/modules/files"
 	"github.com/gruntwork-io/terratest/modules/logger"
@@ -419,6 +420,7 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 
 func TestSecretsManagerDefaultConfiguration(t *testing.T) {
 	t.Parallel()
+	t.Skip("Remove skip once this issue is resolved- https://github.ibm.com/GoldenEye/issues/issues/15657")
 
 	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
 		Testing:       t,
@@ -445,6 +447,7 @@ func TestSecretsManagerDefaultConfiguration(t *testing.T) {
 
 // TestDependencyPermutations runs dependency permutations for the Secrets Manager and all its dependencies
 func TestDependencyPermutations(t *testing.T) {
+	t.Skip("Remove skip once this issue is resolved- https://github.ibm.com/GoldenEye/issues/issues/15657")
 
 	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
 		Testing: t,
