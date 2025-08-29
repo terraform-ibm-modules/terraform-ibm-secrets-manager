@@ -446,6 +446,7 @@ func TestSecretsManagerDefaultConfiguration(t *testing.T) {
 
 // TestDependencyPermutations runs dependency permutations for the Secrets Manager and all its dependencies
 func TestDependencyPermutations(t *testing.T) {
+	t.Parallel()
 
 	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
 		Testing: t,
