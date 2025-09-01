@@ -34,5 +34,5 @@ output "secret_groups" {
 
 output "secrets" {
   value       = module.secrets_manager.secrets
-  description = "List of secret mananger secret config data"
+  description = "List of secret manager secret config data"
 }
