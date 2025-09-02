@@ -18,7 +18,7 @@ variable "sm_service_plan" {
 variable "region" {
   type        = string
   description = "Region where resources will be created"
-  default     = "eu-de"
+  default     = "us-south" # Region is hardcoded to us-south in order to restrict the code engine project and build creation with a hardcoded output image
 }
 
 variable "resource_group" {

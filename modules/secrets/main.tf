@@ -58,9 +58,10 @@ locals {
 
 # create secret
 module "secrets" {
-  for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
-  source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
-  version                                     = "1.8.0"
+  for_each = { for obj in local.secrets : obj.secret_name => obj }
+  # source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
+  # version                                     = "1.8.0"
+  source                                      = "git@github.com:terraform-ibm-modules/terraform-ibm-secrets-manager-secret.git?ref=13662-custom-secret"
   region                                      = var.existing_sm_instance_region
   secrets_manager_guid                        = var.existing_sm_instance_guid
   secret_group_id                             = each.value.secret_group_id
@@ -81,4 +82,7 @@ module "secrets" {
   service_credentials_source_service_crn      = each.value.service_credentials_source_service_crn
   service_credentials_source_service_role_crn = each.value.service_credentials_source_service_role_crn
   service_credentials_source_service_hmac     = each.value.service_credentials_source_service_hmac
+  custom_credentials_configurations           = each.value.custom_credentials_configurations
+  custom_credentials_parameters               = each.value.custom_credentials_parameters
+  job_parameters                              = each.value.job_parameters
 }

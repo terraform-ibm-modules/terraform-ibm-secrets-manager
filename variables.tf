@@ -190,6 +190,13 @@ variable "secrets" {
       service_credentials_ttl                     = optional(string, "7776000") # 90 days
       service_credentials_source_service_crn      = optional(string)
       service_credentials_source_service_role_crn = optional(string)
+      custom_credentials_configurations           = optional(string)
+      custom_credentials_parameters               = optional(bool, false)
+      job_parameters = optional(object({
+        integer_values = optional(map(number))
+        string_values  = optional(map(string))
+        boolean_values = optional(map(bool))
+      }), {})
     })))
   }))
   description = "Secret Manager secrets configurations."
