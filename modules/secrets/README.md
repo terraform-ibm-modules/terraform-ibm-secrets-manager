@@ -50,7 +50,7 @@ module "secrets_manager" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_secret_groups"></a> [secret\_groups](#module\_secret\_groups) | terraform-ibm-modules/secrets-manager-secret-group/ibm | 1.3.13 |
+| <a name="module_secret_groups"></a> [secret\_groups](#module\_secret\_groups) | terraform-ibm-modules/secrets-manager-secret-group/ibm | 1.3.14 |
 | <a name="module_secrets"></a> [secrets](#module\_secrets) | terraform-ibm-modules/secrets-manager-secret/ibm | 1.8.0 |
 
 ### Resources
@@ -73,5 +73,5 @@ module "secrets_manager" {
 | Name | Description |
 |------|-------------|
 | <a name="output_secret_groups"></a> [secret\_groups](#output\_secret\_groups) | IDs of the created Secret Group |
-| <a name="output_secrets"></a> [secrets](#output\_secrets) | List of secret mananger secret config data |
+| <a name="output_secrets"></a> [secrets](#output\_secrets) | List of secret manager secret config data |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
