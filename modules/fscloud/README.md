@@ -20,7 +20,6 @@ module "secrets_manager" {
   resource_group_id          = "xxXXxxXXxXxXXXXxxXxxxXXXXxXXXXX"
   region                     = "us-south"
   secrets_manager_name       = "my-secrets-manager"
-  existing_kms_instance_guid = var.existing_kms_instance_guid
   kms_key_crn                = var.kms_key_crn
 }
 ```
