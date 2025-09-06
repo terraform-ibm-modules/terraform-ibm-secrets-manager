@@ -420,7 +420,6 @@ func TestRunSecretsManagerSecurityEnforcedUpgradeSchematic(t *testing.T) {
 
 func TestSecretsManagerDefaultConfiguration(t *testing.T) {
 	t.Parallel()
-	t.Skip("Remove skip once this issue is resolved- https://github.ibm.com/GoldenEye/issues/issues/15657")
 
 	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
 		Testing:       t,
@@ -447,7 +446,7 @@ func TestSecretsManagerDefaultConfiguration(t *testing.T) {
 
 // TestDependencyPermutations runs dependency permutations for the Secrets Manager and all its dependencies
 func TestDependencyPermutations(t *testing.T) {
-	t.Skip("Remove skip once this issue is resolved- https://github.ibm.com/GoldenEye/issues/issues/15657")
+	t.Skip() // skipping permutations test untill we do a refactor
 
 	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
 		Testing: t,
