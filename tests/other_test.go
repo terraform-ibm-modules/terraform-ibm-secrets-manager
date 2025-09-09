@@ -35,6 +35,13 @@ func TestRunCompleteExample(t *testing.T) {
 
 	options := setupOptions(t, "secrets-mgr", false)
 
+	// need to ignore because of a provider issue: https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4719
+	options.IgnoreUpdates = testhelper.Exemptions{
+		List: []string{
+			"module.code_engine_job.ibm_code_engine_job.ce_job",
+		},
+	}
+
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")
@@ -63,9 +70,7 @@ func TestFSCloudInSchematics(t *testing.T) {
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
-		{Name: "existing_kms_instance_guid", Value: permanentResources["hpcs_south"], DataType: "string"},
 		{Name: "kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
-		{Name: "sm_service_plan", Value: "trial", DataType: "string"},
 	}
 
 	err := options.RunSchematicTest()

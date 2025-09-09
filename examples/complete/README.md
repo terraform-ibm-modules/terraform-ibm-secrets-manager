@@ -20,11 +20,11 @@ This examples handles the provisioning of a new Secrets Manager instance.
 | <a name="module_code_engine_job"></a> [code\_engine\_job](#module\_code\_engine\_job) | terraform-ibm-modules/code-engine/ibm//modules/job | 4.5.8 |
 | <a name="module_code_engine_project"></a> [code\_engine\_project](#module\_code\_engine\_project) | terraform-ibm-modules/code-engine/ibm//modules/project | 4.5.8 |
 | <a name="module_code_engine_secret"></a> [code\_engine\_secret](#module\_code\_engine\_secret) | terraform-ibm-modules/code-engine/ibm//modules/secret | 4.5.8 |
-| <a name="module_custom_credential_engine"></a> [custom\_credential\_engine](#module\_custom\_credential\_engine) | git@github.com:terraform-ibm-modules/terraform-ibm-secrets-manager-custom-credentials-engine.git | 13662-custom-engine |
+| <a name="module_custom_credential_engine"></a> [custom\_credential\_engine](#module\_custom\_credential\_engine) | terraform-ibm-modules/secrets-manager-custom-credentials-engine/ibm | 1.0.0 |
 | <a name="module_event_notification"></a> [event\_notification](#module\_event\_notification) | terraform-ibm-modules/event-notifications/ibm | 2.6.18 |
 | <a name="module_key_protect"></a> [key\_protect](#module\_key\_protect) | terraform-ibm-modules/kms-all-inclusive/ibm | 5.1.22 |
 | <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group) | terraform-ibm-modules/resource-group/ibm | 1.3.0 |
-| <a name="module_secret_manager_custom_credential"></a> [secret\_manager\_custom\_credential](#module\_secret\_manager\_custom\_credential) | git@github.com:terraform-ibm-modules/terraform-ibm-secrets-manager-secret.git | 13662-custom-secret |
+| <a name="module_secret_manager_custom_credential"></a> [secret\_manager\_custom\_credential](#module\_secret\_manager\_custom\_credential) | terraform-ibm-modules/secrets-manager-secret/ibm | 1.9.0 |
 | <a name="module_secrets_manager"></a> [secrets\_manager](#module\_secrets\_manager) | ../.. | n/a |
 
 ### Resources
@@ -44,7 +44,7 @@ This examples handles the provisioning of a new Secrets Manager instance.
 | <a name="input_en_region"></a> [en\_region](#input\_en\_region) | Region where event notification will be created | `string` | `"au-syd"` | no |
 | <a name="input_ibmcloud_api_key"></a> [ibmcloud\_api\_key](#input\_ibmcloud\_api\_key) | The IBM Cloud API key this account authenticates to | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for sm instance | `string` | `"sm-com"` | no |
-| <a name="input_region"></a> [region](#input\_region) | Region where resources will be created | `string` | `"us-south"` | no |
+| <a name="input_region"></a> [region](#input\_region) | Region where resources will be created | `string` | `"eu-de"` | no |
 | <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | An existing resource group name to use for this example, if unset a new resource group will be created | `string` | `null` | no |
 | <a name="input_resource_tags"></a> [resource\_tags](#input\_resource\_tags) | Optional list of tags to be added to created resources | `list(string)` | `[]` | no |
 | <a name="input_sm_service_plan"></a> [sm\_service\_plan](#input\_sm\_service\_plan) | The Secrets Manager service plan to provision | `string` | `"trial"` | no |

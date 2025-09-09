@@ -127,7 +127,7 @@ module "code_engine_secret" {
   project_id = module.code_engine_project.id
   format     = "registry"
   data = {
-    "server"   = "private.us.icr.io",
+    "server"   = "private.de.icr.io",
     "username" = "iamapikey",
     "password" = var.ibmcloud_api_key,
   }
@@ -145,7 +145,7 @@ resource "ibm_cr_namespace" "rg_namespace" {
 # Code Engine Build
 ##############################################################################
 locals {
-  output_image = "private.us.icr.io/${resource.ibm_cr_namespace.rg_namespace.name}/custom-engine-job"
+  output_image = "private.de.icr.io/${resource.ibm_cr_namespace.rg_namespace.name}/custom-engine-job"
 }
 
 # For example the region is hardcoded to us-south in order to hardcode the output image and region for creating Code Engine Project and build
@@ -153,6 +153,7 @@ module "code_engine_build" {
   source                     = "terraform-ibm-modules/code-engine/ibm//modules/build"
   version                    = "4.5.8"
   name                       = "${var.prefix}-build"
+  region                     = var.region
   ibmcloud_api_key           = var.ibmcloud_api_key
   project_id                 = module.code_engine_project.id
   existing_resource_group_id = module.resource_group.resource_group_id
@@ -201,7 +202,8 @@ module "code_engine_job" {
 
 module "custom_credential_engine" {
   depends_on                    = [module.secrets_manager, module.code_engine_job]
-  source                        = "git@github.com:terraform-ibm-modules/terraform-ibm-secrets-manager-custom-credentials-engine.git?ref=13662-custom-engine"
+  source                        = "terraform-ibm-modules/secrets-manager-custom-credentials-engine/ibm"
+  version                       = "1.0.0"
   secrets_manager_guid          = module.secrets_manager.secrets_manager_guid
   secrets_manager_region        = module.secrets_manager.secrets_manager_region
   custom_credential_engine_name = "${var.prefix}-test-custom-engine"
@@ -216,52 +218,14 @@ module "custom_credential_engine" {
 
 # Currently the main module cannot be called again as some of the count for resources depends on a computable input existing_en_instance_crn which will give error if the value is not available during planning
 # As a workaround the secret manager secret is directly being created via module call
-# module "secrets_manager_with_custom_credential_secret" {
-#   depends_on                = [module.secrets_manager,module.custom_credential_engine]
-#   source                    = "../.."
-#   resource_group_id         = module.resource_group.resource_group_id
-#   region                    = var.region
-#   skip_iam_authorization_policy = true
-#   skip_en_iam_authorization_policy = true
-#   skip_kms_iam_authorization_policy = true
-#   secrets_manager_name      = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
-#   # sm_service_plan           = var.sm_service_plan
-#   # sm_tags                   = var.resource_tags
-#   # kms_encryption_enabled    = true
-#   # is_hpcs_key               = false
-#   # kms_key_crn               = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
-#   # enable_event_notification = true
-#   existing_en_instance_crn  = module.event_notification.crn
-#   # existing_sm_instance_crn  = module.secrets_manager.secrets_manager_crn
-#   secrets = [
-#     {
-#       existing_secret_group = true
-#       secret_group_name = "default"
-#       secrets = [
-#         {
-#           secret_name = "${var.prefix}-custom-credential"
-#           secret_type             = "custom_credentials"
-#           custom_credentials_configurations = module.custom_credential_engine.custom_config_engine_name
-#           custom_credentials_parameters     = true
-#           job_parameters = {
-#             string_values = {
-#               apikey_secret_id = module.secrets_manager.secrets["${var.prefix}-custom-service-credential"].secret_id
-#             }
-#           }
-#         }
-#       ]
-#     }
-#   ]
-# }
-
 module "secret_manager_custom_credential" {
-  depends_on           = [module.secrets_manager, module.custom_credential_engine]
-  source               = "git@github.com:terraform-ibm-modules/terraform-ibm-secrets-manager-secret.git?ref=13662-custom-secret"
-  secret_type          = "custom_credentials" #checkov:skip=CKV_SECRET_6
-  region               = module.secrets_manager.secrets_manager_region
-  secrets_manager_guid = module.secrets_manager.secrets_manager_guid
-  secret_name          = "${var.prefix}-custom-credentials"
-  # secret_group_id                   = module.secrets_manager_group.secret_group_id
+  depends_on                        = [module.secrets_manager, module.custom_credential_engine]
+  source                            = "terraform-ibm-modules/secrets-manager-secret/ibm"
+  version                           = "1.9.0"
+  secret_type                       = "custom_credentials" #checkov:skip=CKV_SECRET_6
+  region                            = module.secrets_manager.secrets_manager_region
+  secrets_manager_guid              = module.secrets_manager.secrets_manager_guid
+  secret_name                       = "${var.prefix}-custom-credentials"
   secret_description                = "created by secrets-manager module complete example"
   custom_credentials_configurations = module.custom_credential_engine.custom_config_engine_name
   custom_metadata                   = { "metadata_custom_key" : "metadata_custom_value" } # can add any custom metadata here
