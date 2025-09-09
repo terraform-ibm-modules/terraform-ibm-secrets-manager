@@ -295,7 +295,7 @@
               "key": "secrets_manager_cbr_rules",
               "type": "array",
               "custom_config": {
-                "type": "textarea",
+                "type": "code_editor",
                 "grouping": "deployment",
                 "original_grouping": "deployment",
                 "config_constraints": {
@@ -307,7 +307,7 @@
               "key": "secret_groups",
               "type": "array",
               "custom_config": {
-                "type": "textarea",
+                "type": "code_editor",
                 "grouping": "deployment",
                 "original_grouping": "deployment"
               }
@@ -533,7 +533,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.2.12"
+              "version": "v1.2.25"
             },
             {
               "name": "deploy-arch-ibm-event-notifications",
@@ -728,7 +728,7 @@
               "key": "secrets_manager_cbr_rules",
               "type": "array",
               "custom_config": {
-                "type": "textarea",
+                "type": "code_editor",
                 "grouping": "deployment",
                 "original_grouping": "deployment",
                 "config_constraints": {
@@ -740,7 +740,7 @@
               "key": "secret_groups",
               "type": "array",
               "custom_config": {
-                "type": "textarea",
+                "type": "code_editor",
                 "grouping": "deployment",
                 "original_grouping": "deployment"
               }

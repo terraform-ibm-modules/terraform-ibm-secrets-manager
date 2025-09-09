@@ -21,8 +21,8 @@ This examples handles the provisioning of a new Secrets Manager instance.
 | <a name="module_code_engine_project"></a> [code\_engine\_project](#module\_code\_engine\_project) | terraform-ibm-modules/code-engine/ibm//modules/project | 4.5.8 |
 | <a name="module_code_engine_secret"></a> [code\_engine\_secret](#module\_code\_engine\_secret) | terraform-ibm-modules/code-engine/ibm//modules/secret | 4.5.8 |
 | <a name="module_custom_credential_engine"></a> [custom\_credential\_engine](#module\_custom\_credential\_engine) | terraform-ibm-modules/secrets-manager-custom-credentials-engine/ibm | 1.0.0 |
-| <a name="module_event_notification"></a> [event\_notification](#module\_event\_notification) | terraform-ibm-modules/event-notifications/ibm | 2.6.18 |
-| <a name="module_key_protect"></a> [key\_protect](#module\_key\_protect) | terraform-ibm-modules/kms-all-inclusive/ibm | 5.1.22 |
+| <a name="module_event_notification"></a> [event\_notification](#module\_event\_notification) | terraform-ibm-modules/event-notifications/ibm | 2.6.24 |
+| <a name="module_key_protect"></a> [key\_protect](#module\_key\_protect) | terraform-ibm-modules/kms-all-inclusive/ibm | 5.1.24 |
 | <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group) | terraform-ibm-modules/resource-group/ibm | 1.3.0 |
 | <a name="module_secret_manager_custom_credential"></a> [secret\_manager\_custom\_credential](#module\_secret\_manager\_custom\_credential) | terraform-ibm-modules/secrets-manager-secret/ibm | 1.9.0 |
 | <a name="module_secrets_manager"></a> [secrets\_manager](#module\_secrets\_manager) | ../.. | n/a |

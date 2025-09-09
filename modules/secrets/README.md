@@ -50,7 +50,7 @@ module "secrets_manager" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_secret_groups"></a> [secret\_groups](#module\_secret\_groups) | terraform-ibm-modules/secrets-manager-secret-group/ibm | 1.3.13 |
+| <a name="module_secret_groups"></a> [secret\_groups](#module\_secret\_groups) | terraform-ibm-modules/secrets-manager-secret-group/ibm | 1.3.15 |
 | <a name="module_secrets"></a> [secrets](#module\_secrets) | terraform-ibm-modules/secrets-manager-secret/ibm | 1.9.0 |
 
 ### Resources
