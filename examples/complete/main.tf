@@ -25,11 +25,6 @@ module "key_protect" {
   ]
 }
 
-resource "ibm_iam_api_key" "api_key" {
-  name        = "${var.prefix}-api-key"
-  description = "created for secrets-manager-secret complete example"
-}
-
 module "event_notification" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
   version           = "2.6.24"
@@ -90,7 +85,7 @@ module "secrets_manager" {
         {
           secret_name             = "${var.prefix}-custom-service-credential"
           secret_type             = "arbitrary"
-          secret_payload_password = ibm_iam_api_key.api_key.apikey
+          secret_payload_password = var.ibmcloud_api_key
         }
       ]
     },
@@ -120,6 +115,11 @@ module "code_engine_project" {
 ##############################################################################
 # Code Engine Secret
 ##############################################################################
+locals {
+  registry_hostname = "private.de.icr.io"
+  output_image      = "${local.registry_hostname}/${resource.ibm_cr_namespace.rg_namespace.name}/custom-engine-job"
+}
+
 module "code_engine_secret" {
   source     = "terraform-ibm-modules/code-engine/ibm//modules/secret"
   version    = "4.5.8"
@@ -127,7 +127,7 @@ module "code_engine_secret" {
   project_id = module.code_engine_project.id
   format     = "registry"
   data = {
-    "server"   = "private.de.icr.io",
+    "server"   = local.registry_hostname,
     "username" = "iamapikey",
     "password" = var.ibmcloud_api_key,
   }
@@ -144,9 +144,6 @@ resource "ibm_cr_namespace" "rg_namespace" {
 ##############################################################################
 # Code Engine Build
 ##############################################################################
-locals {
-  output_image = "private.de.icr.io/${resource.ibm_cr_namespace.rg_namespace.name}/custom-engine-job"
-}
 
 # For example the region is hardcoded to us-south in order to hardcode the output image and region for creating Code Engine Project and build
 module "code_engine_build" {
