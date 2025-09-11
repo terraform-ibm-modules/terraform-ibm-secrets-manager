@@ -35,6 +35,13 @@ func TestRunCompleteExample(t *testing.T) {
 
 	options := setupOptions(t, "secrets-mgr", false)
 
+	// need to ignore because of a provider issue: https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4719
+	options.IgnoreUpdates = testhelper.Exemptions{
+		List: []string{
+			"module.code_engine_job.ibm_code_engine_job.ce_job",
+		},
+	}
+
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")
