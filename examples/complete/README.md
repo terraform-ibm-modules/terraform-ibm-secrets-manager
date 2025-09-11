@@ -32,7 +32,6 @@ This examples handles the provisioning of a new Secrets Manager instance.
 | Name | Type |
 |------|------|
 | [ibm_cr_namespace.rg_namespace](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/cr_namespace) | resource |
-| [ibm_iam_api_key.api_key](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/iam_api_key) | resource |
 | [ibm_iam_authorization_policy.en_policy](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/iam_authorization_policy) | resource |
 | [time_sleep.wait_for_en_policy](https://registry.terraform.io/providers/hashicorp/time/0.12.1/docs/resources/sleep) | resource |
 | [http_http.job_config](https://registry.terraform.io/providers/hashicorp/http/3.2.1/docs/data-sources/http) | data source |
