@@ -413,8 +413,8 @@
                   "version_input": "existing_resource_group_name"
                 }
               ],
-              "optional": true,
-              "on_by_default": false,
+              "optional": false,
+              "on_by_default": true,
               "version": "v3.0.7"
             },
             {
