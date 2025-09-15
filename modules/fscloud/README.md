@@ -20,7 +20,6 @@ module "secrets_manager" {
   resource_group_id          = "xxXXxxXXxXxXXXXxxXxxxXXXXxXXXXX"
   region                     = "us-south"
   secrets_manager_name       = "my-secrets-manager"
-  existing_kms_instance_guid = var.existing_kms_instance_guid
   kms_key_crn                = var.kms_key_crn
 }
 ```
@@ -68,7 +67,7 @@ No resources.
 | Name | Description |
 |------|-------------|
 | <a name="output_secret_groups"></a> [secret\_groups](#output\_secret\_groups) | IDs of the created Secret Group |
-| <a name="output_secrets"></a> [secrets](#output\_secrets) | List of secret mananger secret config data |
+| <a name="output_secrets"></a> [secrets](#output\_secrets) | List of secret manager secret config data |
 | <a name="output_secrets_manager_crn"></a> [secrets\_manager\_crn](#output\_secrets\_manager\_crn) | CRN of the Secrets Manager instance |
 | <a name="output_secrets_manager_guid"></a> [secrets\_manager\_guid](#output\_secrets\_manager\_guid) | GUID of Secrets Manager instance |
 | <a name="output_secrets_manager_id"></a> [secrets\_manager\_id](#output\_secrets\_manager\_id) | ID of the Secrets Manager instance |

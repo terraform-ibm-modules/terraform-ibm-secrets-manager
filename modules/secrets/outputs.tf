@@ -8,6 +8,6 @@ output "secret_groups" {
 }
 
 output "secrets" {
-  description = "List of secret mananger secret config data"
+  description = "List of secret manager secret config data"
   value       = module.secrets
 }

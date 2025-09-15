@@ -79,7 +79,7 @@ variable "service_plan" {
 
 variable "skip_secrets_manager_iam_auth_policy" {
   type        = bool
-  description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine (if you are using an existing Secrets Manager isntance, attempting to re-create can cause conflicts if the policies already exist). If set to false, policies will be created that grants the Secrets Manager instance 'Operator' access to the IAM identity service, and 'Groups Service Member Manage' access to the IAM groups service."
+  description = "Whether to skip the creation of the IAM authorization policies required to enable the IAM credentials engine (if you are using an existing Secrets Manager instance, attempting to re-create can cause conflicts if the policies already exist). If set to false, policies will be created that grants the Secrets Manager instance 'Operator' access to the IAM identity service, and 'Groups Service Member Manage' access to the IAM groups service."
   default     = false
 }
 
@@ -216,7 +216,7 @@ variable "kms_endpoint_type" {
   description = "The endpoint for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
   default     = "private"
   validation {
-    condition     = can(regex("public|private", var.kms_endpoint_type))
+    condition     = can(regex("^(public|private)$", var.kms_endpoint_type))
     error_message = "The kms_endpoint_type value must be 'public' or 'private'."
   }
 }

@@ -8,6 +8,7 @@ This examples handles the provisioning of a new Secrets Manager instance.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= v1.9.0 |
+| <a name="requirement_http"></a> [http](#requirement\_http) | 3.2.1 |
 | <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >=1.79.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | 0.12.1 |
 
@@ -15,17 +16,25 @@ This examples handles the provisioning of a new Secrets Manager instance.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_event_notification"></a> [event\_notification](#module\_event\_notification) | terraform-ibm-modules/event-notifications/ibm | 2.6.10 |
-| <a name="module_key_protect"></a> [key\_protect](#module\_key\_protect) | terraform-ibm-modules/kms-all-inclusive/ibm | 5.1.19 |
+| <a name="module_code_engine_build"></a> [code\_engine\_build](#module\_code\_engine\_build) | terraform-ibm-modules/code-engine/ibm//modules/build | 4.5.13 |
+| <a name="module_code_engine_job"></a> [code\_engine\_job](#module\_code\_engine\_job) | terraform-ibm-modules/code-engine/ibm//modules/job | 4.5.13 |
+| <a name="module_code_engine_project"></a> [code\_engine\_project](#module\_code\_engine\_project) | terraform-ibm-modules/code-engine/ibm//modules/project | 4.5.13 |
+| <a name="module_code_engine_secret"></a> [code\_engine\_secret](#module\_code\_engine\_secret) | terraform-ibm-modules/code-engine/ibm//modules/secret | 4.5.13 |
+| <a name="module_custom_credential_engine"></a> [custom\_credential\_engine](#module\_custom\_credential\_engine) | terraform-ibm-modules/secrets-manager-custom-credentials-engine/ibm | 1.0.1 |
+| <a name="module_event_notification"></a> [event\_notification](#module\_event\_notification) | terraform-ibm-modules/event-notifications/ibm | 2.7.0 |
+| <a name="module_key_protect"></a> [key\_protect](#module\_key\_protect) | terraform-ibm-modules/kms-all-inclusive/ibm | 5.1.25 |
 | <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group) | terraform-ibm-modules/resource-group/ibm | 1.3.0 |
+| <a name="module_secret_manager_custom_credential"></a> [secret\_manager\_custom\_credential](#module\_secret\_manager\_custom\_credential) | terraform-ibm-modules/secrets-manager-secret/ibm | 1.9.0 |
 | <a name="module_secrets_manager"></a> [secrets\_manager](#module\_secrets\_manager) | ../.. | n/a |
 
 ### Resources
 
 | Name | Type |
 |------|------|
+| [ibm_cr_namespace.rg_namespace](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/cr_namespace) | resource |
 | [ibm_iam_authorization_policy.en_policy](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/iam_authorization_policy) | resource |
 | [time_sleep.wait_for_en_policy](https://registry.terraform.io/providers/hashicorp/time/0.12.1/docs/resources/sleep) | resource |
+| [http_http.job_config](https://registry.terraform.io/providers/hashicorp/http/3.2.1/docs/data-sources/http) | data source |
 
 ### Inputs
 
