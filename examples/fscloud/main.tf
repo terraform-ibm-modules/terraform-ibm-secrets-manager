@@ -1,6 +1,7 @@
 ##############################################################################
 # Resource Group
 ##############################################################################
+
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
   version = "1.3.0"
@@ -9,36 +10,32 @@ module "resource_group" {
   existing_resource_group_name = var.resource_group
 }
 
+
 ##############################################################################
-# Get Cloud Account ID
+# Create CBR Zone for Schematics
 ##############################################################################
 
 data "ibm_iam_account_settings" "iam_account_settings" {
 }
 
-##############################################################################
-# VPC
-##############################################################################
-resource "ibm_is_vpc" "vpc" {
-  name           = "${var.prefix}-vpc"
-  resource_group = module.resource_group.resource_group_id
-  tags           = var.resource_tags
+module "cbr_zone_schematics" {
+  source           = "terraform-ibm-modules/cbr/ibm//modules/cbr-zone-module"
+  version          = "1.33.2"
+  name             = "${var.prefix}-schematics-zone"
+  zone_description = "CBR Network zone containing Schematics"
+  account_id       = data.ibm_iam_account_settings.iam_account_settings.account_id
+  addresses = [{
+    type = "serviceRef",
+    ref = {
+      account_id   = data.ibm_iam_account_settings.iam_account_settings.account_id
+      service_name = "schematics"
+    }
+  }]
 }
 
 ##############################################################################
-# Create CBR Zone
+# Event Notifications
 ##############################################################################
-module "cbr_zone" {
-  source           = "terraform-ibm-modules/cbr/ibm//modules/cbr-zone-module"
-  version          = "1.33.2"
-  name             = "${var.prefix}-CBR-zone"
-  zone_description = "CBR Network zone representing VPC"
-  account_id       = data.ibm_iam_account_settings.iam_account_settings.account_id
-  addresses = [{
-    type  = "vpc", # to bind a specific vpc to the zone
-    value = ibm_is_vpc.vpc.crn,
-  }]
-}
 
 module "event_notification" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
@@ -47,7 +44,6 @@ module "event_notification" {
   name              = "${var.prefix}-en"
   tags              = var.resource_tags
   plan              = "lite"
-  service_endpoints = "public"
   region            = var.region
 }
 
@@ -65,6 +61,10 @@ locals {
   kms_service = module.kms_key_crn_parser.service_name
 }
 
+##############################################################################
+# Secrets Manager
+##############################################################################
+
 module "secrets_manager" {
   source                   = "../../modules/fscloud"
   resource_group_id        = module.resource_group.resource_group_id
@@ -76,7 +76,7 @@ module "secrets_manager" {
   existing_en_instance_crn = module.event_notification.crn
   cbr_rules = [
     {
-      description      = "${var.prefix}-secrets-manager access only from vpc"
+      description      = "${var.prefix}-secrets-manager access only from Schematics"
       enforcement_mode = "enabled"
       account_id       = data.ibm_iam_account_settings.iam_account_settings.account_id
       rule_contexts = [{
@@ -87,7 +87,7 @@ module "secrets_manager" {
           },
           {
             name  = "networkZoneId"
-            value = module.cbr_zone.zone_id
+            value = module.cbr_zone_schematics.zone_id
         }]
       }]
       operations = [{
