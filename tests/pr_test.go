@@ -247,6 +247,7 @@ func TestAddonsExistingSecretsManager(t *testing.T) {
 			"prefix":                       options.Prefix,
 			"region":                       "us-south",
 			"existing_secrets_manager_crn": permanentResources["privateOnlySecMgrCRN"],
+			"service_plan":                 "__NULL__", // Plan not needed if using existing instance
 		},
 	)
 
