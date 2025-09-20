@@ -14,6 +14,10 @@ locals {
       secret_group_access_group_tags   = secret_group.access_group_tags
     }]
   ])
+  existing_groups_by_name = {
+    for g in data.ibm_sm_secret_groups.existing_secret_groups.secret_groups :
+    g.name => g
+  }
 }
 
 data "ibm_sm_secret_groups" "existing_secret_groups" {
@@ -45,20 +49,50 @@ locals {
   secrets = flatten([
     for secret_group in var.secrets :
     secret_group.existing_secret_group ? [
-      for secret in secret_group.secrets : merge({
-        secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id
-      }, secret)
+      for secret in secret_group.secrets : merge(
+        secret,
+        {
+          secret_group_id = try(local.existing_groups_by_name[secret_group.secret_group_name].id, null)
+        }
+      )
       ] : [
-      for secret in secret_group.secrets : merge({
-        secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
-      }, secret)
+      for secret in secret_group.secrets : merge(
+        secret,
+        {
+          secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
+        }
+      )
     ]
   ])
+  missing_existing_groups = [
+    for sg in var.secrets :
+    sg.existing_secret_group && !contains(keys(local.existing_groups_by_name), sg.secret_group_name)
+    ? sg.secret_group_name
+    : null
+  ]
+  missing_existing_groups_filtered = [
+    for n in local.missing_existing_groups : n if n != null
+  ]
 }
+resource "null_resource" "validate_existing_groups" {
+  triggers = {
+    count = length(local.missing_existing_groups_filtered)
+    names = join(",", local.missing_existing_groups_filtered)
+  }
 
+  lifecycle {
+    precondition {
+      condition     = length(local.missing_existing_groups_filtered) == 0
+      error_message = "These existing secret groups were not found: ${join(", ", local.missing_existing_groups_filtered)}"
+    }
+  }
+}
 # create secret
 module "secrets" {
-  for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
+  for_each = {
+    for obj in local.secrets :
+    "${obj.secret_group_id}:${obj.secret_name}" => obj
+  }
   source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
   version                                     = "1.9.0"
   region                                      = var.existing_sm_instance_region

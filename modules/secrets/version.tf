@@ -10,5 +10,9 @@ terraform {
       # Use "greater than or equal to" range in modules
       version = ">=1.79.0, <2.0.0"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.2"
+    }
   }
 }
