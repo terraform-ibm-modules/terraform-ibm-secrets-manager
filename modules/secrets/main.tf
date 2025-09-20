@@ -89,10 +89,7 @@ resource "null_resource" "validate_existing_groups" {
 }
 # create secret
 module "secrets" {
-  for_each = {
-    for obj in local.secrets :
-    "${obj.secret_group_id}:${obj.secret_name}" => obj
-  }
+  for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
   source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
   version                                     = "1.9.0"
   region                                      = var.existing_sm_instance_region
