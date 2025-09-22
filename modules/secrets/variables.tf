@@ -21,6 +21,7 @@ variable "endpoint_type" {
 variable "secrets" {
   type = list(object({
     secret_group_name        = string
+    secret_group_id          = string
     secret_group_description = optional(string)
     existing_secret_group    = optional(bool, false)
     create_access_group      = optional(bool, false)

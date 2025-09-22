@@ -7,6 +7,7 @@ locals {
     for secret_group in var.secrets :
     secret_group.existing_secret_group ? [] : [{
       secret_group_name                = secret_group.secret_group_name
+      secret_group_id                  = secret_group.secret_group_id
       secret_group_description         = secret_group.secret_group_description
       secret_group_create_access_group = secret_group.create_access_group
       secret_group_access_group_name   = secret_group.access_group_name
@@ -42,20 +43,11 @@ module "secret_groups" {
 ##############################################################################
 
 locals {
-  existing_secret_groups_by_name = {
-    for sg in data.ibm_sm_secret_groups.existing_secret_groups.secret_groups :
-    sg.name => sg.id
-  }
-
   secrets = flatten([
     for secret_group in var.secrets :
     secret_group.existing_secret_group ? [
       for secret in secret_group.secrets : merge({
-        secret_group_id = lookup(
-          local.existing_secret_groups_by_name,
-          secret_group.secret_group_name,
-          null
-        )
+        secret_group_id = secret_group.secret_group_id ? secret_group.secret_group_id : data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id
       }, secret)
       ] : [
       for secret in secret_group.secrets : merge({
