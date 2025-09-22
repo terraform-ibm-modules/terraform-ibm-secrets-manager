@@ -248,6 +248,7 @@ func TestAddonsExistingSecretsManager(t *testing.T) {
 			"region":                       "us-south",
 			"existing_secrets_manager_crn": permanentResources["privateOnlySecMgrCRN"],
 			"service_plan":                 "__NULL__", // Plan not needed if using existing instance
+			"skip_secrets_manager_event_notifications_iam_auth_policy": true, // Skip s2s auth policy for IAM engine - it already exists for the existing Secrets Manager instance
 		},
 	)
 
