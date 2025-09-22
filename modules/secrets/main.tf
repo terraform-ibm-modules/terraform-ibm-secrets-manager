@@ -47,7 +47,7 @@ locals {
     for secret_group in var.secrets :
     secret_group.existing_secret_group ? [
       for secret in secret_group.secrets : merge({
-        secret_group_id = secret_group.secret_group_id ? secret_group.secret_group_id : data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id
+        secret_group_id = secret_group.secret_group_id!="" ? secret_group.secret_group_id : data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id
       }, secret)
       ] : [
       for secret in secret_group.secrets : merge({
