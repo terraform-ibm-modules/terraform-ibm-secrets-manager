@@ -2,37 +2,34 @@
 # Secret Group
 ##############################################################################
 
-# Fetch all secret groups once
-data "ibm_sm_secret_groups" "all" {
+locals {
+  secret_groups = flatten([
+    for secret_group in var.secrets :
+    secret_group.existing_secret_group ? [] : [{
+      secret_group_name                = secret_group.secret_group_name
+      secret_group_description         = secret_group.secret_group_description
+      secret_group_create_access_group = secret_group.create_access_group
+      secret_group_access_group_name   = secret_group.access_group_name
+      secret_group_access_group_roles  = secret_group.access_group_roles
+      secret_group_access_group_tags   = secret_group.access_group_tags
+    }]
+  ])
+
+  referenced_secret_group_names = distinct([
+    for sg in var.secrets : sg.secret_group_name
+  ])
+}
+
+# Create a per-name data resource we can reference deterministically
+data "ibm_sm_secret_groups" "by_name" {
+  for_each      = toset(local.referenced_secret_group_names)
   instance_id   = var.existing_sm_instance_guid
   region        = var.existing_sm_instance_region
   endpoint_type = var.endpoint_type
 }
 
-locals {
-  new_group_map = {
-    for sg in var.secrets :
-    sg.secret_group_name => {
-      secret_group_name                = sg.secret_group_name
-      secret_group_description         = sg.secret_group_description
-      secret_group_create_access_group = sg.create_access_group
-      secret_group_access_group_name   = sg.access_group_name
-      secret_group_access_group_roles  = sg.access_group_roles
-      secret_group_access_group_tags   = sg.access_group_tags
-    }
-    if !sg.existing_secret_group
-  }
-
-  # Map group name -> id from the provider list
-  existing_group_id_by_name = {
-    for idx, g in data.ibm_sm_secret_groups.all.secret_groups :
-    g.name => g.id
-  }
-}
-
-
 module "secret_groups" {
-  for_each                 = local.new_group_map
+  for_each                 = { for obj in local.secret_groups : obj.secret_group_name => obj }
   source                   = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
   version                  = "1.3.15"
   region                   = var.existing_sm_instance_region
@@ -52,12 +49,21 @@ module "secret_groups" {
 
 locals {
   secrets = flatten([
-    for sg in var.secrets : [
-      for s in sg.secrets : merge(
+    for secret_group in var.secrets : [
+      for secret in secret_group.secrets : merge(
         {
-          secret_group_id = sg.existing_secret_group ? lookup(local.existing_group_id_by_name, sg.secret_group_name, null) : module.secret_groups[sg.secret_group_name].secret_group_id
+          secret_group_id = secret_group.existing_secret_group ? (
+            # Use the per-name data instance to find the id for that name deterministically
+            one([
+              for sg in data.ibm_sm_secret_groups.by_name[secret_group.secret_group_name].secret_groups :
+              sg.id if sg.name == secret_group.secret_group_name
+            ])
+            ) : (
+            # Use the created module output for that name
+            module.secret_groups[secret_group.secret_group_name].secret_group_id
+          )
         },
-        s
+        secret
       )
     ]
   ])
@@ -65,7 +71,7 @@ locals {
 
 # create secret
 module "secrets" {
-  for_each                                    = { for obj in local.secrets : "${obj.secret_group_id}:${obj.secret_name}" => obj }
+  for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
   source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
   version                                     = "1.9.0"
   region                                      = var.existing_sm_instance_region
