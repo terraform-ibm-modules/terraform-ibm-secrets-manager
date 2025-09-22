@@ -57,7 +57,7 @@ module "secrets_manager" {
 
 | Name | Type |
 |------|------|
-| [ibm_sm_secret_groups.existing_secret_groups](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/sm_secret_groups) | data source |
+| [ibm_sm_secret_groups.all](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/sm_secret_groups) | data source |
 
 ### Inputs
 
