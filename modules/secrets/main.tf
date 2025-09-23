@@ -22,6 +22,14 @@ data "ibm_sm_secret_groups" "existing_secret_groups" {
   endpoint_type = var.endpoint_type
 }
 
+# Create a stable map of secret group names to IDs
+locals {
+  existing_secret_groups_map = {
+    for group in data.ibm_sm_secret_groups.existing_secret_groups.secret_groups :
+    group.name => group.id
+  }
+}
+
 module "secret_groups" {
   for_each                 = { for obj in local.secret_groups : obj.secret_group_name => obj }
   source                   = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
@@ -46,10 +54,7 @@ locals {
     for secret_group in var.secrets :
     secret_group.existing_secret_group ? [
       for secret in secret_group.secrets : merge({
-        secret_group_id = one([
-          for group in data.ibm_sm_secret_groups.existing_secret_groups.secret_groups :
-          group.id if group.name == secret_group.secret_group_name
-        ])
+        secret_group_id = local.existing_secret_groups_map[secret_group.secret_group_name]
       }, secret)
       ] : [
       for secret in secret_group.secrets : merge({
