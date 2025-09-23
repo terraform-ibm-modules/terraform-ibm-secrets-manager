@@ -42,17 +42,20 @@ module "secret_groups" {
 ##############################################################################
 
 locals {
-  # Flatten all secrets and attach the resolved existing secret_group_id by name
+  secret_group_name_to_id = {
+    for sg in data.ibm_sm_secret_groups.existing_secret_groups.secret_groups :
+    sg.name => sg.id
+  }
+
   secrets = flatten([
-    for secret_group in var.secrets : [
-      for secret in secret_group.secrets : merge({
-        secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[
-          index(
-            data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name,
-            secret_group.secret_group_name
-          )
-        ].id
-      }, secret)
+    for sg in var.secrets : [
+      for secret in sg.secrets : merge(
+        {
+          secret_group_name = sg.secret_group_name
+          secret_group_id   = local.secret_group_name_to_id[sg.secret_group_name]
+        },
+        secret
+      )
     ]
   ])
 }
