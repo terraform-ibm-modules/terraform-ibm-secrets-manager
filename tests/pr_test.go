@@ -53,7 +53,7 @@ func TestRunSecurityEnforced(t *testing.T) {
 	t.Parallel()
 
 	// ------------------------------------------------------------------------------------
-	// Provision new RG
+	// Provision new RG, Event Notifications and Key Protect instance + root key
 	// ------------------------------------------------------------------------------------
 	prefix := fmt.Sprintf("sm-se-%s", strings.ToLower(random.UniqueId()))
 	realTerraformDir := ".."
@@ -66,7 +66,7 @@ func TestRunSecurityEnforced(t *testing.T) {
 	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
 	logger.Log(t, "Tempdir: ", tempTerraformDir)
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: tempTerraformDir + "/tests/new-rg",
+		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
 			"prefix": prefix,
 		},
@@ -106,7 +106,8 @@ func TestRunSecurityEnforced(t *testing.T) {
 			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
-			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+			{Name: "existing_kms_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"), DataType: "string"},
+			{Name: "existing_event_notifications_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "event_notifications_instance_crn"), DataType: "string"},
 		}
 		err := options.RunSchematicTest()
 		assert.NoError(t, err, "Schematic Test had unexpected error")
@@ -142,7 +143,7 @@ func TestRunSecurityEnforcedUpgrade(t *testing.T) {
 	require.NotEqual(t, "", val, checkVariable+" environment variable is empty")
 	logger.Log(t, "Tempdir: ", tempTerraformDir)
 	existingTerraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: tempTerraformDir + "/tests/new-rg",
+		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
 			"prefix": prefix,
 		},
@@ -181,7 +182,8 @@ func TestRunSecurityEnforcedUpgrade(t *testing.T) {
 			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
-			{Name: "existing_kms_instance_crn", Value: permanentResources["hpcs_south_crn"], DataType: "string"},
+			{Name: "existing_kms_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"), DataType: "string"},
+			{Name: "existing_event_notifications_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "event_notifications_instance_crn"), DataType: "string"},
 		}
 
 		err := options.RunSchematicUpgradeTest()
@@ -244,11 +246,11 @@ func TestAddonsExistingSecretsManager(t *testing.T) {
 		"deploy-arch-ibm-secrets-manager",
 		"fully-configurable",
 		map[string]interface{}{
-			"prefix":                       options.Prefix,
-			"region":                       "us-south",
-			"existing_secrets_manager_crn": permanentResources["privateOnlySecMgrCRN"],
-			"service_plan":                 "__NULL__", // Plan not needed if using existing instance
-			"skip_secrets_manager_event_notifications_iam_auth_policy": true, // Skip s2s auth policy for IAM engine - it already exists for the existing Secrets Manager instance
+			"prefix":                               options.Prefix,
+			"region":                               "us-south",
+			"existing_secrets_manager_crn":         permanentResources["privateOnlySecMgrCRN"],
+			"service_plan":                         "__NULL__", // Plan not needed if using existing instance
+			"skip_secrets_manager_iam_auth_policy": true,       // Skip s2s auth policy for IAM engine - it already exists for the existing Secrets Manager instance
 		},
 	)
 
