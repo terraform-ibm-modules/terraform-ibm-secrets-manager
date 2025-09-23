@@ -14,18 +14,13 @@ locals {
       secret_group_access_group_tags   = secret_group.access_group_tags
     }]
   ])
-
-  referenced_secret_group_names = distinct([
-    for sg in var.secrets : sg.secret_group_name
-  ])
 }
 
-# Create a per-name data resource we can reference deterministically
-data "ibm_sm_secret_groups" "by_name" {
-  for_each      = toset(local.referenced_secret_group_names)
+data "ibm_sm_secret_groups" "existing_secret_groups" {
   instance_id   = var.existing_sm_instance_guid
   region        = var.existing_sm_instance_region
   endpoint_type = var.endpoint_type
+  depends_on = [module.secret_groups]
 }
 
 module "secret_groups" {
@@ -52,16 +47,10 @@ locals {
     for secret_group in var.secrets : [
       for secret in secret_group.secrets : merge(
         {
-          secret_group_id = secret_group.existing_secret_group ? (
-            # Use the per-name data instance to find the id for that name deterministically
-            one([
-              for sg in data.ibm_sm_secret_groups.by_name[secret_group.secret_group_name].secret_groups :
-              sg.id if sg.name == secret_group.secret_group_name
-            ])
-            ) : (
-            # Use the created module output for that name
-            module.secret_groups[secret_group.secret_group_name].secret_group_id
-          )
+          secret_group_id = secret_group.existing_secret_group ? one([
+                for sg in data.ibm_sm_secret_groups.existing_secret_groups.secret_groups :
+                sg.id if sg.name == secret_group.secret_group_name
+              ])  : module.secret_groups[secret_group.secret_group_name].secret_group_id
         },
         secret
       )
