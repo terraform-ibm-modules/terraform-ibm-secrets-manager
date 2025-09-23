@@ -58,7 +58,7 @@ locals {
 
 # create secret
 module "secrets" {
-  for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
+  for_each                                    = { for obj in var.secrets : obj.secret_name => obj }
   source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
   version                                     = "1.9.0"
   region                                      = var.existing_sm_instance_region
