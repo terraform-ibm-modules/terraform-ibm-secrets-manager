@@ -12,6 +12,7 @@ import (
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/cloudinfo"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testaddons"
 
+	"github.com/IBM/go-sdk-core/v5/core"
 	"github.com/gruntwork-io/terratest/modules/files"
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -229,6 +230,27 @@ func TestAddonsDefaultConfiguration(t *testing.T) {
 		},
 	)
 
+	// Disable target / route creation to prevent hitting quota in account
+	options.AddonConfig.Dependencies = []cloudinfo.AddonConfig{
+		{
+			OfferingName:   "deploy-arch-ibm-cloud-monitoring",
+			OfferingFlavor: "fully-configurable",
+			Inputs: map[string]interface{}{
+				"enable_metrics_routing_to_cloud_monitoring": false,
+			},
+			Enabled: core.BoolPtr(true),
+		},
+		{
+			OfferingName:   "deploy-arch-ibm-activity-tracker",
+			OfferingFlavor: "fully-configurable",
+			Inputs: map[string]interface{}{
+				"enable_activity_tracker_event_routing_to_cos_bucket": false,
+				"enable_activity_tracker_event_routing_to_cloud_logs": false,
+			},
+			Enabled: core.BoolPtr(true),
+		},
+	}
+
 	err := options.RunAddonTest()
 	require.NoError(t, err)
 }
@@ -249,12 +271,34 @@ func TestAddonsExistingSecretsManager(t *testing.T) {
 		"fully-configurable",
 		map[string]interface{}{
 			"prefix":                               options.Prefix,
-			"region":                               "us-south",
+			"region":                               permanentResources["privateOnlySecMgrRegion"],
 			"existing_secrets_manager_crn":         permanentResources["privateOnlySecMgrCRN"],
 			"service_plan":                         "__NULL__", // Plan not needed if using existing instance
 			"skip_secrets_manager_iam_auth_policy": true,       // Skip s2s auth policy for IAM engine - it already exists for the existing Secrets Manager instance
+			"secret_groups":                        []string{}, // Don't create any secret groups in existing instance (The default 'General' group already exists)
 		},
 	)
+
+	// Disable target / route creation to prevent hitting quota in account
+	options.AddonConfig.Dependencies = []cloudinfo.AddonConfig{
+		{
+			OfferingName:   "deploy-arch-ibm-cloud-monitoring",
+			OfferingFlavor: "fully-configurable",
+			Inputs: map[string]interface{}{
+				"enable_metrics_routing_to_cloud_monitoring": false,
+			},
+			Enabled: core.BoolPtr(true),
+		},
+		{
+			OfferingName:   "deploy-arch-ibm-activity-tracker",
+			OfferingFlavor: "fully-configurable",
+			Inputs: map[string]interface{}{
+				"enable_activity_tracker_event_routing_to_cos_bucket": false,
+				"enable_activity_tracker_event_routing_to_cloud_logs": false,
+			},
+			Enabled: core.BoolPtr(true),
+		},
+	}
 
 	err := options.RunAddonTest()
 	require.NoError(t, err)
