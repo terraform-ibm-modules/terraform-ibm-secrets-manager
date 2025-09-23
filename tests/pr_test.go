@@ -69,6 +69,7 @@ func TestRunSecurityEnforced(t *testing.T) {
 		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
 			"prefix": prefix,
+			"region": validRegions[rand.Intn(len(validRegions))],
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
@@ -146,6 +147,7 @@ func TestRunSecurityEnforcedUpgrade(t *testing.T) {
 		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
 			"prefix": prefix,
+			"region": validRegions[rand.Intn(len(validRegions))],
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
