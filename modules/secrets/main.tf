@@ -46,13 +46,14 @@ locals {
     for secret_group in var.secrets :
     secret_group.existing_secret_group ? [
       for secret in secret_group.secrets : merge({
-        secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id,
-        secret_group_name = secret_group.secret_group_name
+        secret_group_id = one([
+          for group in data.ibm_sm_secret_groups.existing_secret_groups.secret_groups :
+          group.id if group.name == secret_group.secret_group_name
+        ])
       }, secret)
       ] : [
       for secret in secret_group.secrets : merge({
-        secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id,
-        secret_group_name = secret_group.secret_group_name
+        secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
       }, secret)
     ]
   ])
@@ -65,7 +66,7 @@ module "secrets" {
   version                                     = "1.9.0"
   region                                      = var.existing_sm_instance_region
   secrets_manager_guid                        = var.existing_sm_instance_guid
-  secret_group_id                             = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, each.value.secret_group_name)].id
+  secret_group_id                             = each.value.secret_group_id
   endpoint_type                               = var.endpoint_type
   secret_name                                 = each.value.secret_name
   secret_description                          = each.value.secret_description
