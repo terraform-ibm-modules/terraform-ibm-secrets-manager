@@ -46,11 +46,13 @@ locals {
     for secret_group in var.secrets :
     secret_group.existing_secret_group ? [
       for secret in secret_group.secrets : merge({
-        secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id
+        secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id,
+        secret_group_name = secret_group.secret_group_name
       }, secret)
       ] : [
       for secret in secret_group.secrets : merge({
-        secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
+        secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id,
+        secret_group_name = secret_group.secret_group_name
       }, secret)
     ]
   ])
@@ -58,7 +60,7 @@ locals {
 
 # create secret
 module "secrets" {
-  for_each                                    = { for obj in var.secrets : obj.secret_name => obj }
+  for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
   source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
   version                                     = "1.9.0"
   region                                      = var.existing_sm_instance_region
