@@ -42,16 +42,30 @@ module "secret_groups" {
 ##############################################################################
 
 locals {
+    # Build a deterministic map of existing secret groups keyed by name
+  existing_groups_by_name = {
+    for g in data.ibm_sm_secret_groups.existing_secret_groups.secret_groups :
+    g.name => g
+  }
   secrets = flatten([
     for secret_group in var.secrets :
-    secret_group.existing_secret_group ? [
-      for secret in secret_group.secrets : merge({
-        secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id
-      }, secret)
-      ] : [
-      for secret in secret_group.secrets : merge({
-        secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
-      }, secret)
+    secret_group.existing_secret_group ?
+    [
+      for secret in secret_group.secrets : merge(
+        {
+          secret_group_id = local.existing_groups_by_name[secret_group.secret_group_name].id
+        },
+        secret
+      )
+    ]
+    :
+    [
+      for secret in secret_group.secrets : merge(
+        {
+          secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
+        },
+        secret
+      )
     ]
   ])
 }
