@@ -1,51 +1,56 @@
-##############################################################################
-# Secret Group (lookup only; no creation)
-##############################################################################
+locals {
+  distinct_group_names = toset([for sg in var.secrets : sg.secret_group_name])
+}
 
-data "ibm_sm_secret_groups" "existing_secret_groups" {
+# Single global data read
+data "ibm_sm_secret_groups" "all" {
   instance_id   = var.existing_sm_instance_guid
   region        = var.existing_sm_instance_region
   endpoint_type = var.endpoint_type
 }
 
-##############################################################################
-# Secrets
-##############################################################################
+# Stabilize IDs via null_resource triggers
+resource "null_resource" "group_ids" {
+  for_each = local.distinct_group_names
 
+  triggers = {
+    name = each.key
+    id   = data.ibm_sm_secret_groups.all.secret_groups[
+      index(data.ibm_sm_secret_groups.all.secret_groups[*].name, each.key)
+    ].id
+  }
+}
+
+# Build a stable map from the persisted triggers
 locals {
-  # We keep the same input structure for var.secrets, including fields like
-  # existing_secret_group, create_access_group, access_group_* etc.,
-  # but we always resolve to an existing group's ID.
+  stable_group_id_by_name = {
+    for name, r in null_resource.group_ids :
+    name => r.triggers.id
+  }
+
   secrets = flatten([
-    for secret_group in var.secrets : [
-      for secret in secret_group.secrets : merge(
+    for sg in var.secrets : [
+      for s in sg.secrets : merge(
         {
-          secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[
-            index(
-              data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name,
-              secret_group.secret_group_name
-            )
-          ].id
+          secret_group_id = local.stable_group_id_by_name[sg.secret_group_name]
         },
-        secret
+        s
       )
     ]
   ])
 }
 
-# create secret
 module "secrets" {
-  # Interface unchanged
-  for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
-  source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
-  version                                     = "1.9.0"
+  for_each = { for obj in local.secrets : obj.secret_name => obj }
+  source   = "terraform-ibm-modules/secrets-manager-secret/ibm"
+  version  = "1.9.0"
 
-  region                                      = var.existing_sm_instance_region
-  secrets_manager_guid                        = var.existing_sm_instance_guid
-  endpoint_type                               = var.endpoint_type
+  region               = var.existing_sm_instance_region
+  secrets_manager_guid = var.existing_sm_instance_guid
+  endpoint_type        = var.endpoint_type
 
-  secret_group_id                             = each.value.secret_group_id
-  secret_name                                 = each.value.secret_name
+  secret_group_id = each.value.secret_group_id
+  secret_name     = each.value.secret_name
   secret_description                          = each.value.secret_description
   secret_type                                 = each.value.secret_type
   imported_cert_certificate                   = each.value.imported_cert_certificate
