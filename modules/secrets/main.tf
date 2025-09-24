@@ -16,20 +16,10 @@ locals {
   ])
 }
 
-# Separate data source for existing secret groups only when needed
 data "ibm_sm_secret_groups" "existing_secret_groups" {
-  count         = length([for sg in var.secrets : sg if sg.existing_secret_group]) > 0 ? 1 : 0
   instance_id   = var.existing_sm_instance_guid
   region        = var.existing_sm_instance_region
   endpoint_type = var.endpoint_type
-}
-
-# Create a stable map of secret group names to IDs only when data exists
-locals {
-  existing_secret_groups_map = length(data.ibm_sm_secret_groups.existing_secret_groups) > 0 ? {
-    for group in data.ibm_sm_secret_groups.existing_secret_groups[0].secret_groups :
-    group.name => group.id
-  } : {}
 }
 
 module "secret_groups" {
@@ -53,9 +43,14 @@ module "secret_groups" {
 
 locals {
   secrets = flatten([
-    for secret_group in var.secrets : [
+    for secret_group in var.secrets :
+    secret_group.existing_secret_group ? [
       for secret in secret_group.secrets : merge({
-        secret_group_id = secret_group.existing_secret_group ? local.existing_secret_groups_map[secret_group.secret_group_name] : module.secret_groups[secret_group.secret_group_name].secret_group_id
+        secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id
+      }, secret)
+      ] : [
+      for secret in secret_group.secrets : merge({
+        secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
       }, secret)
     ]
   ])
@@ -63,11 +58,6 @@ locals {
 
 # create secret
 module "secrets" {
-  depends_on = [
-    module.secret_groups,
-    data.ibm_sm_secret_groups.existing_secret_groups
-  ]
-  
   for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
   source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
   version                                     = "1.9.0"
