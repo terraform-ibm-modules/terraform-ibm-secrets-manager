@@ -35,15 +35,4 @@ module "key_protect" {
   key_protect_instance_name = "${var.prefix}-key-protect"
   resource_group_id         = module.resource_group.resource_group_id
   region                    = var.region
-  keys = [
-    {
-      key_ring_name = "${var.prefix}-sm"
-      keys = [
-        {
-          key_name     = "${var.prefix}-sm-key"
-          force_delete = true
-        }
-      ]
-    }
-  ]
 }

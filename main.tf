@@ -6,7 +6,7 @@
 locals {
   # Validation (approach based on https://github.com/hashicorp/terraform/issues/25609#issuecomment-1057614400)
   # tflint-ignore: terraform_unused_declarations
-  validate_is_hpcs_key = var.is_hpcs_key && local.kms_service_name != "hs-crypto" ? tobool("When is_hpcs_key is set to true then the key provided through kms_key_crn must be a Hyper Protect Crypto Services key") : true
+  validate_is_hpcs_key = var.existing_sm_instance_crn == null ? var.is_hpcs_key && local.kms_service_name != "hs-crypto" ? tobool("When is_hpcs_key is set to true then the key provided through kms_key_crn must be a Hyper Protect Crypto Services key") : true : true
 }
 
 locals {

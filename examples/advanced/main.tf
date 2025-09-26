@@ -1,3 +1,7 @@
+##############################################################################
+# Resource group
+##############################################################################
+
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
   version = "1.3.0"
@@ -5,6 +9,10 @@ module "resource_group" {
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
 }
+
+##############################################################################
+# Key Protect instance and root key
+##############################################################################
 
 module "key_protect" {
   source                    = "terraform-ibm-modules/kms-all-inclusive/ibm"
@@ -25,7 +33,11 @@ module "key_protect" {
   ]
 }
 
-module "event_notification" {
+##############################################################################
+# Event Notifications
+##############################################################################
+
+module "event_notifications" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
   version           = "2.7.0"
   resource_group_id = module.resource_group.resource_group_id
@@ -35,14 +47,13 @@ module "event_notification" {
   region            = var.en_region
 }
 
+# s2s auth policy required for Secrets Manager to manage Event Notifications service credentials
 resource "ibm_iam_authorization_policy" "en_policy" {
   source_service_name         = "secrets-manager"
   roles                       = ["Key Manager"]
   target_service_name         = "event-notifications"
-  target_resource_instance_id = module.event_notification.guid
-  description                 = "Allow the Secret manager Key Manager role access to event-notifications with guid ${module.event_notification.guid}."
-  # Scope of policy now includes the key, so ensure to create new policy before
-  # destroying old one to prevent any disruption to every day services.
+  target_resource_instance_id = module.event_notifications.guid
+  description                 = "Grant Secret Manager a 'Key Manager' role to the Event Notifications instance ${module.event_notifications.guid} for managing service credentials."
   lifecycle {
     create_before_destroy = true
   }
@@ -52,6 +63,10 @@ resource "time_sleep" "wait_for_en_policy" {
   depends_on      = [ibm_iam_authorization_policy.en_policy]
   create_duration = "30s"
 }
+
+##############################################################################
+# Secrets Manager
+##############################################################################
 
 module "secrets_manager" {
   depends_on                = [time_sleep.wait_for_en_policy]
@@ -65,30 +80,29 @@ module "secrets_manager" {
   is_hpcs_key               = false
   kms_key_crn               = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
   enable_event_notification = true
-  existing_en_instance_crn  = module.event_notification.crn
+  existing_en_instance_crn  = module.event_notifications.crn
   secrets = [
+    # Example creating new secrets group with secrets in it
     {
       secret_group_name = "${var.prefix}-secret-group"
-      secrets = [{
-        secret_name             = "${var.prefix}-kp-key-crn"
-        secret_type             = "arbitrary"
-        secret_payload_password = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
-        },
+      secrets = [
+        # Example creating Event Notifications service credential secret
         {
-          # Arbitrary service credential for source service event notifications, with role Event-Notification-Publisher
           secret_name                                 = "${var.prefix}-service-credential"
           secret_type                                 = "service_credentials" #checkov:skip=CKV_SECRET_6
-          secret_description                          = "Created by secrets-manager-module complete example"
-          service_credentials_source_service_crn      = module.event_notification.crn
+          secret_description                          = "Created by secrets-manager-module advanced example"
+          service_credentials_source_service_crn      = module.event_notifications.crn
           service_credentials_source_service_role_crn = "crn:v1:bluemix:public:event-notifications::::serviceRole:Event-Notification-Publisher"
         },
+        # Example creating arbitrary secret
         {
-          secret_name             = "${var.prefix}-custom-service-credential"
+          secret_name             = "${var.prefix}-arbitrary-example"
           secret_type             = "arbitrary"
           secret_payload_password = var.ibmcloud_api_key
         }
       ]
     },
+    # Example creating secret in existing secret group
     {
       secret_group_name     = "default"
       existing_secret_group = true
@@ -103,8 +117,11 @@ module "secrets_manager" {
 }
 
 ##############################################################################
-# Code Engine Project
+# Code Engine configuration
+# (required to use create a custom credential)
 ##############################################################################
+
+# Create new code engine project
 module "code_engine_project" {
   source            = "terraform-ibm-modules/code-engine/ibm//modules/project"
   version           = "4.5.13"
@@ -112,9 +129,7 @@ module "code_engine_project" {
   resource_group_id = module.resource_group.resource_group_id
 }
 
-##############################################################################
-# Code Engine Secret
-##############################################################################
+# Create new code engine secret
 locals {
   registry_hostname = "private.de.icr.io"
   output_image      = "${local.registry_hostname}/${resource.ibm_cr_namespace.rg_namespace.name}/custom-engine-job"
@@ -133,19 +148,13 @@ module "code_engine_secret" {
   }
 }
 
-##############################################################################
-# Container Registry Namespace
-##############################################################################
+# Create new Container Registry namespace
 resource "ibm_cr_namespace" "rg_namespace" {
   name              = "${var.prefix}-crn"
   resource_group_id = module.resource_group.resource_group_id
 }
 
-##############################################################################
-# Code Engine Build
-##############################################################################
-
-# For example the region is hardcoded to us-south in order to hardcode the output image and region for creating Code Engine Project and build
+# Build example Go application in Code Engine project which dynamically generates User IBM Cloud IAM API Keys
 module "code_engine_build" {
   source                     = "terraform-ibm-modules/code-engine/ibm//modules/build"
   version                    = "4.5.13"
@@ -161,10 +170,7 @@ module "code_engine_build" {
   output_image               = local.output_image
 }
 
-##############################################################################
-# Code Engine Job
-##############################################################################
-
+# Pull the sample job config from github
 data "http" "job_config" {
   url = "https://raw.githubusercontent.com/IBM/secrets-manager-custom-credentials-providers/refs/heads/main/ibmcloud-iam-user-apikey-provider-go/job_config.json"
   request_headers = {
@@ -176,6 +182,7 @@ locals {
   job_env_variables = jsondecode(data.http.job_config.response_body).job_env_variables
 }
 
+# Run the Code Engine job
 module "code_engine_job" {
   depends_on      = [module.code_engine_build]
   source          = "terraform-ibm-modules/code-engine/ibm//modules/job"
@@ -194,7 +201,7 @@ module "code_engine_job" {
 }
 
 ##############################################################################
-# Custom Credential Engine and secret
+# Create Custom Credential engine
 ##############################################################################
 
 module "custom_credential_engine" {
@@ -213,8 +220,12 @@ module "custom_credential_engine" {
   iam_credential_secret_name    = "${var.prefix}-test-iam-secret"
 }
 
-# Currently the main module cannot be called again as some of the count for resources depends on a computable input existing_en_instance_crn which will give error if the value is not available during planning
-# As a workaround the secret manager secret is directly being created via module call
+##############################################################################
+# Create Custom Credential secret
+# (using secrets-manager-secret to create the custom credential secret as it
+#  can only be done after the Custom Credential engine is configured)
+##############################################################################
+
 module "secret_manager_custom_credential" {
   depends_on                        = [module.secrets_manager, module.custom_credential_engine]
   source                            = "terraform-ibm-modules/secrets-manager-secret/ibm"
