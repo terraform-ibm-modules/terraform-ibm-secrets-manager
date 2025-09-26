@@ -19,8 +19,8 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
     * [fscloud](./modules/fscloud)
     * [secrets](./modules/secrets)
 * [Examples](./examples)
+    * [Advanced example](./examples/advanced)
     * [Basic example](./examples/basic)
-    * [Complete example with BYOK encryption](./examples/complete)
     * [Financial Services Cloud profile example with KYOK encryption](./examples/fscloud)
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->

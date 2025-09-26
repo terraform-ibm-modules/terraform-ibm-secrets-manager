@@ -22,7 +22,7 @@ variable "sm_service_plan" {
   description = "The Secrets Manager plan to provision."
   default     = "standard"
   validation {
-    condition     = contains(["standard", "trial"], var.sm_service_plan)
+    condition     = var.existing_sm_instance_crn == null ? contains(["standard", "trial"], var.sm_service_plan) : true
     error_message = "The specified `sm_service_plan` is not valid. Possible values are `standard` or `trial`."
   }
 }
@@ -72,8 +72,8 @@ variable "kms_key_crn" {
   }
 
   validation {
-    condition     = var.kms_encryption_enabled == true && var.kms_key_crn == null ? false : true
-    error_message = "When setting `var.kms_encryption_enabled` to `tru`e, a value must be passed for `var.kms_key_crn`."
+    condition     = var.existing_sm_instance_crn == null ? var.kms_encryption_enabled == true && var.kms_key_crn == null ? false : true : true
+    error_message = "When setting `var.kms_encryption_enabled` to `true`, a value must be passed for `var.kms_key_crn`."
   }
 }
 
