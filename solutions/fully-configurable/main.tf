@@ -229,7 +229,7 @@ resource "ibm_en_topic" "en_topic" {
   count         = var.existing_secrets_manager_crn == null && local.enable_event_notifications ? 1 : 0
   depends_on    = [time_sleep.wait_for_secrets_manager]
   instance_guid = local.existing_en_guid
-  name          = "Topic for SCC instance ${module.secrets_manager.secrets_manager_guid}"
+  name          = "Topic for Secrets Manager instance ${module.secrets_manager.secrets_manager_guid}"
   description   = "Topic for Secrets Manager events routing"
   sources {
     id = local.secrets_manager_crn
