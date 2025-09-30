@@ -294,7 +294,6 @@ func TestAddonsExistingSecretsManager(t *testing.T) {
 			OfferingFlavor: "fully-configurable",
 			Inputs: map[string]interface{}{
 				"enable_activity_tracker_event_routing_to_cos_bucket": false,
-				"enable_activity_tracker_event_routing_to_cloud_logs": false,
 			},
 			Enabled: core.BoolPtr(true),
 		},
