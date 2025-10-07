@@ -1,25 +1,22 @@
 ##############################################################################
-# Secret Group
+# Secret Group (create only when not existing)
 ##############################################################################
 
 locals {
+  # Build the list of groups to create (skip when existing_secret_group is true)
   secret_groups = flatten([
     for secret_group in var.secrets :
-    secret_group.existing_secret_group ? [] : [{
-      secret_group_name                = secret_group.secret_group_name
-      secret_group_description         = secret_group.secret_group_description
-      secret_group_create_access_group = secret_group.create_access_group
-      secret_group_access_group_name   = secret_group.access_group_name
-      secret_group_access_group_roles  = secret_group.access_group_roles
-      secret_group_access_group_tags   = secret_group.access_group_tags
-    }]
+    secret_group.existing_secret_group ? [] : [
+      {
+        secret_group_name                = secret_group.secret_group_name
+        secret_group_description         = secret_group.secret_group_description
+        secret_group_create_access_group = secret_group.create_access_group
+        secret_group_access_group_name   = secret_group.access_group_name
+        secret_group_access_group_roles  = secret_group.access_group_roles
+        secret_group_access_group_tags   = secret_group.access_group_tags
+      }
+    ]
   ])
-}
-
-data "ibm_sm_secret_groups" "existing_secret_groups" {
-  instance_id   = var.existing_sm_instance_guid
-  region        = var.existing_sm_instance_region
-  endpoint_type = var.endpoint_type
 }
 
 module "secret_groups" {
@@ -42,21 +39,29 @@ module "secret_groups" {
 ##############################################################################
 
 locals {
+  # For existing groups, expect secret_group_id to be provided in var.secrets[*]
+  # For new groups, use the ID from module.secret_groups
   secrets = flatten([
     for secret_group in var.secrets :
     secret_group.existing_secret_group ? [
-      for secret in secret_group.secrets : merge({
-        secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id
-      }, secret)
-      ] : [
-      for secret in secret_group.secrets : merge({
-        secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
-      }, secret)
+      for secret in secret_group.secrets : merge(
+        {
+          # secret_group.secret_group_id must be provided in input for existing groups
+          secret_group_id = secret_group.secret_group_id
+        },
+        secret
+      )
+    ] : [
+      for secret in secret_group.secrets : merge(
+        {
+          secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
+        },
+        secret
+      )
     ]
   ])
 }
 
-# create secret
 module "secrets" {
   for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
   source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
