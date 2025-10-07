@@ -1,77 +1,82 @@
 ##############################################################################
-# Lookup all groups once
+# Secret Group
 ##############################################################################
-data "ibm_sm_secret_groups" "all" {
+
+locals {
+  secret_groups = flatten([
+    for secret_group in var.secrets :
+    secret_group.existing_secret_group ? [] : [{
+      secret_group_name                = secret_group.secret_group_name
+      secret_group_description         = secret_group.secret_group_description
+      secret_group_create_access_group = secret_group.create_access_group
+      secret_group_access_group_name   = secret_group.access_group_name
+      secret_group_access_group_roles  = secret_group.access_group_roles
+      secret_group_access_group_tags   = secret_group.access_group_tags
+    }]
+  ])
+}
+
+data "ibm_sm_secret_groups" "existing_secret_groups" {
   instance_id   = var.existing_sm_instance_guid
   region        = var.existing_sm_instance_region
   endpoint_type = var.endpoint_type
 }
 
-locals {
-  # distinct names from inputs; interface unchanged
-  distinct_group_names = toset([for sg in var.secrets : sg.secret_group_name])
-
-  # name -> id resolution from the current data read
-  group_id_by_name_now = {
-    for g in data.ibm_sm_secret_groups.all.secret_groups : g.name => g.id
-  }
+module "secret_groups" {
+  for_each                 = { for obj in local.secret_groups : obj.secret_group_name => obj }
+  source                   = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
+  version                  = "1.3.15"
+  region                   = var.existing_sm_instance_region
+  secrets_manager_guid     = var.existing_sm_instance_guid
+  secret_group_name        = each.value.secret_group_name
+  secret_group_description = each.value.secret_group_description
+  endpoint_type            = var.endpoint_type
+  create_access_group      = each.value.secret_group_create_access_group
+  access_group_name        = each.value.secret_group_access_group_name
+  access_group_roles       = each.value.secret_group_access_group_roles
+  access_group_tags        = each.value.secret_group_access_group_tags
 }
 
 ##############################################################################
-# Persist a stable mapping name -> id in state
+# Secrets
 ##############################################################################
-resource "terraform_data" "group_id" {
-  for_each = local.distinct_group_names
-
-  # The only trigger that should cause recomputation is the name change.
-  # We put the current resolved id in "input" so it gets stored in state on first apply.
-  input = {
-    name = each.key
-    id   = local.group_id_by_name_now[each.key]
-  }
-}
 
 locals {
-  # Stable, plan-known IDs coming from state after first apply
-  stable_group_id_by_name = {
-    for name, r in terraform_data.group_id :
-    name => r.output.id
-  }
-
   secrets = flatten([
-    for sg in var.secrets : [
-      for s in sg.secrets : merge(
-        {
-          secret_group_id = local.stable_group_id_by_name[sg.secret_group_name]
-        },
-        s
-      )
+    for secret_group in var.secrets :
+    secret_group.existing_secret_group ? [
+      for secret in secret_group.secrets : merge({
+        secret_group_id = data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[index(data.ibm_sm_secret_groups.existing_secret_groups.secret_groups[*].name, secret_group.secret_group_name)].id
+      }, secret)
+      ] : [
+      for secret in secret_group.secrets : merge({
+        secret_group_id = module.secret_groups[secret_group.secret_group_name].secret_group_id
+      }, secret)
     ]
   ])
 }
 
+# create secret
 module "secrets" {
-  for_each = { for obj in local.secrets : obj.secret_name => obj }
-  source   = "terraform-ibm-modules/secrets-manager-secret/ibm"
-  version  = "1.9.0"
-
-  region               = var.existing_sm_instance_region
-  secrets_manager_guid = var.existing_sm_instance_guid
-  endpoint_type        = var.endpoint_type
-
-  secret_group_id = each.value.secret_group_id
-  secret_name     = each.value.secret_name
-  secret_description = each.value.secret_description
-  secret_type     = each.value.secret_type
-  imported_cert_certificate  = each.value.imported_cert_certificate
-  imported_cert_private_key  = each.value.imported_cert_private_key
-  imported_cert_intermediate = each.value.imported_cert_intermediate
-  secret_username            = each.value.secret_username
-  secret_labels              = each.value.secret_labels
-  secret_payload_password    = each.value.secret_payload_password
-  secret_auto_rotation       = each.value.secret_auto_rotation
-  secret_auto_rotation_unit  = each.value.secret_auto_rotation_unit
-  secret_auto_rotation_interval = each.value.secret_auto_rotation_interval
+  for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
+  source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
+  version                                     = "1.9.0"
+  region                                      = var.existing_sm_instance_region
+  secrets_manager_guid                        = var.existing_sm_instance_guid
+  secret_group_id                             = each.value.secret_group_id
+  endpoint_type                               = var.endpoint_type
+  secret_name                                 = each.value.secret_name
+  secret_description                          = each.value.secret_description
+  secret_type                                 = each.value.secret_type
+  imported_cert_certificate                   = each.value.imported_cert_certificate
+  imported_cert_private_key                   = each.value.imported_cert_private_key
+  imported_cert_intermediate                  = each.value.imported_cert_intermediate
+  secret_username                             = each.value.secret_username
+  secret_labels                               = each.value.secret_labels
+  secret_payload_password                     = each.value.secret_payload_password
+  secret_auto_rotation                        = each.value.secret_auto_rotation
+  secret_auto_rotation_unit                   = each.value.secret_auto_rotation_unit
+  secret_auto_rotation_interval               = each.value.secret_auto_rotation_interval
   service_credentials_ttl                     = each.value.service_credentials_ttl
   service_credentials_source_service_crn      = each.value.service_credentials_source_service_crn
   service_credentials_source_service_role_crn = each.value.service_credentials_source_service_role_crn
