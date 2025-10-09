@@ -49,7 +49,7 @@ resource "ibm_iam_authorization_policy" "iam_identity_policy" {
   source_resource_instance_id = local.secrets_manager_guid
   target_service_name         = "iam-identity"
   roles                       = ["Operator", "User API key creator", "Service ID creator"]
-  description                 = "Allows Secrets Manager instance ${local.secrets_manager_guid} access to the IAM Identity service to enable creating IAM credentials, including Service IDs and API keys."
+  description                 = "Allows Secrets Manager instance ${local.secrets_manager_guid} access to the IAM Identity service to enable creating IAM credentials."
 }
 
 resource "ibm_iam_authorization_policy" "iam_groups_policy" {
