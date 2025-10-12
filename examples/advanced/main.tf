@@ -16,7 +16,7 @@ module "resource_group" {
 
 module "key_protect" {
   source                    = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                   = "5.1.25"
+  version                   = "5.3.4"
   key_protect_instance_name = "${var.prefix}-key-protect"
   resource_group_id         = module.resource_group.resource_group_id
   region                    = var.region
@@ -39,7 +39,7 @@ module "key_protect" {
 
 module "event_notifications" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "2.7.0"
+  version           = "2.9.3"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en"
   tags              = var.resource_tags
@@ -124,7 +124,7 @@ module "secrets_manager" {
 # Create new code engine project
 module "code_engine_project" {
   source            = "terraform-ibm-modules/code-engine/ibm//modules/project"
-  version           = "4.5.13"
+  version           = "4.6.3"
   name              = "${var.prefix}-project"
   resource_group_id = module.resource_group.resource_group_id
 }
@@ -137,7 +137,7 @@ locals {
 
 module "code_engine_secret" {
   source     = "terraform-ibm-modules/code-engine/ibm//modules/secret"
-  version    = "4.5.13"
+  version    = "4.6.3"
   name       = "${var.prefix}-rs"
   project_id = module.code_engine_project.id
   format     = "registry"
@@ -157,7 +157,7 @@ resource "ibm_cr_namespace" "rg_namespace" {
 # Build example Go application in Code Engine project which dynamically generates User IBM Cloud IAM API Keys
 module "code_engine_build" {
   source                     = "terraform-ibm-modules/code-engine/ibm//modules/build"
-  version                    = "4.5.13"
+  version                    = "4.6.3"
   name                       = "${var.prefix}-build"
   region                     = var.region
   ibmcloud_api_key           = var.ibmcloud_api_key
@@ -186,7 +186,7 @@ locals {
 module "code_engine_job" {
   depends_on      = [module.code_engine_build]
   source          = "terraform-ibm-modules/code-engine/ibm//modules/job"
-  version         = "4.5.13"
+  version         = "4.6.3"
   name            = "${var.prefix}-job"
   image_reference = local.output_image
   image_secret    = module.code_engine_secret.name
@@ -207,7 +207,7 @@ module "code_engine_job" {
 module "custom_credential_engine" {
   depends_on                    = [module.secrets_manager, module.code_engine_job]
   source                        = "terraform-ibm-modules/secrets-manager-custom-credentials-engine/ibm"
-  version                       = "1.0.1"
+  version                       = "1.0.4"
   secrets_manager_guid          = module.secrets_manager.secrets_manager_guid
   secrets_manager_region        = module.secrets_manager.secrets_manager_region
   custom_credential_engine_name = "${var.prefix}-test-custom-engine"
