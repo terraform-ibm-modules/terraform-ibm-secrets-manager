@@ -421,7 +421,7 @@
               {
                 "diagram": {
                   "caption": "Secrets Manager and optional surround services.",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architecture/secrets_manager.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architectures/secrets_manager.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "This architecture supports creating and configuring a Secrets Manager instance and optional security, logging, and notification services."
@@ -844,7 +844,7 @@
               {
                 "diagram": {
                   "caption": "Secrets Manager",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architecture/secrets_manager.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architectures/secrets_manager.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "This architecture supports creating and configuring an IBM Secrets Manager instance."
