@@ -15,7 +15,8 @@ module "resource_group" {
 # KMS Key
 #######################################################################################################################
 locals {
-  kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : (var.kms_encryption_enabled == true ? module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn : null)) : var.existing_secrets_manager_kms_key_crn
+  create_kms_module = var.existing_secrets_manager_crn == null && var.kms_encryption_enabled && var.existing_secrets_manager_kms_key_crn == null
+  kms_key_crn       = var.existing_secrets_manager_crn == null ? (var.existing_secrets_manager_kms_key_crn != null ? var.existing_secrets_manager_kms_key_crn : (var.kms_encryption_enabled == true && local.create_kms_module ? module.kms[0].keys[format("%s.%s", local.kms_key_ring_name, local.kms_key_name)].crn : null)) : var.existing_secrets_manager_kms_key_crn
   kms_key_ring_name = "${local.prefix}${var.kms_key_ring_name}"
   kms_key_name      = "${local.prefix}${var.kms_key_name}"
 
@@ -128,7 +129,7 @@ module "kms" {
   providers = {
     ibm = ibm.kms
   }
-  count                       = var.existing_secrets_manager_crn == null && var.kms_encryption_enabled && var.existing_secrets_manager_kms_key_crn == null ? 1 : 0 # no need to create any KMS resources if passing an existing key
+  count                       = local.create_kms_module ? 1 : 0 # no need to create any KMS resources if passing an existing key
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
   version                     = "5.1.25"
   create_key_protect_instance = false
