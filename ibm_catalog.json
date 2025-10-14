@@ -21,7 +21,7 @@
         "solution"
       ],
       "short_description": "Create and configure a Secrets Manager instance with optional security, logging, and notification services",
-      "long_description": "This deployable architecture is used to provision and configure an [IBM Cloud Secrets Manager](https://www.ibm.com/products/secrets-manager) instance. It optionally supports creating and configuring the following:\n* [an IBM Cloud account](https://cloud.ibm.com/docs/account?topic=account-account-getting-started) to set up basic account settings.\n* [Key Protect](https://cloud.ibm.com/docs/key-protect?topic=key-protect-getting-started-tutorial) for data encryption by using your own managed keys.\n* [Cloud Logs](https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-getting-started) for logging and monitoring platform logs.\n* [Cloud Monitoring](https://cloud.ibm.com/docs/monitoring?topic=monitoring-getting-started) to measure how users and applications interact with the Secrets Manager instance.\n* [Event Notifications](https://cloud.ibm.com/docs/event-notifications?topic=event-notifications-getting-started) to send notifications of events to other users, or destinations, by using email, SMS or other supported delivery channels.\n\nℹ️ This deployable architecture is a part of a larger collection that IBM provides. Each deployable architecture focuses on a single IBM Cloud service. You can use these deployable architectures on their own to automate deployments by following an [IaC approach](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-understanding-projects), or you can [combine them together](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-config-stack) to deploy a more complex end-to-end solution architecture.",
+      "long_description": "This deployable architecture is used to provision and configure an [IBM Cloud Secrets Manager](https://www.ibm.com/products/secrets-manager) instance. It optionally supports creating [Key Protect](https://cloud.ibm.com/docs/key-protect?topic=key-protect-getting-started-tutorial) for data encryption by using your own managed keys.\n* [Cloud Logs](https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-getting-started) for logging and monitoring platform logs.\n* [Cloud Monitoring](https://cloud.ibm.com/docs/monitoring?topic=monitoring-getting-started) to measure how users and applications interact with the Secrets Manager instance.\n* [Event Notifications](https://cloud.ibm.com/docs/event-notifications?topic=event-notifications-getting-started) to send notifications of events to other users, or destinations, by using email, SMS or other supported delivery channels.\n\nℹ️ This deployable architecture is a part of a larger collection that IBM provides. Each deployable architecture focuses on a single IBM Cloud service. You can use these deployable architectures on their own to automate deployments by following an [IaC approach](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-understanding-projects), or you can [combine them together](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-config-stack) to deploy a more complex end-to-end solution architecture.",
       "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/images/secrets_manager.svg",
       "provider_name": "IBM",
@@ -401,13 +401,6 @@
               ],
               "service_name": "kms",
               "notes": "[Optional] Required if you are creating and configuring a Key Protect instance for key encryption."
-            },
-            {
-              "role_crns": [
-                "crn:v1:bluemix:public:iam::::role:Administrator"
-              ],
-              "service_name": "iam-identity",
-              "notes": "[Optional] Required to deploy Cloud automation for account configuration, which creates foundational IBM Cloud account resources, like IAM settings, trusted profiles, access groups, and resource groups."
             }
           ],
           "architecture": {
@@ -430,31 +423,6 @@
           },
           "dependencies": [
             {
-              "name": "deploy-arch-ibm-account-infra-base",
-              "description": "Organize your IBM Cloud account with preconfigured resource groups. If not selected, the default resource group is used. Optionally, expand to apply recommended security controls via \"with Account Settings\" variation.",
-              "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
-              "flavors": [
-                "resource-group-only",
-                "resource-groups-with-account-settings"
-              ],
-              "default_flavor": "resource-group-only",
-              "id": "63641cec-6093-4b4f-b7b0-98d2f4185cd6-global",
-              "input_mapping": [
-                {
-                  "dependency_input": "prefix",
-                  "version_input": "prefix",
-                  "reference_version": true
-                },
-                {
-                  "dependency_output": "security_resource_group_name",
-                  "version_input": "existing_resource_group_name"
-                }
-              ],
-              "optional": true,
-              "on_by_default": false,
-              "version": "v3.0.23"
-            },
-            {
               "name": "deploy-arch-ibm-kms",
               "id": "2cad4789-fa90-4886-9c9e-857081c273ee-global",
               "description": "Enables managed encryption with your own keys via IBM Cloud Key Protect. If disabled, services will default to IBM-managed encryption.",
@@ -466,6 +434,11 @@
                 {
                   "dependency_output": "kms_instance_crn",
                   "version_input": "existing_kms_instance_crn"
+                },
+                {
+                  "dependency_input": "existing_resource_group_name",
+                  "version_input": "resource_group",
+                  "reference_version": true
                 },
                 {
                   "version_input": "kms_encryption_enabled",
@@ -484,7 +457,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v5.1.27"
+              "version": "v5.3.6"
             },
             {
               "name": "deploy-arch-ibm-cloud-logs",
@@ -498,6 +471,11 @@
                 {
                   "dependency_input": "prefix",
                   "version_input": "prefix",
+                  "reference_version": true
+                },
+                {
+                  "dependency_input": "existing_resource_group_name",
+                  "version_input": "resource_group",
                   "reference_version": true
                 },
                 {
@@ -529,6 +507,11 @@
                   "version_input": "existing_monitoring_crn"
                 },
                 {
+                  "dependency_input": "existing_resource_group_name",
+                  "version_input": "resource_group",
+                  "reference_version": true
+                },
+                {
                   "dependency_input": "prefix",
                   "version_input": "prefix",
                   "reference_version": true
@@ -546,7 +529,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.7.2"
+              "version": "v1.8.7"
             },
             {
               "name": "deploy-arch-ibm-activity-tracker",
@@ -560,6 +543,11 @@
                 {
                   "dependency_input": "prefix",
                   "version_input": "prefix",
+                  "reference_version": true
+                },
+                {
+                  "dependency_input": "existing_resource_group_name",
+                  "version_input": "resource_group",
                   "reference_version": true
                 },
                 {
@@ -584,6 +572,11 @@
                 {
                   "dependency_output": "crn",
                   "version_input": "existing_event_notifications_instance_crn"
+                },
+                {
+                  "dependency_input": "existing_resource_group_name",
+                  "version_input": "resource_group",
+                  "reference_version": true
                 },
                 {
                   "dependency_input": "prefix",
