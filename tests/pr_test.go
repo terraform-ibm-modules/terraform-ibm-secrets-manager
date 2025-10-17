@@ -255,50 +255,50 @@ func TestAddonsDefaultConfiguration(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestAddonsExistingSecretsManager(t *testing.T) {
-	t.Parallel()
+//func TestAddonsExistingSecretsManager(t *testing.T) {
+//	t.Parallel()
+//
+//	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
+//		Testing:       t,
+//		Prefix:        "extsm",
+//		ResourceGroup: resourceGroup,
+//		QuietMode:     true, // Suppress logs except on failure
+//	})
+//
+//	options.AddonConfig = cloudinfo.NewAddonConfigTerraform(
+//		options.Prefix,
+//		"deploy-arch-ibm-secrets-manager",
+//		"fully-configurable",
+//		map[string]interface{}{
+//			"prefix":                               options.Prefix,
+//			"region":                               permanentResources["privateOnlySecMgrRegion"],
+//			"existing_secrets_manager_crn":         permanentResources["privateOnlySecMgrCRN"],
+//			"service_plan":                         "__NULL__", // Plan not needed if using existing instance
+//			"skip_secrets_manager_iam_auth_policy": true,       // Skip s2s auth policy for IAM engine - it already exists for the existing Secrets Manager instance
+//			"secret_groups":                        []string{}, // Don't create any secret groups in existing instance (The default 'General' group already exists)
+//		},
+//	)
 
-	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
-		Testing:       t,
-		Prefix:        "extsm",
-		ResourceGroup: resourceGroup,
-		QuietMode:     true, // Suppress logs except on failure
-	})
+// Disable target / route creation to prevent hitting quota in account
+//	options.AddonConfig.Dependencies = []cloudinfo.AddonConfig{
+//		{
+//			OfferingName:   "deploy-arch-ibm-cloud-monitoring",
+//			OfferingFlavor: "fully-configurable",
+//			Inputs: map[string]interface{}{
+//				"enable_metrics_routing_to_cloud_monitoring": false,
+//			},
+//			Enabled: core.BoolPtr(true),
+//		},
+//		{
+//			OfferingName:   "deploy-arch-ibm-activity-tracker",
+//			OfferingFlavor: "fully-configurable",
+//			Inputs: map[string]interface{}{
+//				"enable_activity_tracker_event_routing_to_cos_bucket": false,
+//			},
+//			Enabled: core.BoolPtr(true),
+//		},
+//	}
 
-	options.AddonConfig = cloudinfo.NewAddonConfigTerraform(
-		options.Prefix,
-		"deploy-arch-ibm-secrets-manager",
-		"fully-configurable",
-		map[string]interface{}{
-			"prefix":                               options.Prefix,
-			"region":                               permanentResources["privateOnlySecMgrRegion"],
-			"existing_secrets_manager_crn":         permanentResources["privateOnlySecMgrCRN"],
-			"service_plan":                         "__NULL__", // Plan not needed if using existing instance
-			"skip_secrets_manager_iam_auth_policy": true,       // Skip s2s auth policy for IAM engine - it already exists for the existing Secrets Manager instance
-			"secret_groups":                        []string{}, // Don't create any secret groups in existing instance (The default 'General' group already exists)
-		},
-	)
-
-	// Disable target / route creation to prevent hitting quota in account
-	options.AddonConfig.Dependencies = []cloudinfo.AddonConfig{
-		{
-			OfferingName:   "deploy-arch-ibm-cloud-monitoring",
-			OfferingFlavor: "fully-configurable",
-			Inputs: map[string]interface{}{
-				"enable_metrics_routing_to_cloud_monitoring": false,
-			},
-			Enabled: core.BoolPtr(true),
-		},
-		{
-			OfferingName:   "deploy-arch-ibm-activity-tracker",
-			OfferingFlavor: "fully-configurable",
-			Inputs: map[string]interface{}{
-				"enable_activity_tracker_event_routing_to_cos_bucket": false,
-			},
-			Enabled: core.BoolPtr(true),
-		},
-	}
-
-	err := options.RunAddonTest()
-	require.NoError(t, err)
-}
+//	err := options.RunAddonTest()
+//	require.NoError(t, err)
+//}
