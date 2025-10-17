@@ -131,7 +131,10 @@
             },
             {
               "key": "prefix",
-              "required": true,
+              "default_value": "dev",
+              "random_string": {
+                "length": 4
+              },
               "value_constraints": [
                 {
                   "type": "regex",
@@ -187,9 +190,7 @@
                 "config_constraints": {
                   "identifier": "rg_name"
                 }
-              },
-              "default_value": "Default",
-              "description": "The name of an existing resource group to provision the resources."
+              }
             },
             {
               "key": "provider_visibility",
@@ -437,7 +438,7 @@
                 },
                 {
                   "dependency_input": "existing_resource_group_name",
-                  "version_input": "resource_group",
+                  "version_input": "existing_resource_group_name",
                   "reference_version": true
                 },
                 {
@@ -457,7 +458,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v5.3.6"
+              "version": "v5.4.0"
             },
             {
               "name": "deploy-arch-ibm-cloud-logs",
@@ -475,7 +476,7 @@
                 },
                 {
                   "dependency_input": "existing_resource_group_name",
-                  "version_input": "resource_group",
+                  "version_input": "existing_resource_group_name",
                   "reference_version": true
                 },
                 {
@@ -491,7 +492,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.6.28"
+              "version": "v1.7.0"
             },
             {
               "name": "deploy-arch-ibm-cloud-monitoring",
@@ -508,7 +509,7 @@
                 },
                 {
                   "dependency_input": "existing_resource_group_name",
-                  "version_input": "resource_group",
+                  "version_input": "existing_resource_group_name",
                   "reference_version": true
                 },
                 {
@@ -529,7 +530,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.8.7"
+              "version": "v1.9.0"
             },
             {
               "name": "deploy-arch-ibm-activity-tracker",
@@ -547,7 +548,7 @@
                 },
                 {
                   "dependency_input": "existing_resource_group_name",
-                  "version_input": "resource_group",
+                  "version_input": "existing_resource_group_name",
                   "reference_version": true
                 },
                 {
@@ -558,7 +559,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.2.34"
+              "version": "v1.3.0"
             },
             {
               "name": "deploy-arch-ibm-event-notifications",
@@ -575,7 +576,7 @@
                 },
                 {
                   "dependency_input": "existing_resource_group_name",
-                  "version_input": "resource_group",
+                  "version_input": "existing_resource_group_name",
                   "reference_version": true
                 },
                 {
@@ -591,7 +592,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v2.7.2"
+              "version": "v2.10.0"
             }
           ],
           "dependency_version_2": true,
@@ -668,7 +669,10 @@
             },
             {
               "key": "prefix",
-              "required": true,
+              "default_value": "dev",
+              "random_string": {
+                "length": 4
+              },
               "value_constraints": [
                 {
                   "type": "regex",

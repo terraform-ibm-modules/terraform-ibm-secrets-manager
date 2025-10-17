@@ -224,7 +224,6 @@ func TestAddonsDefaultConfiguration(t *testing.T) {
 		"deploy-arch-ibm-secrets-manager",
 		"fully-configurable",
 		map[string]interface{}{
-			"prefix":                  options.Prefix,
 			"region":                  validRegions[rand.Intn(len(validRegions))],
 			"service_plan":            "trial",
 			"existing_resource_group": options.ResourceGroup,
@@ -271,7 +270,6 @@ func TestAddonsExistingSecretsManager(t *testing.T) {
 		"deploy-arch-ibm-secrets-manager",
 		"fully-configurable",
 		map[string]interface{}{
-			"prefix":                               options.Prefix,
 			"region":                               permanentResources["privateOnlySecMgrRegion"],
 			"existing_secrets_manager_crn":         permanentResources["privateOnlySecMgrCRN"],
 			"existing_resource_group":              options.ResourceGroup,
