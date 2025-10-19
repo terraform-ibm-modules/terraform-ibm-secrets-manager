@@ -559,7 +559,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.4.0"
+              "version": "v1.4.3"
             },
             {
               "name": "deploy-arch-ibm-event-notifications",
