@@ -224,9 +224,9 @@ func TestAddonsDefaultConfiguration(t *testing.T) {
 		"deploy-arch-ibm-secrets-manager",
 		"fully-configurable",
 		map[string]interface{}{
-			"prefix":       options.Prefix,
-			"region":       validRegions[rand.Intn(len(validRegions))],
-			"service_plan": "trial",
+			"region":                  validRegions[rand.Intn(len(validRegions))],
+			"service_plan":            "trial",
+			"existing_resource_group": options.ResourceGroup,
 		},
 	)
 
@@ -269,9 +269,9 @@ func TestAddonsExistingSecretsManager(t *testing.T) {
 		"deploy-arch-ibm-secrets-manager",
 		"fully-configurable",
 		map[string]interface{}{
-			"prefix":                               options.Prefix,
 			"region":                               permanentResources["privateOnlySecMgrRegion"],
 			"existing_secrets_manager_crn":         permanentResources["privateOnlySecMgrCRN"],
+			"existing_resource_group":              options.ResourceGroup,
 			"service_plan":                         "__NULL__", // Plan not needed if using existing instance
 			"skip_secrets_manager_iam_auth_policy": true,       // Skip s2s auth policy for IAM engine - it already exists for the existing Secrets Manager instance
 			"secret_groups":                        []string{}, // Don't create any secret groups in existing instance (The default 'General' group already exists)
