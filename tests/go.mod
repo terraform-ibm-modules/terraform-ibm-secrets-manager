@@ -2,13 +2,13 @@ module github.com/terraform-ibm-modules/terraform-ibm-secrets-manager
 
 go 1.24.2
 
-toolchain go1.25.1
+toolchain go1.25.2
 
 require (
 	github.com/IBM/go-sdk-core/v5 v5.21.0
 	github.com/gruntwork-io/terratest v0.51.0
 	github.com/stretchr/testify v1.11.1
-	github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper v1.60.13
+	github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper v1.60.15
 )
 
 require (
@@ -75,7 +75,6 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
-	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nxadm/tail v1.4.11 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
