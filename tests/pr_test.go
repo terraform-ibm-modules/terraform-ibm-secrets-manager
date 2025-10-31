@@ -31,7 +31,7 @@ const fullyConfigurableTerraformDir = "solutions/fully-configurable"
 const securityEnforcedTerraformDir = "solutions/security-enforced"
 const resourceGroup = "geretain-test-secrets-manager"
 const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
-const terraformVersion = "terraform_v1.10" // This should match the version in the ibm_catalog.json
+const terraformVersion = "terraform_v1.12.2" // This should match the version in the ibm_catalog.json
 
 var permanentResources map[string]interface{}
 var validRegions = []string{
