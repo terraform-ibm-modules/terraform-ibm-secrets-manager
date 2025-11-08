@@ -16,7 +16,7 @@ module "resource_group" {
 
 module "key_protect" {
   source                    = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                   = "5.4.9"
+  version                   = "5.4.10"
   key_protect_instance_name = "${var.prefix}-key-protect"
   resource_group_id         = module.resource_group.resource_group_id
   region                    = var.region
@@ -207,7 +207,7 @@ module "code_engine_job" {
 module "custom_credential_engine" {
   depends_on                    = [module.secrets_manager, module.code_engine_job]
   source                        = "terraform-ibm-modules/secrets-manager-custom-credentials-engine/ibm"
-  version                       = "1.0.8"
+  version                       = "1.0.9"
   secrets_manager_guid          = module.secrets_manager.secrets_manager_guid
   secrets_manager_region        = module.secrets_manager.secrets_manager_region
   custom_credential_engine_name = "${var.prefix}-test-custom-engine"
