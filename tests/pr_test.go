@@ -4,7 +4,6 @@ package test
 import (
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"strings"
 	"testing"
@@ -70,7 +69,7 @@ func TestRunSecurityEnforced(t *testing.T) {
 		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
 			"prefix": prefix,
-			"region": validRegions[rand.Intn(len(validRegions))],
+			"region": validRegions[common.CryptoIntn(len(validRegions))],
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
@@ -105,7 +104,7 @@ func TestRunSecurityEnforced(t *testing.T) {
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 			{Name: "prefix", Value: options.Prefix, DataType: "string"},
-			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
+			{Name: "region", Value: validRegions[common.CryptoIntn(len(validRegions))], DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
 			{Name: "existing_kms_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"), DataType: "string"},
@@ -148,7 +147,7 @@ func TestRunSecurityEnforcedUpgrade(t *testing.T) {
 		TerraformDir: tempTerraformDir + "/tests/existing-resources",
 		Vars: map[string]interface{}{
 			"prefix": prefix,
-			"region": validRegions[rand.Intn(len(validRegions))],
+			"region": validRegions[common.CryptoIntn(len(validRegions))],
 		},
 		// Set Upgrade to true to ensure latest version of providers and modules are used by terratest.
 		// This is the same as setting the -upgrade=true flag with terraform.
@@ -182,7 +181,7 @@ func TestRunSecurityEnforcedUpgrade(t *testing.T) {
 		options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 			{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 			{Name: "prefix", Value: options.Prefix, DataType: "string"},
-			{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
+			{Name: "region", Value: validRegions[common.CryptoIntn(len(validRegions))], DataType: "string"},
 			{Name: "existing_resource_group_name", Value: terraform.Output(t, existingTerraformOptions, "resource_group_name"), DataType: "string"},
 			{Name: "service_plan", Value: "trial", DataType: "string"},
 			{Name: "existing_kms_instance_crn", Value: terraform.Output(t, existingTerraformOptions, "secrets_manager_kms_instance_crn"), DataType: "string"},
@@ -224,7 +223,7 @@ func TestAddonsDefaultConfiguration(t *testing.T) {
 		"deploy-arch-ibm-secrets-manager",
 		"fully-configurable",
 		map[string]interface{}{
-			"region":                  validRegions[rand.Intn(len(validRegions))],
+			"region":                  validRegions[common.CryptoIntn(len(validRegions))],
 			"service_plan":            "trial",
 			"existing_resource_group": options.ResourceGroup,
 		},
