@@ -68,6 +68,12 @@ resource "time_sleep" "wait_for_en_policy" {
 # Secrets Manager
 ##############################################################################
 
+locals {
+  secret_name_service_credential = "${var.prefix}-service-credential"
+  secret_name_arbitrary_example  = "${var.prefix}-arbitrary-example"
+  secret_name_kp_key_id          = "${var.prefix}-kp-key-id"
+}
+
 module "secrets_manager" {
   depends_on                = [time_sleep.wait_for_en_policy]
   source                    = "../.."
@@ -88,7 +94,7 @@ module "secrets_manager" {
       secrets = [
         # Example creating Event Notifications service credential secret
         {
-          secret_name                                 = "${var.prefix}-service-credential"
+          secret_name                                 = local.secret_name_service_credential
           secret_type                                 = "service_credentials" #checkov:skip=CKV_SECRET_6
           secret_description                          = "Created by secrets-manager-module advanced example"
           service_credentials_source_service_crn      = module.event_notifications.crn
@@ -96,7 +102,7 @@ module "secrets_manager" {
         },
         # Example creating arbitrary secret
         {
-          secret_name             = "${var.prefix}-arbitrary-example"
+          secret_name             = local.secret_name_arbitrary_example
           secret_type             = "arbitrary"
           secret_payload_password = var.ibmcloud_api_key
         }
@@ -107,7 +113,7 @@ module "secrets_manager" {
       secret_group_name     = "default"
       existing_secret_group = true
       secrets = [{
-        secret_name             = "${var.prefix}-kp-key-id"
+        secret_name             = local.secret_name_kp_key_id
         secret_type             = "arbitrary"
         secret_payload_password = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].key_id
         }
@@ -240,7 +246,7 @@ module "secret_manager_custom_credential" {
   custom_credentials_parameters     = true
   job_parameters = {
     string_values = {
-      apikey_secret_id = module.secrets_manager.secrets["${var.prefix}-custom-service-credential"].secret_id
+      apikey_secret_id = module.secrets_manager.secrets[local.secret_name_service_credential].secret_id
     }
   }
 }
