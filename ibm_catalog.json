@@ -67,6 +67,7 @@
         {
           "label": "Fully configurable",
           "name": "fully-configurable",
+          "short_description": "Ideal for users who want flexibility with a reliable starting point.",
           "index": 1,
           "install_type": "fullstack",
           "working_directory": "solutions/fully-configurable",
@@ -319,23 +320,28 @@
             },
             {
               "key": "secrets_manager_cbr_rules",
-              "type": "array",
               "custom_config": {
                 "type": "code_editor",
                 "grouping": "deployment",
                 "original_grouping": "deployment",
                 "config_constraints": {
-                  "type": "string"
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
                 }
               }
             },
             {
               "key": "secret_groups",
-              "type": "array",
               "custom_config": {
                 "type": "code_editor",
                 "grouping": "deployment",
-                "original_grouping": "deployment"
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
               }
             },
             {
@@ -597,6 +603,7 @@
         {
           "label": "Security-enforced",
           "name": "security-enforced",
+          "short_description": "Ideal for users requiring IBM's secure-by-default standards with enforced security settings for compliance and best practices.",
           "index": 2,
           "install_type": "fullstack",
           "working_directory": "solutions/security-enforced",
@@ -777,23 +784,28 @@
             },
             {
               "key": "secrets_manager_cbr_rules",
-              "type": "array",
               "custom_config": {
                 "type": "code_editor",
                 "grouping": "deployment",
                 "original_grouping": "deployment",
                 "config_constraints": {
-                  "type": "string"
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
                 }
               }
             },
             {
               "key": "secret_groups",
-              "type": "array",
               "custom_config": {
                 "type": "code_editor",
                 "grouping": "deployment",
-                "original_grouping": "deployment"
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
               }
             },
             {

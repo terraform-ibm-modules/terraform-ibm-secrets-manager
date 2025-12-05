@@ -1,10 +1,10 @@
 package test
 
 import (
-	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/common"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testschematic"
 )
@@ -17,7 +17,7 @@ func setupOptions(t *testing.T, prefix string, dir string) *testhelper.TestOptio
 		"au-syd",
 	}
 
-	var region = validRegions[rand.Intn(len(validRegions))]
+	var region = validRegions[common.CryptoIntn(len(validRegions))]
 
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:      t,
@@ -89,7 +89,7 @@ func TestFSCloudInSchematics(t *testing.T) {
 
 	options.TerraformVars = []testschematic.TestSchematicTerraformVar{
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
-		{Name: "region", Value: validRegions[rand.Intn(len(validRegions))], DataType: "string"},
+		{Name: "region", Value: validRegions[common.CryptoIntn(len(validRegions))], DataType: "string"},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
 		{Name: "kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
 	}
