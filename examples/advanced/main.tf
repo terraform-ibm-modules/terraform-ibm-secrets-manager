@@ -4,7 +4,7 @@
 
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
-  version = "1.4.1"
+  version = "1.4.2"
   # if an existing resource group is not set (null) create a new one using prefix
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
@@ -130,7 +130,7 @@ module "secrets_manager" {
 # Create new code engine project
 module "code_engine_project" {
   source            = "terraform-ibm-modules/code-engine/ibm//modules/project"
-  version           = "4.7.2"
+  version           = "4.7.3"
   name              = "${var.prefix}-project"
   resource_group_id = module.resource_group.resource_group_id
 }
@@ -143,7 +143,7 @@ locals {
 
 module "code_engine_secret" {
   source     = "terraform-ibm-modules/code-engine/ibm//modules/secret"
-  version    = "4.7.2"
+  version    = "4.7.3"
   name       = "${var.prefix}-rs"
   project_id = module.code_engine_project.id
   format     = "registry"
@@ -163,7 +163,7 @@ resource "ibm_cr_namespace" "rg_namespace" {
 # Build example Go application in Code Engine project which dynamically generates User IBM Cloud IAM API Keys
 module "code_engine_build" {
   source                     = "terraform-ibm-modules/code-engine/ibm//modules/build"
-  version                    = "4.7.2"
+  version                    = "4.7.3"
   name                       = "${var.prefix}-build"
   region                     = var.region
   ibmcloud_api_key           = var.ibmcloud_api_key
@@ -192,7 +192,7 @@ locals {
 module "code_engine_job" {
   depends_on      = [module.code_engine_build]
   source          = "terraform-ibm-modules/code-engine/ibm//modules/job"
-  version         = "4.7.2"
+  version         = "4.7.3"
   name            = "${var.prefix}-job"
   image_reference = local.output_image
   image_secret    = module.code_engine_secret.name
