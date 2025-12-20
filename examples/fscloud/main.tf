@@ -53,7 +53,7 @@ module "event_notification" {
 
 module "kms_key_crn_parser" {
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.3.6"
+  version = "1.3.7"
   crn     = var.kms_key_crn
 }
 
