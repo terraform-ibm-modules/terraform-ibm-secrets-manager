@@ -4,7 +4,7 @@
 
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
-  version = "1.4.6"
+  version = "1.4.7"
   # if an existing resource group is not set (null) create a new one using prefix
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
@@ -16,7 +16,7 @@ module "resource_group" {
 
 module "key_protect" {
   source                    = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                   = "5.5.4"
+  version                   = "5.5.5"
   key_protect_instance_name = "${var.prefix}-key-protect"
   resource_group_id         = module.resource_group.resource_group_id
   region                    = var.region
@@ -39,7 +39,7 @@ module "key_protect" {
 
 module "event_notifications" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "2.10.19"
+  version           = "2.10.20"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en"
   tags              = var.resource_tags
@@ -213,7 +213,7 @@ module "code_engine_job" {
 module "custom_credential_engine" {
   depends_on                    = [module.secrets_manager, module.code_engine_job]
   source                        = "terraform-ibm-modules/secrets-manager-custom-credentials-engine/ibm"
-  version                       = "1.0.9"
+  version                       = "1.0.10"
   secrets_manager_guid          = module.secrets_manager.secrets_manager_guid
   secrets_manager_region        = module.secrets_manager.secrets_manager_region
   custom_credential_engine_name = "${var.prefix}-test-custom-engine"
