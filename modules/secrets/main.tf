@@ -60,7 +60,7 @@ locals {
 module "secrets" {
   for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
   source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
-  version                                     = "1.9.6"
+  version                                     = "1.9.7"
   region                                      = var.existing_sm_instance_region
   secrets_manager_guid                        = var.existing_sm_instance_guid
   secret_group_id                             = each.value.secret_group_id
