@@ -39,7 +39,7 @@ module "cbr_zone_schematics" {
 
 module "event_notification" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "2.10.31"
+  version           = "2.10.32"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en"
   tags              = var.resource_tags
