@@ -10,7 +10,7 @@
         "terraform",
         "solution",
         "security",
-        "converged_infra"
+        "platform_engineering"
       ],
       "keywords": [
         "Secrets",
@@ -21,7 +21,7 @@
         "solution"
       ],
       "short_description": "Create and configure a Secrets Manager instance with optional security, logging, and notification services",
-      "long_description": "This deployable architecture is used to provision and configure an [IBM Cloud Secrets Manager](https://www.ibm.com/products/secrets-manager) instance. It optionally supports creating and configuring the following:\n* [an IBM Cloud account](https://cloud.ibm.com/docs/account?topic=account-account-getting-started) to set up basic account settings.\n* [Key Protect](https://cloud.ibm.com/docs/key-protect?topic=key-protect-getting-started-tutorial) for data encryption by using your own managed keys.\n* [Cloud Logs](https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-getting-started) for logging and monitoring platform logs.\n* [Cloud Monitoring](https://cloud.ibm.com/docs/monitoring?topic=monitoring-getting-started) to measure how users and applications interact with the Secrets Manager instance.\n* [Event Notifications](https://cloud.ibm.com/docs/event-notifications?topic=event-notifications-getting-started) to send notifications of events to other users, or destinations, by using email, SMS or other supported delivery channels.\n\nℹ️ This deployable architecture is a part of a larger collection that IBM provides. Each deployable architecture focuses on a single IBM Cloud service. You can use these deployable architectures on their own to automate deployments by following an [IaC approach](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-understanding-projects), or you can [combine them together](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-config-stack) to deploy a more complex end-to-end solution architecture.",
+      "long_description": "This deployable architecture is used to provision and configure an [IBM Cloud Secrets Manager](https://www.ibm.com/products/secrets-manager) instance. It optionally supports creating [Key Protect](https://cloud.ibm.com/docs/key-protect?topic=key-protect-getting-started-tutorial) for data encryption by using your own managed keys.\n* [Cloud Logs](https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-getting-started) for logging and monitoring platform logs.\n* [Cloud Monitoring](https://cloud.ibm.com/docs/monitoring?topic=monitoring-getting-started) to measure how users and applications interact with the Secrets Manager instance.\n* [Event Notifications](https://cloud.ibm.com/docs/event-notifications?topic=event-notifications-getting-started) to send notifications of events to other users, or destinations, by using email, SMS or other supported delivery channels. \n\nLeverage [Terraform IBM Modules](https://github.com/terraform-ibm-modules) to shape and scale your solutions. You can integrate Terraform IBM Modules (TIM) to extend functionality and design a solution tailored to your environment and operations needs. These modules offer reusable, customizable elements that follow IBM Cloud's recommended practices. You can access the [source code and documentation](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager) and use it to extend your current architecture or create new solutions.\n\nℹ️ This deployable architecture is a part of a larger collection that IBM provides. Each deployable architecture focuses on a single IBM Cloud service. You can use these deployable architectures on their own to automate deployments by following an [IaC approach](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-understanding-projects), or you can [combine them together](https://cloud.ibm.com/docs/secure-enterprise?topic=secure-enterprise-config-stack) to deploy a more complex end-to-end solution architecture.",
       "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/blob/main/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/images/secrets_manager.svg",
       "provider_name": "IBM",
@@ -57,24 +57,20 @@
         {
           "title": "Sets up monitoring operational metrics for Secrets Manager instance",
           "description": "Optionally, you can set up IBM Cloud Monitoring service to measure how users and applications interact with your Secrets Manager instance. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-operational-metrics)."
+        },
+        {
+          "title": "Composable and Extensible Architecture",
+          "description": "This architecture illustrates how Terraform IBM Modules(TIM) can be integrated to deliver a complete solution on IBM Cloud. Each module is a reusable, and validated component for security, compliance, and operational IBM best practices. You can deploy this architecture as-is or configure it as code by leveraging the underlying modules to fit your specific requirements. Explore the [source code and documentation](https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager) to adapt, extend, or create entirely new solutions using these building blocks."
         }
       ],
       "flavors": [
         {
           "label": "Fully configurable",
           "name": "fully-configurable",
+          "short_description": "Ideal for users who want flexibility with a reliable starting point.",
           "index": 1,
           "install_type": "fullstack",
           "working_directory": "solutions/fully-configurable",
-          "compliance": {
-            "authority": "scc-v3",
-            "profiles": [
-              {
-                "profile_name": "IBM Cloud Framework for Financial Services",
-                "profile_version": "1.7.0"
-              }
-            ]
-          },
           "configuration": [
             {
               "key": "ibmcloud_api_key"
@@ -131,7 +127,17 @@
             },
             {
               "key": "prefix",
-              "required": true
+              "default_value": "dev",
+              "random_string": {
+                "length": 4
+              },
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "Prefix must begin with a lowercase letter and may contain only lowercase letters, digits, and hyphens '-'. It must not end with a hyphen('-'), and cannot contain consecutive hyphens ('--'). It should not exceed 16 characters.",
+                  "value": "^$|^__NULL__$|^[a-z](?!.*--)(?:[a-z0-9-]{0,14}[a-z0-9])?$"
+                }
+              ]
             },
             {
               "key": "service_plan",
@@ -247,10 +253,24 @@
               "key": "kms_encryption_enabled"
             },
             {
-              "key": "existing_kms_instance_crn"
+              "key": "existing_kms_instance_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_kms_instance_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}(kms|hs-crypto):(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                }
+              ]
             },
             {
-              "key": "existing_secrets_manager_kms_key_crn"
+              "key": "existing_secrets_manager_kms_key_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_secrets_manager_kms_key_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}(kms|hs-crypto):(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:key:[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$"
+                }
+              ]
             },
             {
               "key": "skip_secrets_manager_kms_iam_auth_policy"
@@ -286,34 +306,53 @@
               "key": "event_notifications_reply_to_email"
             },
             {
-              "key": "existing_event_notifications_instance_crn"
+              "key": "existing_event_notifications_instance_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_event_notifications_instance_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}event-notifications:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                }
+              ]
             },
             {
               "key": "skip_secrets_manager_event_notifications_iam_auth_policy"
             },
             {
               "key": "secrets_manager_cbr_rules",
-              "type": "array",
               "custom_config": {
                 "type": "code_editor",
                 "grouping": "deployment",
                 "original_grouping": "deployment",
                 "config_constraints": {
-                  "type": "string"
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
                 }
               }
             },
             {
               "key": "secret_groups",
-              "type": "array",
               "custom_config": {
                 "type": "code_editor",
                 "grouping": "deployment",
-                "original_grouping": "deployment"
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
               }
             },
             {
-              "key": "existing_secrets_manager_crn"
+              "key": "existing_secrets_manager_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_secrets_manager_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}secrets-manager:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                }
+              ]
             }
           ],
           "iam_permissions": [
@@ -364,13 +403,6 @@
               ],
               "service_name": "kms",
               "notes": "[Optional] Required if you are creating and configuring a Key Protect instance for key encryption."
-            },
-            {
-              "role_crns": [
-                "crn:v1:bluemix:public:iam::::role:Administrator"
-              ],
-              "service_name": "iam-identity",
-              "notes": "[Optional] Required to deploy Cloud automation for account configuration, which creates foundational IBM Cloud account resources, like IAM settings, trusted profiles, access groups, and resource groups."
             }
           ],
           "architecture": {
@@ -384,7 +416,7 @@
               {
                 "diagram": {
                   "caption": "Secrets Manager and optional surround services.",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architecture/secrets_manager.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architectures/secrets_manager.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "This architecture supports creating and configuring a Secrets Manager instance and optional security, logging, and notification services."
@@ -393,34 +425,9 @@
           },
           "dependencies": [
             {
-              "name": "deploy-arch-ibm-account-infra-base",
-              "description": "Advanced users can leverage the Cloud automation for account configuration deployable architecture to configure an IBM Cloud account with a ready-made set of resource groups by default. When you enable the \"with account settings\" option, it also applies baseline security and governance settings.",
-              "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
-              "flavors": [
-                "resource-group-only",
-                "resource-groups-with-account-settings"
-              ],
-              "default_flavor": "resource-group-only",
-              "id": "63641cec-6093-4b4f-b7b0-98d2f4185cd6-global",
-              "input_mapping": [
-                {
-                  "dependency_input": "prefix",
-                  "version_input": "prefix",
-                  "reference_version": true
-                },
-                {
-                  "dependency_output": "security_resource_group_name",
-                  "version_input": "existing_resource_group_name"
-                }
-              ],
-              "optional": true,
-              "on_by_default": false,
-              "version": "v3.0.7"
-            },
-            {
               "name": "deploy-arch-ibm-kms",
               "id": "2cad4789-fa90-4886-9c9e-857081c273ee-global",
-              "description": "Enable Cloud automation for Key Protect to use your own managed encryption keys. If disabled, IBM Cloud's default service-managed encryption is used.",
+              "description": "Enables managed encryption with your own keys via IBM Cloud Key Protect. If disabled, services will default to IBM-managed encryption.",
               "flavors": [
                 "fully-configurable"
               ],
@@ -429,6 +436,11 @@
                 {
                   "dependency_output": "kms_instance_crn",
                   "version_input": "existing_kms_instance_crn"
+                },
+                {
+                  "dependency_input": "existing_resource_group_name",
+                  "version_input": "existing_resource_group_name",
+                  "reference_version": true
                 },
                 {
                   "version_input": "kms_encryption_enabled",
@@ -447,11 +459,11 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v5.1.19"
+              "version": "v5.5.3"
             },
             {
               "name": "deploy-arch-ibm-cloud-logs",
-              "description": "Enable to provision and configure IBM Cloud Logs for analysing logs generated by the Event Notifications instance.",
+              "description": "Configure an IBM Cloud Logs instance to analyse the platform logs.",
               "flavors": [
                 "fully-configurable"
               ],
@@ -461,6 +473,11 @@
                 {
                   "dependency_input": "prefix",
                   "version_input": "prefix",
+                  "reference_version": true
+                },
+                {
+                  "dependency_input": "existing_resource_group_name",
+                  "version_input": "existing_resource_group_name",
                   "reference_version": true
                 },
                 {
@@ -476,11 +493,11 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.6.11"
+              "version": "v1.10.1"
             },
             {
               "name": "deploy-arch-ibm-cloud-monitoring",
-              "description": "Enable to provision and configure IBM Cloud Activity Tracker for routing events generated by the Event Notifications instance to a Cloud logs instance.",
+              "description": "Sets up a Cloud Monitoring instance to collect the platform metrics.",
               "flavors": [
                 "fully-configurable"
               ],
@@ -490,6 +507,11 @@
                 {
                   "dependency_output": "cloud_monitoring_crn",
                   "version_input": "existing_monitoring_crn"
+                },
+                {
+                  "dependency_input": "existing_resource_group_name",
+                  "version_input": "existing_resource_group_name",
+                  "reference_version": true
                 },
                 {
                   "dependency_input": "prefix",
@@ -509,11 +531,11 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.6.4"
+              "version": "v1.11.0"
             },
             {
               "name": "deploy-arch-ibm-activity-tracker",
-              "description": "Enable to provision and configure IBM Cloud Activity Tracker event routing for analysing logs and metrics generated by the Event Notifications instance.",
+              "description": "Configure Activity Tracker Event Routing to route the auditing events.",
               "flavors": [
                 "fully-configurable"
               ],
@@ -526,6 +548,11 @@
                   "reference_version": true
                 },
                 {
+                  "dependency_input": "existing_resource_group_name",
+                  "version_input": "existing_resource_group_name",
+                  "reference_version": true
+                },
+                {
                   "dependency_input": "region",
                   "version_input": "region",
                   "reference_version": true
@@ -533,7 +560,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.2.25"
+              "version": "v1.5.6"
             },
             {
               "name": "deploy-arch-ibm-event-notifications",
@@ -549,6 +576,11 @@
                   "version_input": "existing_event_notifications_instance_crn"
                 },
                 {
+                  "dependency_input": "existing_resource_group_name",
+                  "version_input": "existing_resource_group_name",
+                  "reference_version": true
+                },
+                {
                   "dependency_input": "prefix",
                   "version_input": "prefix",
                   "reference_version": true
@@ -561,27 +593,20 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v2.6.11"
+              "version": "v2.10.16"
             }
           ],
           "dependency_version_2": true,
-          "terraform_version": "1.10.5"
+          "terraform_version": "1.12.2",
+          "ignore_readme": true
         },
         {
           "label": "Security-enforced",
           "name": "security-enforced",
+          "short_description": "Ideal for users requiring IBM's secure-by-default standards with enforced security settings for compliance and best practices.",
           "index": 2,
           "install_type": "fullstack",
           "working_directory": "solutions/security-enforced",
-          "compliance": {
-            "authority": "scc-v3",
-            "profiles": [
-              {
-                "profile_name": "IBM Cloud Framework for Financial Services",
-                "profile_version": "1.7.0"
-              }
-            ]
-          },
           "configuration": [
             {
               "key": "ibmcloud_api_key"
@@ -638,7 +663,17 @@
             },
             {
               "key": "prefix",
-              "required": true
+              "default_value": "dev",
+              "random_string": {
+                "length": 4
+              },
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "Prefix must begin with a lowercase letter and may contain only lowercase letters, digits, and hyphens '-'. It must not end with a hyphen('-'), and cannot contain consecutive hyphens ('--'). It should not exceed 16 characters.",
+                  "value": "^$|^__NULL__$|^[a-z](?!.*--)(?:[a-z0-9-]{0,14}[a-z0-9])?$"
+                }
+              ]
             },
             {
               "key": "service_plan",
@@ -656,7 +691,14 @@
             },
             {
               "key": "existing_kms_instance_crn",
-              "required": true
+              "required": true,
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_kms_instance_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}(kms|hs-crypto):(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                }
+              ]
             },
             {
               "key": "existing_resource_group_name",
@@ -668,7 +710,9 @@
                 "config_constraints": {
                   "identifier": "rg_name"
                 }
-              }
+              },
+              "default_value": "Default",
+              "description": "The name of an existing resource group to provision the resources."
             },
             {
               "key": "secrets_manager_instance_name"
@@ -687,7 +731,14 @@
               "key": "skip_secrets_manager_iam_auth_policy"
             },
             {
-              "key": "existing_secrets_manager_kms_key_crn"
+              "key": "existing_secrets_manager_kms_key_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_secrets_manager_kms_key_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}(kms|hs-crypto):(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}:key:[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$"
+                }
+              ]
             },
             {
               "key": "skip_secrets_manager_kms_iam_auth_policy"
@@ -719,34 +770,53 @@
               "key": "event_notifications_reply_to_email"
             },
             {
-              "key": "existing_event_notifications_instance_crn"
+              "key": "existing_event_notifications_instance_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_event_notifications_instance_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}event-notifications:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                }
+              ]
             },
             {
               "key": "skip_secrets_manager_event_notifications_iam_auth_policy"
             },
             {
               "key": "secrets_manager_cbr_rules",
-              "type": "array",
               "custom_config": {
                 "type": "code_editor",
                 "grouping": "deployment",
                 "original_grouping": "deployment",
                 "config_constraints": {
-                  "type": "string"
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
                 }
               }
             },
             {
               "key": "secret_groups",
-              "type": "array",
               "custom_config": {
                 "type": "code_editor",
                 "grouping": "deployment",
-                "original_grouping": "deployment"
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "supportedLanguages": [
+                    "hcl"
+                  ]
+                }
               }
             },
             {
-              "key": "existing_secrets_manager_crn"
+              "key": "existing_secrets_manager_crn",
+              "value_constraints": [
+                {
+                  "type": "regex",
+                  "description": "The value provided for 'existing_secrets_manager_crn' is not valid.",
+                  "value": "^__NULL__$|^crn:(.*:){3}secrets-manager:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$"
+                }
+              ]
             }
           ],
           "iam_permissions": [
@@ -770,14 +840,15 @@
               {
                 "diagram": {
                   "caption": "Secrets Manager",
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architecture/secrets_manager.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-secrets-manager/main/reference-architectures/secrets_manager.svg",
                   "type": "image/svg+xml"
                 },
                 "description": "This architecture supports creating and configuring an IBM Secrets Manager instance."
               }
             ]
           },
-          "terraform_version": "1.10.5"
+          "terraform_version": "1.12.2",
+          "ignore_readme": true
         }
       ]
     }

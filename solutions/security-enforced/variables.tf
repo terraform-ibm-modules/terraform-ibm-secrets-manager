@@ -10,8 +10,8 @@ variable "ibmcloud_api_key" {
 
 variable "existing_resource_group_name" {
   type        = string
-  description = "The name of an existing resource group to provision the resources. If not provided the default resource group will be used."
-  default     = null
+  description = "The name of an existing resource group to provision the resources."
+  default     = "Default"
 }
 
 variable "region" {
@@ -22,7 +22,7 @@ variable "region" {
 
 variable "prefix" {
   type        = string
-  description = "The prefix to be added to all resources created by this solution. To skip using a prefix, set this value to null or an empty string. The prefix must begin with a lowercase letter and may contain only lowercase letters, digits, and hyphens '-'. It should not exceed 16 characters, must not end with a hyphen('-'), and can not contain consecutive hyphens ('--'). Example: sm-0205. [Learn more](https://terraform-ibm-modules.github.io/documentation/#/prefix.md)."
+  description = "The prefix to add to all resources that this solution creates (e.g `prod`, `test`, `dev`). To skip using a prefix, set this value to null or an empty string. [Learn more](https://terraform-ibm-modules.github.io/documentation/#/prefix.md)."
 
   validation {
     condition = var.prefix == null || var.prefix == "" ? true : alltrue([
@@ -57,7 +57,7 @@ variable "service_plan" {
   type        = string
   description = "The pricing plan to use when provisioning a Secrets Manager instance. Possible values: `standard`, `trial`. You can create only one Trial instance of Secrets Manager per account. Before you can create a new Trial instance, you must delete the existing Trial instance and its reclamation. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-create-instance&interface=ui#upgrade-instance-standard)."
   validation {
-    condition     = contains(["standard", "trial"], var.service_plan)
+    condition     = var.existing_secrets_manager_crn == null ? contains(["standard", "trial"], var.service_plan) : true
     error_message = "Only 'standard' and 'trial' are allowed values for 'service_plan'. Applies only if not providing a value for the 'existing_secrets_manager_crn' input."
   }
   validation {
@@ -145,11 +145,6 @@ variable "existing_kms_instance_crn" {
       var.existing_kms_instance_crn == null,
     ])
     error_message = "The provided KMS instance CRN in the input 'existing_kms_instance_crn' in not valid."
-  }
-
-  validation {
-    condition     = var.existing_kms_instance_crn != null ? var.existing_secrets_manager_crn == null : true
-    error_message = "A value should not be passed for 'existing_kms_instance_crn' when passing an existing secrets manager instance using the 'existing_secrets_manager_crn' input."
   }
 }
 

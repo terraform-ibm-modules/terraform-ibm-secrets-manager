@@ -6,7 +6,7 @@
 locals {
   # Validation (approach based on https://github.com/hashicorp/terraform/issues/25609#issuecomment-1057614400)
   # tflint-ignore: terraform_unused_declarations
-  validate_is_hpcs_key = var.is_hpcs_key && local.kms_service_name != "hs-crypto" ? tobool("When is_hpcs_key is set to true then the key provided through kms_key_crn must be a Hyper Protect Crypto Services key") : true
+  validate_is_hpcs_key = var.existing_sm_instance_crn == null ? var.is_hpcs_key && local.kms_service_name != "hs-crypto" ? tobool("When is_hpcs_key is set to true then the key provided through kms_key_crn must be a Hyper Protect Crypto Services key") : true : true
 }
 
 locals {
@@ -48,8 +48,8 @@ resource "ibm_iam_authorization_policy" "iam_identity_policy" {
   source_service_name         = "secrets-manager"
   source_resource_instance_id = local.secrets_manager_guid
   target_service_name         = "iam-identity"
-  roles                       = ["Operator"]
-  description                 = "Allows Secrets Manager instance ${local.secrets_manager_guid} `Operator` access to the IAM Identity service to enable creating IAM credentials."
+  roles                       = ["Operator", "User API key creator", "Service ID creator"]
+  description                 = "Allows Secrets Manager instance ${local.secrets_manager_guid} access to the IAM Identity service to enable creating IAM credentials."
 }
 
 resource "ibm_iam_authorization_policy" "iam_groups_policy" {
@@ -81,7 +81,7 @@ locals {
 module "kms_key_crn_parser" {
   count   = var.kms_encryption_enabled ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.2.0"
+  version = "1.3.7"
   crn     = var.kms_key_crn != null ? var.kms_key_crn : ""
 }
 
@@ -163,7 +163,7 @@ locals {
 module "cbr_rule" {
   count            = length(var.cbr_rules) > 0 ? length(var.cbr_rules) : 0
   source           = "terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module"
-  version          = "1.33.2"
+  version          = "1.35.9"
   rule_description = var.cbr_rules[count.index].description
   enforcement_mode = var.cbr_rules[count.index].enforcement_mode
   rule_contexts    = var.cbr_rules[count.index].rule_contexts
