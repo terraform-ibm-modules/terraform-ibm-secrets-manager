@@ -33,6 +33,16 @@ output "secrets_manager_region" {
   description = "Region of the Secrets Manager instance"
 }
 
+output "secret_groups" {
+  value       = module.secrets_manager.secret_groups
+  description = "IDs of the secret groups"
+}
+
+output "secrets" {
+  value       = module.secrets_manager.secrets
+  description = "List of Secrets Manager secret configuration data"
+}
+
 output "next_steps_text" {
   value       = "Now, you can use Secrets Manager to manage sensitive data like passwords and API keys."
   description = "Next steps text"
