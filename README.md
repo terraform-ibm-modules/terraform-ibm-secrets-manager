@@ -19,9 +19,10 @@ This module is used to provision and configure an IBM Cloud [Secrets Manager](ht
     * [fscloud](./modules/fscloud)
     * [secrets](./modules/secrets)
 * [Examples](./examples)
-    * <div style="display: inline-block;"><a href="./examples/advanced">Advanced example</a></div> <div style="display: inline-block; vertical-align: middle;"><a href="https://cloud.ibm.com/schematics/workspaces/create?workspace_name=sm-advanced-example&repository=https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/examples/advanced" target="_blank"><img src="https://cloud.ibm.com/media/docs/images/icons/Deploy_to_cloud.svg" alt="Deploy to IBM Cloud button"></a></div>
-    * <div style="display: inline-block;"><a href="./examples/basic">Basic example</a></div> <div style="display: inline-block; vertical-align: middle;"><a href="https://cloud.ibm.com/schematics/workspaces/create?workspace_name=sm-basic-example&repository=https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/examples/basic" target="_blank"><img src="https://cloud.ibm.com/media/docs/images/icons/Deploy_to_cloud.svg" alt="Deploy to IBM Cloud button"></a></div>
-    * <div style="display: inline-block;"><a href="./examples/fscloud">Financial Services Cloud profile example with KYOK encryption</a></div> <div style="display: inline-block; vertical-align: middle;"><a href="https://cloud.ibm.com/schematics/workspaces/create?workspace_name=sm-fscloud-example&repository=https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/examples/fscloud" target="_blank"><img src="https://cloud.ibm.com/media/docs/images/icons/Deploy_to_cloud.svg" alt="Deploy to IBM Cloud button"></a></div>
+:information_source: Ctrl/Cmd+Click or right-click on the Schematics deploy button to open in a new tab
+    * <a href="./examples/advanced">Advanced example</a> <a href="https://cloud.ibm.com/schematics/workspaces/create?workspace_name=secrets-manager-advanced-example&repository=https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/examples/advanced"><img src="https://img.shields.io/badge/Deploy%20with IBM%20Cloud%20Schematics-0f62fe?logo=ibm&logoColor=white&labelColor=0f62fe" alt="Deploy with IBM Cloud Schematics" style="height: 16px; vertical-align: text-bottom; margin-left: 5px;"></a>
+    * <a href="./examples/basic">Basic example</a> <a href="https://cloud.ibm.com/schematics/workspaces/create?workspace_name=secrets-manager-basic-example&repository=https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/examples/basic"><img src="https://img.shields.io/badge/Deploy%20with IBM%20Cloud%20Schematics-0f62fe?logo=ibm&logoColor=white&labelColor=0f62fe" alt="Deploy with IBM Cloud Schematics" style="height: 16px; vertical-align: text-bottom; margin-left: 5px;"></a>
+    * <a href="./examples/fscloud">Financial Services Cloud profile example with KYOK encryption</a> <a href="https://cloud.ibm.com/schematics/workspaces/create?workspace_name=secrets-manager-fscloud-example&repository=https://github.com/terraform-ibm-modules/terraform-ibm-secrets-manager/tree/main/examples/fscloud"><img src="https://img.shields.io/badge/Deploy%20with IBM%20Cloud%20Schematics-0f62fe?logo=ibm&logoColor=white&labelColor=0f62fe" alt="Deploy with IBM Cloud Schematics" style="height: 16px; vertical-align: text-bottom; margin-left: 5px;"></a>
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 
@@ -72,7 +73,7 @@ You need the following permissions to run this module.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cbr_rule"></a> [cbr\_rule](#module\_cbr\_rule) | terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module | 1.35.9 |
+| <a name="module_cbr_rule"></a> [cbr\_rule](#module\_cbr\_rule) | terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module | 1.35.10 |
 | <a name="module_kms_key_crn_parser"></a> [kms\_key\_crn\_parser](#module\_kms\_key\_crn\_parser) | terraform-ibm-modules/common-utilities/ibm//modules/crn-parser | 1.3.7 |
 | <a name="module_secrets"></a> [secrets](#module\_secrets) | ./modules/secrets | n/a |
 

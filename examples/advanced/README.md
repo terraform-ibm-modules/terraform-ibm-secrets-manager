@@ -19,5 +19,5 @@ An example that configures:
 - A custom credential secret
 
 <!-- BEGIN SCHEMATICS DEPLOY TIP HOOK -->
-:exclamation: Ctrl/Cmd+Click or right-click to open deploy button in a new tab
+:information_source: Ctrl/Cmd+Click or right-click on the Schematics deploy button to open in a new tab
 <!-- END SCHEMATICS DEPLOY TIP HOOK -->
