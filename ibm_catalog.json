@@ -447,7 +447,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v5.5.3"
+              "version": "v5.5.27"
             },
             {
               "name": "deploy-arch-ibm-cloud-logs",
@@ -481,7 +481,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.10.1"
+              "version": "v1.11.3"
             },
             {
               "name": "deploy-arch-ibm-cloud-monitoring",
@@ -519,7 +519,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.11.0"
+              "version": "v1.13.3"
             },
             {
               "name": "deploy-arch-ibm-activity-tracker",
@@ -548,7 +548,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.5.6"
+              "version": "v1.6.13"
             },
             {
               "name": "deploy-arch-ibm-event-notifications",
@@ -581,7 +581,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v2.10.16"
+              "version": "v2.11.14"
             }
           ],
           "dependency_version_2": true,
