@@ -25,7 +25,7 @@ data "ibm_sm_secret_groups" "existing_secret_groups" {
 module "secret_groups" {
   for_each                 = { for obj in local.secret_groups : obj.secret_group_name => obj }
   source                   = "terraform-ibm-modules/secrets-manager-secret-group/ibm"
-  version                  = "1.4.2"
+  version                  = "1.4.6"
   region                   = var.existing_sm_instance_region
   secrets_manager_guid     = var.existing_sm_instance_guid
   secret_group_name        = each.value.secret_group_name
@@ -60,7 +60,7 @@ locals {
 module "secrets" {
   for_each                                    = { for obj in local.secrets : obj.secret_name => obj }
   source                                      = "terraform-ibm-modules/secrets-manager-secret/ibm"
-  version                                     = "1.9.13"
+  version                                     = "1.9.14"
   region                                      = var.existing_sm_instance_region
   secrets_manager_guid                        = var.existing_sm_instance_guid
   secret_group_id                             = each.value.secret_group_id
