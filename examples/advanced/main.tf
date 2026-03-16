@@ -246,7 +246,7 @@ module "secret_manager_custom_credential" {
   custom_credentials_parameters     = true
   job_parameters = {
     string_values = {
-      apikey_secret_id = module.secrets_manager.secrets[local.secret_name_service_credential].secret_id
+      apikey_secret_id = module.secrets_manager.secrets[local.secret_name_arbitrary_example].secret_id
     }
   }
 }
