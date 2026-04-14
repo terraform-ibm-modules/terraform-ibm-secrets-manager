@@ -37,7 +37,7 @@ func setupOptions(t *testing.T, prefix string, dir string) *testhelper.TestOptio
 func TestRunBasicExample(t *testing.T) {
 	t.Parallel()
 
-	options := setupOptions(t, "sm-adv", "examples/basic")
+	options := setupOptions(t, "sm-basic", "examples/basic")
 
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
@@ -47,13 +47,7 @@ func TestRunBasicExample(t *testing.T) {
 func TestRunAdvancedExample(t *testing.T) {
 	t.Parallel()
 
-	// all tests using KMS should run in the same region https://github.ibm.com/GoldenEye/issues/issues/12725
-	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-		Testing:      t,
-		TerraformDir: "examples/advanced",
-		Prefix:       "sm-adv",
-		Region:       "eu-de",
-	})
+	options := setupOptions(t, "sm-adv", "examples/advanced")
 
 	// need to ignore because of a provider issue: https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4719
 	options.IgnoreUpdates = testhelper.Exemptions{
@@ -61,6 +55,9 @@ func TestRunAdvancedExample(t *testing.T) {
 			"module.code_engine_job.ibm_code_engine_job.ce_job",
 		},
 	}
+	// all tests using KMS should run in the same region https://github.ibm.com/GoldenEye/issues/issues/12725
+	options.Region = "eu-de"
+	options.TerraformVars["region"] = "eu-de"
 
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
