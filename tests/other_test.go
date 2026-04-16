@@ -56,7 +56,6 @@ func TestRunAdvancedExample(t *testing.T) {
 		},
 	}
 	// all tests using KMS should run in the same region https://github.ibm.com/GoldenEye/issues/issues/12725
-	options.Region = "eu-de"
 	options.TerraformVars["region"] = "eu-de"
 
 	output, err := options.RunTestConsistency()
