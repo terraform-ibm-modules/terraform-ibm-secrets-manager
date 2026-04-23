@@ -28,6 +28,12 @@ variable "resource_tags" {
   default     = []
 }
 
+variable "access_tags" {
+  type        = list(string)
+  description = "Optional list of access management tags to add to the App Configuration instance."
+  default     = []
+}
+
 ##############################################################################
 # Key Management Service (KMS)
 ##############################################################################

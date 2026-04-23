@@ -10,6 +10,7 @@ module "secrets_manager" {
   service_plan                                             = var.service_plan
   skip_secrets_manager_iam_auth_policy                     = var.skip_secrets_manager_iam_auth_policy
   secrets_manager_resource_tags                            = var.secrets_manager_resource_tags
+  secrets_manager_access_tags                              = var.secrets_manager_access_tags
   secrets_manager_endpoint_type                            = "private"
   allowed_network                                          = "private-only"
   skip_secrets_manager_kms_iam_auth_policy                 = var.skip_secrets_manager_kms_iam_auth_policy

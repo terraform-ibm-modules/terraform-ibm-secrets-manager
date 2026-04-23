@@ -81,7 +81,7 @@ module "secrets_manager" {
   region                    = var.region
   secrets_manager_name      = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
   sm_service_plan           = var.sm_service_plan
-  sm_tags                   = var.resource_tags
+  resource_tags             = var.resource_tags
   kms_encryption_enabled    = true
   is_hpcs_key               = false
   kms_key_crn               = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn

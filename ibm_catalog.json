@@ -200,6 +200,17 @@
               }
             },
             {
+              "key": "secrets_manager_access_tags",
+              "custom_config": {
+                "grouping": "deployment",
+                "type": "array",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "type": "string"
+                }
+              }
+            },
+            {
               "key": "skip_secrets_manager_iam_auth_policy"
             },
             {

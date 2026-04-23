@@ -30,7 +30,7 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
   plan              = var.sm_service_plan
   location          = var.region
   resource_group_id = var.resource_group_id
-  tags              = var.sm_tags
+  tags              = var.resource_tags
   parameters = {
     "allowed_network" = var.allowed_network
     "kms_instance"    = local.kms_instance_guid
@@ -59,6 +59,23 @@ resource "ibm_iam_authorization_policy" "iam_groups_policy" {
   target_service_name         = "iam-groups"
   roles                       = ["Groups Service Member Manage"]
   description                 = "Allows Secrets Manager instance ${local.secrets_manager_guid} `Groups Service Member Manage` access to the IAM Groups service to enable creating IAM credentials."
+}
+
+##############################################################################
+# Attach Access Tags
+##############################################################################
+
+data "ibm_iam_access_tag" "access_tag" {
+  for_each = length(var.access_tags) != 0 ? toset(var.access_tags) : []
+  name     = each.value
+}
+
+resource "ibm_resource_tag" "secrets_manager_tag" {
+  depends_on  = [data.ibm_iam_access_tag.access_tag] # Force dependency on data source validation to ensure access_tags exist and are valid before use.
+  count       = length(var.access_tags) == 0 ? 0 : 1
+  resource_id = ibm_resource_instance.secrets_manager_instance.crn
+  tags        = var.access_tags
+  tag_type    = "access"
 }
 
 #######################################################################################################################

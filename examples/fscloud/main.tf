@@ -70,7 +70,8 @@ module "secrets_manager" {
   resource_group_id        = module.resource_group.resource_group_id
   region                   = var.region
   secrets_manager_name     = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
-  sm_tags                  = var.resource_tags
+  resource_tags            = var.resource_tags
+  access_tags              = var.access_tags
   is_hpcs_key              = local.kms_service == "hs-crypto" ? true : false
   kms_key_crn              = var.kms_key_crn
   existing_en_instance_crn = module.event_notification.crn
