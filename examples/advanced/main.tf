@@ -4,7 +4,7 @@
 
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
-  version = "1.4.8"
+  version = "1.6.0"
   # if an existing resource group is not set (null) create a new one using prefix
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
@@ -16,7 +16,7 @@ module "resource_group" {
 
 module "key_protect" {
   source                    = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                   = "5.5.36"
+  version                   = "5.6.0"
   key_protect_instance_name = "${var.prefix}-key-protect"
   resource_group_id         = module.resource_group.resource_group_id
   region                    = var.region
@@ -39,7 +39,7 @@ module "key_protect" {
 
 module "event_notifications" {
   source            = "terraform-ibm-modules/event-notifications/ibm"
-  version           = "2.11.28"
+  version           = "2.12.2"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en"
   tags              = var.resource_tags
@@ -235,7 +235,7 @@ module "custom_credential_engine" {
 module "secret_manager_custom_credential" {
   depends_on                        = [module.secrets_manager, module.custom_credential_engine]
   source                            = "terraform-ibm-modules/secrets-manager-secret/ibm"
-  version                           = "1.9.14"
+  version                           = "1.10.0"
   secret_type                       = "custom_credentials" #checkov:skip=CKV_SECRET_6
   region                            = module.secrets_manager.secrets_manager_region
   secrets_manager_guid              = module.secrets_manager.secrets_manager_guid
