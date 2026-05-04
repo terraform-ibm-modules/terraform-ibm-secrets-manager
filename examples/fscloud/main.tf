@@ -42,7 +42,7 @@ module "event_notification" {
   version           = "2.12.6"
   resource_group_id = module.resource_group.resource_group_id
   name              = "${var.prefix}-en"
-  tags              = var.resource_tags
+  resource_tags     = var.resource_tags
   plan              = "lite"
   region            = var.region
 }
