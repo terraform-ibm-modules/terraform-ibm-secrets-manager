@@ -30,7 +30,7 @@ variable "resource_tags" {
 
 variable "access_tags" {
   type        = list(string)
-  description = "Optional list of access management tags to add to the App Configuration instance."
+  description = "Optional list of access management tags to add to the Secrets Manager instance."
   default     = []
 }
 
