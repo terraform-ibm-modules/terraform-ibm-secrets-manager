@@ -31,7 +31,7 @@ variable "resource_tags" {
 
 variable "access_tags" {
   type        = list(string)
-  description = "Add access management tags to the Secrets Manager instance to control access. [Learn more](https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#create-access-console)."
+  description = "Add access management tags to the Secrets Manager instance to control access. [Learn more](https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#create-access-console). Only applies when creating a new Secrets Manager instance."
   default     = []
 }
 

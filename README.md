@@ -95,14 +95,14 @@ You need the following permissions to run this module.
 | [ibm_sm_en_registration.sm_en_registration](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/sm_en_registration) | resource |
 | [time_sleep.wait_for_authorization_policy](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [time_sleep.wait_for_sm_hpcs_authorization_policy](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
-| [ibm_iam_access_tag.access_tag](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/iam_access_tag) | data source |
+| [ibm_iam_access_tag.access_tags](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/iam_access_tag) | data source |
 | [ibm_resource_instance.sm_instance](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/resource_instance) | data source |
 
 ### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_access_tags"></a> [access\_tags](#input\_access\_tags) | Add access management tags to the Secrets Manager instance to control access. [Learn more](https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#create-access-console). | `list(string)` | `[]` | no |
+| <a name="input_access_tags"></a> [access\_tags](#input\_access\_tags) | Add access management tags to the Secrets Manager instance to control access. [Learn more](https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#create-access-console). Only applies when creating a new Secrets Manager instance. Access tags cannot be applied to existing instances via this module as it would replace any existing access tags. | `list(string)` | `[]` | no |
 | <a name="input_allowed_network"></a> [allowed\_network](#input\_allowed\_network) | The types of service endpoints to set on the Secrets Manager instance. Possible values are `private-only` or `public-and-private`. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-endpoints#service-endpoints). | `string` | `"public-and-private"` | no |
 | <a name="input_cbr_rules"></a> [cbr\_rules](#input\_cbr\_rules) | The context-based restrictions rule to create. Only one rule is allowed. | <pre>list(object({<br/>    description = string<br/>    account_id  = string<br/>    rule_contexts = list(object({<br/>      attributes = optional(list(object({<br/>        name  = string<br/>        value = string<br/>    }))) }))<br/>    enforcement_mode = string<br/>    operations = optional(list(object({<br/>      api_types = list(object({<br/>        api_type_id = string<br/>      }))<br/>    })))<br/>  }))</pre> | `[]` | no |
 | <a name="input_enable_event_notification"></a> [enable\_event\_notification](#input\_enable\_event\_notification) | Set to true to enable lifecycle notifications for your Secrets Manager instance by connecting an Event Notifications service. When set to `true`, a value must be passed for `existing_en_instance_crn` and `existing_sm_instance_crn` must be set to `null`. | `bool` | `false` | no |

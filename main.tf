@@ -65,15 +65,15 @@ resource "ibm_iam_authorization_policy" "iam_groups_policy" {
 # Attach Access Tags
 ##############################################################################
 
-data "ibm_iam_access_tag" "access_tag" {
+data "ibm_iam_access_tag" "access_tags" {
   for_each = length(var.access_tags) != 0 ? toset(var.access_tags) : []
   name     = each.value
 }
 
 resource "ibm_resource_tag" "secrets_manager_tag" {
-  depends_on  = [data.ibm_iam_access_tag.access_tag] # Force dependency on data source validation to ensure access_tags exist and are valid before use.
-  count       = length(var.access_tags) == 0 ? 0 : 1
-  resource_id = var.existing_sm_instance_crn != null ? var.existing_sm_instance_crn : ibm_resource_instance.secrets_manager_instance[0].crn
+  depends_on  = [data.ibm_iam_access_tag.access_tags] # Force dependency on data source validation to ensure access_tags exist and are valid before use.
+  count       = var.existing_sm_instance_crn == null && length(var.access_tags) > 0 ? 1 : 0
+  resource_id = ibm_resource_instance.secrets_manager_instance[0].crn
   tags        = var.access_tags
   tag_type    = "access"
 }

@@ -46,7 +46,7 @@ variable "resource_tags" {
 
 variable "access_tags" {
   type        = list(string)
-  description = "Add access management tags to the Secrets Manager instance to control access. [Learn more](https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#create-access-console)."
+  description = "Add access management tags to the Secrets Manager instance to control access. [Learn more](https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#create-access-console). Only applies when creating a new Secrets Manager instance. Access tags cannot be applied to existing instances via this module as it would replace any existing access tags."
   default     = []
 
   validation {
@@ -54,6 +54,11 @@ variable "access_tags" {
       for tag in var.access_tags : can(regex("[\\w\\-_\\.]+:[\\w\\-_\\.]+", tag)) && length(tag) <= 128
     ])
     error_message = "Tags must match the regular expression `\"[\\w\\-_\\.]+:[\\w\\-_\\.]+\"`. [Learn more](https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#limits)."
+  }
+
+  validation {
+    condition     = var.existing_sm_instance_crn == null || length(var.access_tags) == 0
+    error_message = "Access tags can only be applied to newly created Secrets Manager instances. When using `existing_sm_instance_crn`, `access_tags` must be empty to prevent replacing existing access tags on the instance."
   }
 }
 
