@@ -178,7 +178,8 @@ module "secrets_manager" {
   region                        = var.region
   secrets_manager_name          = "${local.prefix}${var.secrets_manager_instance_name}"
   sm_service_plan               = var.service_plan
-  sm_tags                       = var.secrets_manager_resource_tags
+  resource_tags                 = var.secrets_manager_resource_tags
+  access_tags                   = var.secrets_manager_access_tags
   skip_iam_authorization_policy = var.skip_secrets_manager_iam_auth_policy
   # kms dependency
   is_hpcs_key                       = local.is_hpcs_key

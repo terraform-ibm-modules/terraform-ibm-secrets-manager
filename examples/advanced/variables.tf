@@ -33,6 +33,12 @@ variable "resource_tags" {
   default     = []
 }
 
+variable "access_tags" {
+  type        = list(string)
+  description = "Optional list of access management tags to the Secrets Manager instance to control access."
+  default     = []
+}
+
 variable "en_region" {
   type        = string
   description = "Region where event notification will be created"

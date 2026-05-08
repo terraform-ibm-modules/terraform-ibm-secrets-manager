@@ -5,7 +5,8 @@ module "secrets_manager" {
   secrets_manager_name              = var.secrets_manager_name #tfsec:ignore:general-secrets-no-plaintext-exposure #checkov:skip=CKV_SECRET_6
   existing_sm_instance_crn          = var.existing_sm_instance_crn
   sm_service_plan                   = var.service_plan
-  sm_tags                           = var.sm_tags
+  resource_tags                     = var.resource_tags
+  access_tags                       = var.access_tags
   allowed_network                   = "private-only"
   endpoint_type                     = "private"
   kms_encryption_enabled            = true

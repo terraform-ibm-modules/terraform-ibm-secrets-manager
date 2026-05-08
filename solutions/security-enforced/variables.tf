@@ -78,6 +78,12 @@ variable "secrets_manager_resource_tags" {
   default     = []
 }
 
+variable "secrets_manager_access_tags" {
+  type        = list(string)
+  description = "Add access management tags to the Secrets Manager instance to control access. [Learn more](https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#create-access-console)."
+  default     = []
+}
+
 variable "secret_groups" {
   type = list(object({
     secret_group_name        = string

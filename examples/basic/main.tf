@@ -12,5 +12,5 @@ module "secrets_manager" {
   region               = var.region
   secrets_manager_name = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
   sm_service_plan      = "trial"
-  sm_tags              = var.resource_tags
+  resource_tags        = var.resource_tags
 }
