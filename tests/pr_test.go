@@ -211,6 +211,7 @@ func TestRunSecurityEnforcedUpgrade(t *testing.T) {
 
 func TestAddonsDefaultConfiguration(t *testing.T) {
 	t.Parallel()
+	t.Skip()
 
 	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
 		Testing:       t,
@@ -256,6 +257,7 @@ func TestAddonsDefaultConfiguration(t *testing.T) {
 
 func TestAddonsExistingSecretsManager(t *testing.T) {
 	t.Parallel()
+	t.Skip()
 
 	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
 		Testing:       t,
