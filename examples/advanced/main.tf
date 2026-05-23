@@ -214,7 +214,7 @@ module "code_engine_job" {
 module "custom_credential_engine" {
   depends_on                    = [module.secrets_manager, module.code_engine_job]
   source                        = "terraform-ibm-modules/secrets-manager-custom-credentials-engine/ibm"
-  version                       = "1.2.2"
+  version                       = "1.2.3"
   secrets_manager_guid          = module.secrets_manager.secrets_manager_guid
   secrets_manager_region        = module.secrets_manager.secrets_manager_region
   custom_credential_engine_name = "${var.prefix}-test-custom-engine"
