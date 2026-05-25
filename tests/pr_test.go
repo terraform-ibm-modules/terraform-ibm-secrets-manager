@@ -257,7 +257,6 @@ func TestAddonsDefaultConfiguration(t *testing.T) {
 
 func TestAddonsExistingSecretsManager(t *testing.T) {
 	t.Parallel()
-	t.Skip()
 
 	options := testaddons.TestAddonsOptionsDefault(&testaddons.TestAddonOptions{
 		Testing:       t,
