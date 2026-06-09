@@ -28,7 +28,6 @@ Global variables
 */
 const fscloudExampleTerraformDir = "examples/fscloud"
 const fullyConfigurableTerraformDir = "solutions/fully-configurable"
-const securityEnforcedTerraformDir = "solutions/security-enforced"
 const resourceGroup = "geretain-test-secrets-manager"
 const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
 const terraformVersion = "terraform_v1.12.2" // This should match the version in the ibm_catalog.json
@@ -50,13 +49,13 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestRunSecurityEnforced(t *testing.T) {
+func TestRunFullyConfigurableWithPrivateEndpoints(t *testing.T) {
 	t.Parallel()
 
 	// ------------------------------------------------------------------------------------
 	// Provision new RG, Event Notifications and Key Protect instance + root key
 	// ------------------------------------------------------------------------------------
-	prefix := fmt.Sprintf("sm-se-%s", strings.ToLower(random.UniqueID()))
+	prefix := fmt.Sprintf("sm-fc-priv-%s", strings.ToLower(random.UniqueID()))
 	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueID())))
 
@@ -88,14 +87,13 @@ func TestRunSecurityEnforced(t *testing.T) {
 			Testing: t,
 			TarIncludePatterns: []string{
 				"*.tf",
-				fmt.Sprintf("%s/*.tf", securityEnforcedTerraformDir),
 				fmt.Sprintf("%s/*.tf", fullyConfigurableTerraformDir),
 				fmt.Sprintf("%s/*.tf", fscloudExampleTerraformDir),
 				fmt.Sprintf("%s/*.tf", "modules/secrets"),
 			},
-			TemplateFolder:         securityEnforcedTerraformDir,
+			TemplateFolder:         fullyConfigurableTerraformDir,
 			ResourceGroup:          resourceGroup,
-			Prefix:                 "sm-se",
+			Prefix:                 "sm-fc-priv",
 			Tags:                   []string{"test-schematic"},
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
@@ -110,6 +108,11 @@ func TestRunSecurityEnforced(t *testing.T) {
 			{Name: "service_plan", Value: "trial", DataType: "string"},
 			{Name: "existing_kms_instance_crn", Value: terraform.OutputContext(t, context.Background(), existingTerraformOptions, "secrets_manager_kms_instance_crn"), DataType: "string"},
 			{Name: "existing_event_notifications_instance_crn", Value: terraform.OutputContext(t, context.Background(), existingTerraformOptions, "event_notifications_instance_crn"), DataType: "string"},
+			{Name: "provider_visibility", Value: "private", DataType: "string"},
+			{Name: "secrets_manager_endpoint_type", Value: "private", DataType: "string"},
+			{Name: "allowed_network", Value: "private-only", DataType: "string"},
+			{Name: "kms_encryption_enabled", Value: true, DataType: "bool"},
+			{Name: "kms_endpoint_type", Value: "private", DataType: "string"},
 		}
 		err := options.RunSchematicTest()
 		assert.NoError(t, err, "Schematic Test had unexpected error")
@@ -128,13 +131,13 @@ func TestRunSecurityEnforced(t *testing.T) {
 	}
 }
 
-func TestRunSecurityEnforcedUpgrade(t *testing.T) {
+func TestRunFullyConfigurableWithPrivateEndpointsUpgrade(t *testing.T) {
 	t.Parallel()
 
 	// ------------------------------------------------------------------------------------
 	// Provision new RG
 	// ------------------------------------------------------------------------------------
-	prefix := fmt.Sprintf("sm-se-ug-%s", strings.ToLower(random.UniqueID()))
+	prefix := fmt.Sprintf("sm-fc-priv-ug-%s", strings.ToLower(random.UniqueID()))
 	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueID())))
 
@@ -165,13 +168,12 @@ func TestRunSecurityEnforcedUpgrade(t *testing.T) {
 			Testing: t,
 			TarIncludePatterns: []string{
 				"*.tf",
-				fmt.Sprintf("%s/*.tf", securityEnforcedTerraformDir),
 				fmt.Sprintf("%s/*.tf", fullyConfigurableTerraformDir),
 				fmt.Sprintf("%s/*.tf", "modules/secrets"),
 			},
-			TemplateFolder:             securityEnforcedTerraformDir,
+			TemplateFolder:             fullyConfigurableTerraformDir,
 			ResourceGroup:              resourceGroup,
-			Prefix:                     "sm-se-ug",
+			Prefix:                     "sm-fc-priv-ug",
 			Tags:                       []string{"test-schematic"},
 			DeleteWorkspaceOnFail:      false,
 			WaitJobCompleteMinutes:     60,
@@ -187,6 +189,11 @@ func TestRunSecurityEnforcedUpgrade(t *testing.T) {
 			{Name: "service_plan", Value: "trial", DataType: "string"},
 			{Name: "existing_kms_instance_crn", Value: terraform.OutputContext(t, context.Background(), existingTerraformOptions, "secrets_manager_kms_instance_crn"), DataType: "string"},
 			{Name: "existing_event_notifications_instance_crn", Value: terraform.OutputContext(t, context.Background(), existingTerraformOptions, "event_notifications_instance_crn"), DataType: "string"},
+			{Name: "provider_visibility", Value: "private", DataType: "string"},
+			{Name: "secrets_manager_endpoint_type", Value: "private", DataType: "string"},
+			{Name: "allowed_network", Value: "private-only", DataType: "string"},
+			{Name: "kms_encryption_enabled", Value: true, DataType: "bool"},
+			{Name: "kms_endpoint_type", Value: "private", DataType: "string"},
 		}
 
 		err := options.RunSchematicUpgradeTest()
