@@ -173,7 +173,7 @@ func TestRunFullyConfigurableWithPrivateEndpointsUpgrade(t *testing.T) {
 			},
 			TemplateFolder:             fullyConfigurableTerraformDir,
 			ResourceGroup:              resourceGroup,
-			Prefix:                     "sm-fc-priv-ug",
+			Prefix:                     "sm-fc-ug",
 			Tags:                       []string{"test-schematic"},
 			DeleteWorkspaceOnFail:      false,
 			WaitJobCompleteMinutes:     60,
