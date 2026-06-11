@@ -55,7 +55,7 @@ func TestRunFullyConfigurableWithPrivateEndpoints(t *testing.T) {
 	// ------------------------------------------------------------------------------------
 	// Provision new RG, Event Notifications and Key Protect instance + root key
 	// ------------------------------------------------------------------------------------
-	prefix := fmt.Sprintf("sm-fc-priv-%s", strings.ToLower(random.UniqueID()))
+	prefix := fmt.Sprintf("sm-fc-%s", strings.ToLower(random.UniqueID()))
 	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueID())))
 
@@ -93,7 +93,7 @@ func TestRunFullyConfigurableWithPrivateEndpoints(t *testing.T) {
 			},
 			TemplateFolder:         fullyConfigurableTerraformDir,
 			ResourceGroup:          resourceGroup,
-			Prefix:                 "sm-fc-priv",
+			Prefix:                 "sm-fc",
 			Tags:                   []string{"test-schematic"},
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
@@ -137,7 +137,7 @@ func TestRunFullyConfigurableWithPrivateEndpointsUpgrade(t *testing.T) {
 	// ------------------------------------------------------------------------------------
 	// Provision new RG
 	// ------------------------------------------------------------------------------------
-	prefix := fmt.Sprintf("sm-fc-priv-ug-%s", strings.ToLower(random.UniqueID()))
+	prefix := fmt.Sprintf("sm-fc-ug-%s", strings.ToLower(random.UniqueID()))
 	realTerraformDir := ".."
 	tempTerraformDir, _ := files.CopyTerraformFolderToTemp(realTerraformDir, fmt.Sprintf(prefix+"-%s", strings.ToLower(random.UniqueID())))
 
