@@ -98,7 +98,7 @@ locals {
 module "kms_key_crn_parser" {
   count   = var.kms_encryption_enabled ? 1 : 0
   source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.6.1"
+  version = "1.9.0"
   crn     = var.kms_key_crn != null ? var.kms_key_crn : ""
 }
 
@@ -180,7 +180,7 @@ locals {
 module "cbr_rule" {
   count            = length(var.cbr_rules) > 0 ? length(var.cbr_rules) : 0
   source           = "terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module"
-  version          = "1.36.5"
+  version          = "1.36.6"
   rule_description = var.cbr_rules[count.index].description
   enforcement_mode = var.cbr_rules[count.index].enforcement_mode
   rule_contexts    = var.cbr_rules[count.index].rule_contexts
