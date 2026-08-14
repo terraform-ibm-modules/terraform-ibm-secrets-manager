@@ -91,7 +91,7 @@ func TestFSCloudInSchematics(t *testing.T) {
 		{Name: "ibmcloud_api_key", Value: options.RequiredEnvironmentVars["TF_VAR_ibmcloud_api_key"], DataType: "string", Secure: true},
 		{Name: "region", Value: validRegions[common.CryptoIntn(len(validRegions))], DataType: "string"},
 		{Name: "prefix", Value: options.Prefix, DataType: "string"},
-		{Name: "kms_key_crn", Value: permanentResources["hpcs_south_root_key_crn"], DataType: "string"},
+		{Name: "kms_key_crn", Value: permanentResources["kp_us_south_root_key_crn"], DataType: "string"},
 	}
 
 	err := options.RunSchematicTest()

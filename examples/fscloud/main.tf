@@ -48,20 +48,6 @@ module "event_notification" {
 }
 
 ##############################################################################
-# Parse info from KMS key crn
-##############################################################################
-
-module "kms_key_crn_parser" {
-  source  = "terraform-ibm-modules/common-utilities/ibm//modules/crn-parser"
-  version = "1.9.0"
-  crn     = var.kms_key_crn
-}
-
-locals {
-  kms_service = module.kms_key_crn_parser.service_name
-}
-
-##############################################################################
 # Secrets Manager
 ##############################################################################
 
@@ -72,7 +58,6 @@ module "secrets_manager" {
   secrets_manager_name     = "${var.prefix}-secrets-manager" #tfsec:ignore:general-secrets-no-plaintext-exposure
   resource_tags            = var.resource_tags
   access_tags              = var.access_tags
-  is_hpcs_key              = local.kms_service == "hs-crypto" ? true : false
   kms_key_crn              = var.kms_key_crn
   existing_en_instance_crn = module.event_notification.crn
   cbr_rules = [
