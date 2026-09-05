@@ -58,14 +58,9 @@ variable "skip_kms_iam_authorization_policy" {
 ##############################################################################
 variable "kms_key_crn" {
   type        = string
-  description = "The root key CRN of Key Management Service (KMS) key that you want to use for encryption."
+  description = "The root key CRN of a Key Protect key that you want to use for encryption."
 }
 
-variable "is_hpcs_key" {
-  type        = bool
-  description = "Set to true if the key is hpcs, otherwise false."
-  default     = false
-}
 ##############################################################################
 # Event Notification
 ##############################################################################

@@ -84,7 +84,6 @@ module "secrets_manager" {
   resource_tags             = var.resource_tags
   access_tags               = var.access_tags
   kms_encryption_enabled    = true
-  is_hpcs_key               = false
   kms_key_crn               = module.key_protect.keys["${var.prefix}-sm.${var.prefix}-sm-key"].crn
   enable_event_notification = true
   existing_en_instance_crn  = module.event_notifications.crn
