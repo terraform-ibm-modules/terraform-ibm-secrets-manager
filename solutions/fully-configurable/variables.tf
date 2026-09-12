@@ -160,7 +160,7 @@ variable "skip_secrets_manager_kms_iam_auth_policy" {
 
 variable "existing_secrets_manager_kms_key_crn" {
   type        = string
-  description = "The CRN of a Key Protect or Hyper Protect Crypto Services key to use for Secrets Manager. If not specified, a key ring and key are created."
+  description = "The CRN of a Key Protect key to use for Secrets Manager. If not specified, a key ring and key are created."
   default     = null
 }
 
@@ -187,20 +187,20 @@ variable "kms_encryption_enabled" {
 variable "existing_kms_instance_crn" {
   type        = string
   default     = null
-  description = "The CRN of the KMS instance (Hyper Protect Crypto Services or Key Protect). Required only if `existing_secrets_manager_crn` or `existing_secrets_manager_kms_key_crn` is not specified. If the KMS instance is in different account you must also provide a value for `ibmcloud_kms_api_key`."
+  description = "The CRN of the Key Protect instance. Required only if `existing_secrets_manager_crn` or `existing_secrets_manager_kms_key_crn` is not specified. If the KMS instance is in a different account you must also provide a value for `ibmcloud_kms_api_key`."
 
   validation {
     condition = anytrue([
-      can(regex("^crn:(.*:){3}(kms|hs-crypto):(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$", var.existing_kms_instance_crn)),
+      can(regex("^crn:(.*:){3}kms:(.*:){2}[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}::$", var.existing_kms_instance_crn)),
       var.existing_kms_instance_crn == null,
     ])
-    error_message = "The provided KMS instance CRN in the input 'existing_kms_instance_crn' in not valid."
+    error_message = "The provided KMS instance CRN in the input 'existing_kms_instance_crn' is not valid."
   }
 }
 
 variable "kms_endpoint_type" {
   type        = string
-  description = "The endpoint for communicating with the Key Protect or Hyper Protect Crypto Services instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
+  description = "The endpoint for communicating with the Key Protect instance. Possible values: `public`, `private`. Applies only if `existing_secrets_manager_kms_key_crn` is not specified."
   default     = "private"
   validation {
     condition     = can(regex("^(public|private)$", var.kms_endpoint_type))

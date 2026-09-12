@@ -23,4 +23,4 @@ The example creates the following infrastructure:
 
 ## Before you begin
 
-- You need a Hyper Protect Crypto Services instance and root key available.
+- You need a Key Protect instance and root key available.

@@ -86,7 +86,7 @@ variable "skip_kms_iam_authorization_policy" {
 
 variable "kms_key_crn" {
   type        = string
-  description = "The root key CRN of a key management service like Key Protect or Hyper Protect Crypto Services that you want to use for encryption. Only used if `kms_encryption_enabled` is set to `true`."
+  description = "The root key CRN of a Key Protect key that you want to use for encryption. Only used if `kms_encryption_enabled` is set to `true`."
   default     = null
 
   validation {
@@ -98,12 +98,6 @@ variable "kms_key_crn" {
     condition     = var.existing_sm_instance_crn == null ? var.kms_encryption_enabled == true && var.kms_key_crn == null ? false : true : true
     error_message = "When setting `var.kms_encryption_enabled` to `true`, a value must be passed for `var.kms_key_crn`."
   }
-}
-
-variable "is_hpcs_key" {
-  type        = bool
-  description = "Set to `true` if the key provided through the `kms_key_crn` is a Hyper Protect Crypto Services key."
-  default     = false
 }
 
 variable "existing_sm_instance_crn" {
