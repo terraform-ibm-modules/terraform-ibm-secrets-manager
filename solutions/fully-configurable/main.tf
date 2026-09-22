@@ -21,11 +21,7 @@ locals {
 
   kms_region = var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].region : null
 
-  parsed_service_name = var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_name : (var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : null)
-  is_hpcs_key         = local.parsed_service_name == "hs-crypto" ? true : false
-
-  create_cross_account_auth_policy      = var.existing_secrets_manager_crn == null && !var.skip_secrets_manager_kms_iam_auth_policy && var.ibmcloud_kms_api_key != null
-  create_cross_account_hpcs_auth_policy = local.create_cross_account_auth_policy == true && local.is_hpcs_key ? 1 : 0
+  create_cross_account_auth_policy = var.existing_secrets_manager_crn == null && !var.skip_secrets_manager_kms_iam_auth_policy && var.ibmcloud_kms_api_key != null
 
   kms_service_name  = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : (var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].service_name : null)
   kms_key_id        = var.existing_secrets_manager_kms_key_crn != null ? module.kms_key_crn_parser[0].resource : (var.existing_kms_instance_crn != null ? module.kms_instance_crn_parser[0].resource : null)
@@ -103,26 +99,6 @@ resource "time_sleep" "wait_for_authorization_policy" {
   create_duration = "30s"
 }
 
-# if using HPCS ,create a second IAM authorization that assigns the Viewer platform access in Hyper Protect Crypto Services .[Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-mng-data#using-byok)
-resource "ibm_iam_authorization_policy" "secrets_manager_hpcs_policy" {
-  count                       = local.create_cross_account_hpcs_auth_policy
-  provider                    = ibm.kms
-  source_service_account      = data.ibm_iam_account_settings.iam_account_settings[0].account_id
-  source_service_name         = "secrets-manager"
-  source_resource_group_id    = module.resource_group.resource_group_id
-  target_service_name         = local.kms_service_name
-  target_resource_instance_id = local.kms_instance_guid
-  roles                       = ["Viewer"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${module.resource_group.resource_group_id} in the account ${local.kms_account_id} to view from the ${local.kms_service_name} instance GUID ${local.kms_instance_guid}"
-}
-
-# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
-resource "time_sleep" "wait_for_sm_hpcs_authorization_policy" {
-  count           = local.create_cross_account_hpcs_auth_policy
-  depends_on      = [ibm_iam_authorization_policy.secrets_manager_hpcs_policy]
-  create_duration = "30s"
-}
-
 # KMS root key for Secrets Manager secret encryption
 module "kms" {
   providers = {
@@ -182,7 +158,6 @@ module "secrets_manager" {
   access_tags                   = var.secrets_manager_access_tags
   skip_iam_authorization_policy = var.skip_secrets_manager_iam_auth_policy
   # kms dependency
-  is_hpcs_key                       = local.is_hpcs_key
   kms_encryption_enabled            = var.kms_encryption_enabled
   kms_key_crn                       = local.kms_key_crn
   skip_kms_iam_authorization_policy = var.skip_secrets_manager_kms_iam_auth_policy || local.create_cross_account_auth_policy

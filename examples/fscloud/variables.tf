@@ -40,5 +40,5 @@ variable "access_tags" {
 
 variable "kms_key_crn" {
   type        = string
-  description = "The root key CRN of Hyper Protect Crypto Services (HPCS) that you want to use for encryption."
+  description = "The root key CRN of a Key Protect key that you want to use for encryption."
 }

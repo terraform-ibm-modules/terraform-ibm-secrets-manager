@@ -2,13 +2,6 @@
 # Secrets Manager Module
 ##############################################################################
 
-# Validation
-locals {
-  # Validation (approach based on https://github.com/hashicorp/terraform/issues/25609#issuecomment-1057614400)
-  # tflint-ignore: terraform_unused_declarations
-  validate_is_hpcs_key = var.existing_sm_instance_crn == null ? var.is_hpcs_key && local.kms_service_name != "hs-crypto" ? tobool("When is_hpcs_key is set to true then the key provided through kms_key_crn must be a Hyper Protect Crypto Services key") : true : true
-}
-
 locals {
   parsed_existing_sm_instance_crn = var.existing_sm_instance_crn != null ? split(":", var.existing_sm_instance_crn) : []
   existing_sm_guid                = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[7] : null
@@ -24,7 +17,7 @@ data "ibm_resource_instance" "sm_instance" {
 # Create Secrets Manager Instance
 resource "ibm_resource_instance" "secrets_manager_instance" {
   count             = var.existing_sm_instance_crn == null ? 1 : 0
-  depends_on        = [time_sleep.wait_for_authorization_policy, time_sleep.wait_for_sm_hpcs_authorization_policy]
+  depends_on        = [time_sleep.wait_for_authorization_policy]
   name              = var.secrets_manager_name
   service           = "secrets-manager"
   plan              = var.sm_service_plan
@@ -82,8 +75,7 @@ resource "ibm_resource_tag" "secrets_manager_tag" {
 # KMS Key
 #######################################################################################################################
 locals {
-  create_kms_auth_policy  = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy && var.existing_sm_instance_crn == null
-  create_hpcs_auth_policy = local.create_kms_auth_policy == true && var.is_hpcs_key ? 1 : 0
+  create_kms_auth_policy = var.kms_encryption_enabled && !var.skip_kms_iam_authorization_policy && var.existing_sm_instance_crn == null
 
   kms_service_name  = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_key_crn_parser[0].service_name : null
   kms_account_id    = var.kms_encryption_enabled && var.kms_key_crn != null ? module.kms_key_crn_parser[0].account_id : null
@@ -146,25 +138,6 @@ resource "ibm_iam_authorization_policy" "kms_policy" {
 resource "time_sleep" "wait_for_authorization_policy" {
   count      = var.existing_sm_instance_crn == null ? 1 : 0
   depends_on = [ibm_iam_authorization_policy.kms_policy, ibm_iam_authorization_policy.en_policy]
-
-  create_duration = "30s"
-}
-
-# if using HPCS ,create a second IAM authorization that assigns the Viewer platform access in Hyper Protect Crypto Services .[Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-mng-data#using-byok)
-resource "ibm_iam_authorization_policy" "secrets_manager_hpcs_policy" {
-  count                       = local.create_hpcs_auth_policy
-  source_service_name         = "secrets-manager"
-  source_resource_group_id    = var.resource_group_id
-  target_service_name         = local.kms_service_name
-  target_resource_instance_id = local.kms_instance_guid
-  roles                       = ["Viewer"]
-  description                 = "Allow all Secrets Manager instances in the resource group ${var.resource_group_id} viewer access to the ${local.kms_service_name} instance GUID ${local.kms_instance_guid}."
-}
-
-# workaround for https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4478
-resource "time_sleep" "wait_for_sm_hpcs_authorization_policy" {
-  count      = local.create_hpcs_auth_policy
-  depends_on = [ibm_iam_authorization_policy.secrets_manager_hpcs_policy]
 
   create_duration = "30s"
 }
