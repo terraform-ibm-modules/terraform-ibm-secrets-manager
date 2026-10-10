@@ -42,27 +42,27 @@ module "secrets_manager" {
 ### Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
 | <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >=1.88.0, < 3.0.0 |
 
 ### Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_secret_groups"></a> [secret\_groups](#module\_secret\_groups) | terraform-ibm-modules/secrets-manager-secret-group/ibm | 1.5.7 |
 | <a name="module_secrets"></a> [secrets](#module\_secrets) | terraform-ibm-modules/secrets-manager-secret/ibm | 1.10.1 |
 
 ### Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [ibm_sm_secret_groups.existing_secret_groups](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/sm_secret_groups) | data source |
 
 ### Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_endpoint_type"></a> [endpoint\_type](#input\_endpoint\_type) | The service endpoint type to communicate with the provided secrets manager instance. Possible values are `public` or `private` | `string` | `"public"` | no |
 | <a name="input_existing_sm_instance_guid"></a> [existing\_sm\_instance\_guid](#input\_existing\_sm\_instance\_guid) | Instance ID of Secrets Manager instance in which the Secret will be added. | `string` | n/a | yes |
 | <a name="input_existing_sm_instance_region"></a> [existing\_sm\_instance\_region](#input\_existing\_sm\_instance\_region) | Region which the Secret Manager is deployed. | `string` | n/a | yes |
@@ -71,7 +71,7 @@ module "secrets_manager" {
 ### Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_secret_groups"></a> [secret\_groups](#output\_secret\_groups) | IDs of the created Secret Group |
 | <a name="output_secrets"></a> [secrets](#output\_secrets) | List of secret manager secret config data |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
