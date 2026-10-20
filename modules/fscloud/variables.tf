@@ -61,6 +61,12 @@ variable "kms_key_crn" {
   description = "The root key CRN of a Key Protect key that you want to use for encryption."
 }
 
+variable "is_hpcs_key" {
+  type        = bool
+  description = "Set to true if the key is hpcs, otherwise false."
+  default     = false
+}
+
 ##############################################################################
 # Event Notification
 ##############################################################################
