@@ -492,7 +492,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.11.3"
+              "version": "v2.1.7"
             },
             {
               "name": "deploy-arch-ibm-cloud-monitoring",
@@ -559,7 +559,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v1.6.13"
+              "version": "v2.1.7"
             },
             {
               "name": "deploy-arch-ibm-event-notifications",
@@ -592,7 +592,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "v2.11.14"
+              "version": "v3.1.2"
             }
           ],
           "dependency_version_2": true,
