@@ -10,6 +10,10 @@ locals {
 }
 
 locals {
+  # The `dedicated` plan is a Vault Enterprise cluster. It does not expose the Secrets Manager API (`/api/v2/...`) and has no
+  # IAM credentials engine, so everything that depends on them is skipped. The cluster is configured with the HashiCorp Vault provider.
+  is_dedicated_plan = var.existing_sm_instance_crn == null && var.sm_service_plan == "dedicated"
+
   parsed_existing_sm_instance_crn = var.existing_sm_instance_crn != null ? split(":", var.existing_sm_instance_crn) : []
   existing_sm_guid                = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[7] : null
   existing_sm_region              = length(local.parsed_existing_sm_instance_crn) > 0 ? local.parsed_existing_sm_instance_crn[5] : null
@@ -44,7 +48,7 @@ resource "ibm_resource_instance" "secrets_manager_instance" {
 
 # Create IAM credentials engine using s2s auth
 resource "ibm_iam_authorization_policy" "iam_identity_policy" {
-  count                       = var.skip_iam_authorization_policy ? 0 : 1
+  count                       = var.skip_iam_authorization_policy || local.is_dedicated_plan ? 0 : 1
   source_service_name         = "secrets-manager"
   source_resource_instance_id = local.secrets_manager_guid
   target_service_name         = "iam-identity"
@@ -53,7 +57,7 @@ resource "ibm_iam_authorization_policy" "iam_identity_policy" {
 }
 
 resource "ibm_iam_authorization_policy" "iam_groups_policy" {
-  count                       = var.skip_iam_authorization_policy ? 0 : 1
+  count                       = var.skip_iam_authorization_policy || local.is_dedicated_plan ? 0 : 1
   source_service_name         = "secrets-manager"
   source_resource_instance_id = local.secrets_manager_guid
   target_service_name         = "iam-groups"
@@ -243,6 +247,7 @@ resource "ibm_sm_en_registration" "sm_en_registration" {
 ##############################################################################
 
 module "secrets" {
+  count                       = local.is_dedicated_plan ? 0 : 1
   source                      = "./modules/secrets"
   existing_sm_instance_guid   = local.secrets_manager_guid
   existing_sm_instance_region = local.secrets_manager_region
@@ -250,7 +255,7 @@ module "secrets" {
   endpoint_type               = var.endpoint_type
 }
 
-
+##############################################################################
 # Check Blocks
 ##############################################################################
 

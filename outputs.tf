@@ -29,12 +29,12 @@ output "secrets_manager_region" {
 }
 
 output "secret_groups" {
-  value       = module.secrets.secret_groups
-  description = "IDs of the secret groups"
+  value       = one(module.secrets[*].secret_groups)
+  description = "IDs of the secret groups. `null` for the `dedicated` plan."
 }
 
 output "secrets" {
-  value       = module.secrets.secrets
-  description = "List of Secrets Manager secret configuration data"
+  value       = one(module.secrets[*].secrets)
+  description = "List of Secrets Manager secret configuration data. `null` for the `dedicated` plan."
 }
 ##############################################################################
