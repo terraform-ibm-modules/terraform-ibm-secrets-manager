@@ -66,7 +66,7 @@ variable "existing_secrets_manager_crn" {
 
 variable "service_plan" {
   type        = string
-  description = "The pricing plan to use when provisioning a Secrets Manager instance. Possible values: `standard`, `trial`, `dedicated`. You can create only one Trial instance of Secrets Manager per account. Before you can create a new Trial instance, you must delete the existing Trial instance and its reclamation. The `dedicated` plan provisions a Vault Dedicated (Vault Enterprise) instance, which is billed at a much higher rate, is available only in `us-south`, `eu-de` and `eu-fr2`, and is configured with the HashiCorp Vault provider instead of the Secrets Manager API. For `dedicated`, the `secret_groups` input is ignored and Event Notifications cannot be enabled. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-create-instance&interface=ui#upgrade-instance-standard)."
+  description = "The pricing plan to use when provisioning a Secrets Manager instance. Possible values: `standard`, `trial`, `dedicated`. You can create only one Trial instance of Secrets Manager per account. Before you can create a new Trial instance, you must delete the existing Trial instance and its reclamation. [Learn more](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-create-instance&interface=ui#upgrade-instance-standard)."
   validation {
     condition     = var.existing_secrets_manager_crn == null ? contains(["standard", "trial", "dedicated"], var.service_plan) : true
     error_message = "Only 'standard', 'trial' and 'dedicated' are allowed values for 'service_plan'. Applies only if not providing a value for the 'existing_secrets_manager_crn' input."
