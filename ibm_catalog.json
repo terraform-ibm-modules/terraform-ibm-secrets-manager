@@ -116,6 +116,10 @@
                 {
                   "displayname": "Trial",
                   "value": "trial"
+                },
+                {
+                  "displayname": "Dedicated",
+                  "value": "dedicated"
                 }
               ]
             },
