@@ -27,6 +27,7 @@ import (
 Global variables
 */
 const fscloudExampleTerraformDir = "examples/fscloud"
+const dedicatedVaultExampleTerraformDir = "examples/dedicated-vault"
 const fullyConfigurableTerraformDir = "solutions/fully-configurable"
 const resourceGroup = "geretain-test-secrets-manager"
 const yamlLocation = "../common-dev-assets/common-go-assets/common-permanent-resources.yaml"
