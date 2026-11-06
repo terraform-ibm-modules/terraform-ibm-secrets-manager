@@ -28,7 +28,8 @@ data "ibm_sm_instance" "vault" {
   instance_id = module.secrets_manager.secrets_manager_guid
 }
 
-# 1 hour, non-renewable admin token (automatically refreshed by the provider when about to expire)
+# Admin token, valid for 1 hour. It is not refreshed in the background: on each refresh/plan/apply the IBM provider
+# generates a new token if the current one is within 5 minutes of expiring (or already expired).
 resource "ibm_sm_admin_token" "vault" {
   instance_id = module.secrets_manager.secrets_manager_guid
 }

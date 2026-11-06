@@ -19,5 +19,5 @@ The following resources are provisioned by this example:
 
 - A new resource group, if an existing one is not passed in.
 - A `dedicated` plan instance of Secrets Manager with public and private endpoints.
-- A Vault admin token for the instance (1 hour, non-renewable).
+- A Vault admin token for the instance (`ibm_sm_admin_token`). The token is valid for 1 hour. When a `terraform plan` or `apply` runs 55 minutes or more after the token was created, a new token is generated to replace it.
 - A KV v2 secrets engine mounted at `secret` in the `admin` namespace, with an example secret.
