@@ -44,6 +44,19 @@ func TestRunBasicExample(t *testing.T) {
 	assert.NotNil(t, output, "Expected some output")
 }
 
+func TestRunDedicatedVaultExample(t *testing.T) {
+	t.Parallel()
+
+	options := setupOptions(t, "sm-ded", dedicatedVaultExampleTerraformDir)
+
+	// the `dedicated` plan is only available in us-south, eu-de and eu-fr2
+	options.TerraformVars["region"] = "us-south"
+
+	output, err := options.RunTestConsistency()
+	assert.Nil(t, err, "This should not have errored")
+	assert.NotNil(t, output, "Expected some output")
+}
+
 func TestRunAdvancedExample(t *testing.T) {
 	t.Parallel()
 
