@@ -130,7 +130,7 @@ module "kms" {
   }
   count                       = var.existing_secrets_manager_crn == null && var.kms_encryption_enabled && var.existing_secrets_manager_kms_key_crn == null ? 1 : 0 # no need to create any KMS resources if passing an existing key
   source                      = "terraform-ibm-modules/kms-all-inclusive/ibm"
-  version                     = "5.6.15"
+  version                     = "5.6.20"
   create_key_protect_instance = false
   region                      = local.kms_region
   existing_kms_instance_crn   = var.existing_kms_instance_crn
@@ -163,7 +163,9 @@ locals {
   secrets_manager_crn                 = var.existing_secrets_manager_crn != null ? var.existing_secrets_manager_crn : module.secrets_manager.secrets_manager_crn
   secrets_manager_region              = var.existing_secrets_manager_crn != null ? (length(local.parsed_existing_secrets_manager_crn) > 0 ? local.parsed_existing_secrets_manager_crn[5] : null) : module.secrets_manager.secrets_manager_region
   enable_event_notifications          = var.existing_event_notifications_instance_crn == null || var.existing_event_notifications_instance_crn == "" ? false : true
-  secret_groups_with_prefix = [
+  # The `dedicated` plan (Vault Dedicated) does not expose the Secrets Manager API, so secret groups cannot be created
+  is_dedicated_plan = var.existing_secrets_manager_crn == null && var.service_plan == "dedicated"
+  secret_groups_with_prefix = local.is_dedicated_plan ? [] : [
     for group in var.secret_groups : merge(group, {
       access_group_name = group.access_group_name != null ? "${local.prefix}${group.access_group_name}" : null
     })

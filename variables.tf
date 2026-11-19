@@ -19,11 +19,11 @@ variable "secrets_manager_name" {
 
 variable "sm_service_plan" {
   type        = string
-  description = "The Secrets Manager plan to provision."
+  description = "The Secrets Manager plan to provision. Possible values are `standard`, `trial` or `dedicated`. The `dedicated` plan provisions a Vault Dedicated (Vault Enterprise) instance that is configured with the HashiCorp Vault provider instead of the Secrets Manager API, so it does not support `secrets`, IAM credentials authorization policies or Event Notifications. See the `dedicated-vault` example. Not used if passing a value for `existing_sm_instance_crn`."
   default     = "standard"
   validation {
-    condition     = var.existing_sm_instance_crn == null ? contains(["standard", "trial"], var.sm_service_plan) : true
-    error_message = "The specified `sm_service_plan` is not valid. Possible values are `standard` or `trial`."
+    condition     = var.existing_sm_instance_crn == null ? contains(["standard", "trial", "dedicated"], var.sm_service_plan) : true
+    error_message = "The specified `sm_service_plan` is not valid. Possible values are `standard`, `trial` or `dedicated`."
   }
 }
 
@@ -165,6 +165,11 @@ variable "enable_event_notification" {
     condition     = var.enable_event_notification == true && var.existing_en_instance_crn == null ? false : true
     error_message = "When setting `var.enable_event_notification` to `true`, a value must be passed for `var.existing_en_instance_crn`."
   }
+
+  validation {
+    condition     = !(var.existing_sm_instance_crn == null && var.sm_service_plan == "dedicated") || var.enable_event_notification == false
+    error_message = "Event Notifications is not supported with the `dedicated` plan. Set `var.enable_event_notification` to `false`."
+  }
 }
 
 variable "existing_en_instance_crn" {
@@ -228,4 +233,9 @@ variable "secrets" {
   }))
   description = "Secret Manager secrets configurations."
   default     = []
+
+  validation {
+    condition     = !(var.existing_sm_instance_crn == null && var.sm_service_plan == "dedicated") || length(var.secrets) == 0
+    error_message = "The `secrets` input is not supported with the `dedicated` plan, because Vault Dedicated does not expose the Secrets Manager API. Use the HashiCorp Vault provider to manage secrets in the instance."
+  }
 }
