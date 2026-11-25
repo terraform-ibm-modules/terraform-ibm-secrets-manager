@@ -44,6 +44,7 @@ variable "secrets" {
       service_credentials_source_service_crn      = optional(string)
       service_credentials_source_service_role_crn = optional(string)
       service_credentials_source_service_hmac     = optional(bool, false)
+      service_credentials_parameters              = optional(map(string))
       custom_credentials_configurations           = optional(string)
       custom_credentials_parameters               = optional(bool, false)
       job_parameters = optional(object({

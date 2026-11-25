@@ -81,6 +81,7 @@ module "secrets" {
   service_credentials_source_service_crn      = each.value.service_credentials_source_service_crn
   service_credentials_source_service_role_crn = each.value.service_credentials_source_service_role_crn
   service_credentials_source_service_hmac     = each.value.service_credentials_source_service_hmac
+  service_credentials_parameters              = each.value.service_credentials_parameters
   custom_credentials_configurations           = each.value.custom_credentials_configurations
   custom_credentials_parameters               = each.value.custom_credentials_parameters
   job_parameters                              = each.value.job_parameters
